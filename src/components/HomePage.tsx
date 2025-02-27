@@ -19,7 +19,7 @@ const HomePage: React.FC = () => {
       {/* Browse The Range Section */}
       <section className={styles.range}>
         <h2>Browse The Range</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        <p>Come visit us and find out world-best furniture, select what you like, own them as you like.</p>
         <div className={styles.rangeGrid}>
           <div className={styles.rangeCard}>Dining</div>
           <div className={styles.rangeCard}>Living</div>
