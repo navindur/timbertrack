@@ -1,20 +1,16 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Header from "./components/Header";
-import HomePage from "./components/HomePage";
-import SignUpForm from "./components/SignUpForm";
-import LoginForm from "./components/LoginForm";
+import React from 'react';
+import { Button } from '@mui/material';
 
 const App: React.FC = () => {
   return (
-    <Router>
-      <Header />
-      <Routes>
-        <Route path="/" element={<HomePage />} /> {/* Home Page */}
-        <Route path="/signup" element={<SignUpForm />} /> {/* Sign Up Page */}
-        <Route path="/login" element={<LoginForm />} /> {/* Login Page */}
-      </Routes>
-    </Router>
+    <div className="p-4">
+      <h1 className="text-3xl font-bold text-blue-600">
+        Welcome to TimberTrack!
+      </h1>
+      <Button variant="contained" color="primary" className="mt-4">
+        Material-UI Button
+      </Button>
+    </div>
   );
 };
 
