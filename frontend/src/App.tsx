@@ -1,16 +1,22 @@
 import React from 'react';
-import { Button } from '@mui/material';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import Home from './pages/Home'; 
+import Products from './pages/Products';
+import Cart from './pages/Cart'; // Create this later
+import Profile from './pages/Profile'; // Create this later
 
 const App: React.FC = () => {
   return (
-    <div className="p-4">
-      <h1 className="text-3xl font-bold text-blue-600">
-        Welcome to TimberTrack!
-      </h1>
-      <Button variant="contained" color="primary" className="mt-4">
-        Material-UI Button
-      </Button>
-    </div>
+    <Router>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/products" element={<Products />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/profile" element={<Profile />} />
+      </Routes>
+    </Router>
   );
 };
 
