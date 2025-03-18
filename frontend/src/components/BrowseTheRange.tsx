@@ -10,7 +10,7 @@ const BrowseTheRange: React.FC = () => {
 
       {/* Description */}
       <p className="text-lg text-gray-600 mb-12">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        Browse through our latest collections
       </p>
 
       {/* Buttons with Images */}

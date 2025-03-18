@@ -58,16 +58,16 @@ const Footer: React.FC = () => {
               Contact Us
             </Typography>
             <Typography variant="body1" gutterBottom>
-              123 Furniture Street
+              Jayarani Furniture
             </Typography>
             <Typography variant="body1" gutterBottom>
-              City, Country
+              Galle Road, Kaluthara North
             </Typography>
             <Typography variant="body1" gutterBottom>
-              Email: support@furniture.com
+              Email: support@timbertrack.com
             </Typography>
             <Typography variant="body1" gutterBottom>
-              Phone: +123 456 7890
+              Phone: 034 223 7741
             </Typography>
           </Grid>
 
@@ -103,7 +103,7 @@ const Footer: React.FC = () => {
           }}
         >
           <Typography variant="body2" color="textSecondary">
-            © {new Date().getFullYear()} Furniture E-Commerce. All rights reserved.
+            © {new Date().getFullYear()} TimberTrack. All rights reserved.
           </Typography>
         </Box>
       </Container>

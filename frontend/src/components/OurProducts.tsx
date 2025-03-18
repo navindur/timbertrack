@@ -68,6 +68,11 @@ const OurProducts: React.FC = () => {
       {/* Heading */}
       <h2 className="text-4xl font-bold mb-4">Our Products</h2>
 
+      {/* Description */}
+      <p className="text-lg text-gray-600 mb-12">
+        Check all our available products
+      </p>
+
       {/* Product Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 px-8">
         {products.map((product) => (
