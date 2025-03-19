@@ -6,6 +6,7 @@ import Products from './pages/Products';
 import Cart from './pages/Cart'; // Create this later
 import SignUp from './pages/SignUp'; // Import the SignUp component
 import SignIn from './pages/SignIn';
+import ProductDetails from './pages/ProductDetails';
 
 const App: React.FC = () => {
   return (
@@ -17,6 +18,7 @@ const App: React.FC = () => {
         <Route path="/cart" element={<Cart />} />
         <Route path="/signup" element={<SignUp />} /> {/* Add this route for the Sign Up page */}
         <Route path="/signin" element={<SignIn />} />
+        <Route path="/products/:id" element={<ProductDetails />} />
         {/* Remove or keep the /profile route based on your needs */}
         {/* <Route path="/profile" element={<Profile />} /> */}
       </Routes>
