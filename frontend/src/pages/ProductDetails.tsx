@@ -2,11 +2,9 @@ import React from 'react';
 import { Button } from '@mui/material';
 import { useParams } from 'react-router-dom';
 
-const ProductDetails: React.FC = () => {
-  const { id } = useParams<{ id: string }>(); // Get product ID from URL
-
-  // Fetch product details based on ID (you can replace this with actual data fetching)
-  const product = {
+// Sample product data (replace with actual data fetching logic)
+const products = [
+  {
     id: 1,
     name: 'Syltherine',
     description: 'Stylish coile chain',
@@ -17,7 +15,31 @@ const ProductDetails: React.FC = () => {
       material: 'Wood, Metal',
       color: 'Black',
     },
-  };
+  },
+  {
+    id: 2,
+    name: 'Lolito',
+    description: 'Luxury big solo',
+    price: 'Rs. 7,000,000',
+    image: '/lolito.jpg',
+    specifications: {
+      dimensions: '150cm x 80cm x 60cm',
+      material: 'Leather, Metal',
+      color: 'Brown',
+    },
+  },
+  // Add other products...
+];
+
+const ProductDetails: React.FC = () => {
+  const { id } = useParams<{ id: string }>(); // Get product ID from URL
+
+  // Find the product based on the ID
+  const product = products.find((p) => p.id === Number(id));
+
+  if (!product) {
+    return <div>Product not found</div>; // Handle case where product is not found
+  }
 
   return (
     <div className="p-8">

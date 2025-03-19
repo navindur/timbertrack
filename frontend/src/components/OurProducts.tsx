@@ -76,14 +76,16 @@ const OurProducts: React.FC = () => {
       {/* Product Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 px-8">
         {products.map((product) => (
-          <div
-            key={product.id}
-            className="w-full rounded-lg overflow-hidden transform transition-transform hover:scale-105"
-            style={{
-              backgroundColor: 'white',
-              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-            }}
-          >
+         <Link
+         key={product.id}
+         to={`/products/${product.id}`} // Navigate to the product details page
+         className="w-full rounded-lg overflow-hidden transform transition-transform hover:scale-105"
+         style={{
+           backgroundColor: 'white',
+           boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+           textDecoration: 'none', // Remove underline from link
+         }}
+       >
             {/* Product Image */}
             <div
               className="w-full h-64 bg-cover bg-center"
@@ -96,7 +98,7 @@ const OurProducts: React.FC = () => {
               <p className="text-gray-600 mb-2">{product.description}</p>
               <p className="text-lg font-semibold text-[#C24507]">{product.price}</p>
             </div>
-          </div>
+            </Link>
         ))}
       </div>
 
