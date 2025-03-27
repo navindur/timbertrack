@@ -37,13 +37,17 @@ router.get("/:id", async (req: Request, res: Response) => {
 
 // POST a new product
 router.post("/", async (req: Request, res: Response) => {
-  const { name, price } = req.body;
+  const { name, description, price, category, material } = req.body;
+
+  // Validate that all required fields are present
+  if (!name || !price || !category || !material) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
 
   try {
-    // Insert a new product into the database
     const [result]: [ResultSetHeader, any] = await promisePool.query(
-      "INSERT INTO products (name, price) VALUES (?, ?)",
-      [name, price]
+      "INSERT INTO products (name, description, price, category, material) VALUES (?, ?, ?, ?, ?)",
+      [name, description, price, category, material]
     );
     res.status(201).json({ message: "Product added", id: result.insertId });
   } catch (error) {
@@ -51,6 +55,7 @@ router.post("/", async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error adding product" });
   }
 });
+
 
 // DELETE a product by id
 router.delete("/:id", async (req: Request, res: Response) => {

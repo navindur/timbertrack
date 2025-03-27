@@ -4,6 +4,7 @@ import * as dotenv from "dotenv";
 import promisePool from "./db"; // Import the DB connection file
 import productRoutes from "./routes/productRoutes"; // Adjust the path as needed
 import authRoutes from "./routes/authRoutes";
+import orderRoutes from "./routes/orderRoutes";
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(cors());
 app.use(express.json());
+
 
 // Test database connection
 promisePool.query("SELECT 1")
@@ -25,9 +27,10 @@ app.get("/", (req, res) => {
 });
 
 // Register product routes
-app.use("/products", productRoutes);
+app.use("/api/products", productRoutes);
 
-app.use("/auth", authRoutes); // Add authentication routes
+app.use("/api/auth", authRoutes); // Add authentication routes
+app.use("/api/orders", orderRoutes);
 
 // Start the server
 app.listen(PORT, () => {

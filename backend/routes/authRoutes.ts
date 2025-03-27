@@ -7,8 +7,14 @@ import { RowDataPacket } from "mysql2";
 const router = express.Router();
 
 // User Registration (existing code)
+// User Registration (updated)
 router.post("/register", async (req: Request, res: Response): Promise<Response> => {
-  const { name, email, password, role } = req.body;
+  const { first_name, last_name, email, password, role} = req.body;
+
+  // Validate input
+  if (!first_name || !last_name || !email || !password) {
+    return res.status(400).json({ message: "First name, last name, email, and password are required" });
+  }
 
   try {
     // Check if user already exists
@@ -27,8 +33,8 @@ router.post("/register", async (req: Request, res: Response): Promise<Response> 
 
     // Insert new user into the database
     const [result]: [any, any] = await promisePool.query(
-      "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)",
-      [name, email, hashedPassword, role || "customer"]
+      "INSERT INTO users (first_name, last_name, email, password, role) VALUES (?, ?, ?, ?, ?)",
+      [first_name, last_name, email, hashedPassword, role || "Customer"]
     );
 
     return res.status(201).json({ message: "User registered successfully", id: result.insertId });
