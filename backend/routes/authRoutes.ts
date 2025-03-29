@@ -3,6 +3,9 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken"; // For generating JWT
 import promisePool from "../db"; // Import DB connection
 import { RowDataPacket } from "mysql2";
+import dotenv from 'dotenv';
+dotenv.config();
+
 
 const router = express.Router();
 

@@ -62,7 +62,7 @@ const Navbar: React.FC = () => {
     margin: '0 8px', // Add some spacing between buttons
   }}
 >
-  Products
+  About Us
 </Button>
 
         {/* Cart Icon */}
