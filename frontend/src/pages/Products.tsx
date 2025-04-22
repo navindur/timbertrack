@@ -1,12 +1,42 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
+import { getAllProducts, deleteProduct } from '../services/productService';
+import ProductCard from '../components/ProductCard';
+import { Typography } from '@mui/material';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
-const Products: React.FC = () => {
+export default function Products() {
+  const [products, setProducts] = useState<any[]>([]);
+
+  const fetchProducts = async () => {
+    const res = await getAllProducts();
+    setProducts(res.data);
+  };
+
+  const handleDelete = async (id: number) => {
+    await deleteProduct(id);
+    fetchProducts();
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
   return (
-    <div className="p-4">
-      <h1 className="text-3xl font-bold text-blue-600">Our Products</h1>
-      <p className="mt-2 text-gray-600">Explore our wide range of furniture.</p>
+    <div className="flex flex-col min-h-screen">
+      <Navbar />
+
+      <main className="flex-grow container mx-auto px-4 py-6">
+      
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {products.map((p) => (
+            <ProductCard key={p.id} product={p} onDelete={handleDelete} />
+          ))}
+        </div>
+      </main>
+
+      <Footer />
     </div>
   );
-};
-
-export default Products;
+}

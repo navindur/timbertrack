@@ -2,9 +2,10 @@ import express from "express";
 const cors = require("cors");
 import * as dotenv from "dotenv";
 import promisePool from "./db"; // Import the DB connection file
-import productRoutes from "./routes/productRoutes"; // Adjust the path as needed
+//import productRoutes from "./routes/productRoutes"; // Adjust the path as needed
 import authRoutes from "./routes/authRoutes";
 import orderRoutes from "./routes/orderRoutes";
+import productRoutes from './routes/product.routes';
 
 dotenv.config();
 
@@ -36,3 +37,7 @@ app.use("/api/orders", orderRoutes);
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+app.use('/products', productRoutes);
+
+export default app;
