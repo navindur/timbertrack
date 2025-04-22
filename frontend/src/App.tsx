@@ -8,7 +8,12 @@ import SignUp from './pages/SignUp'; // Import the SignUp component
 import SignIn from './pages/SignIn';
 import ProductDetails from './pages/ProductDetails';
 import Dashboard from './pages/Dashboard'; // Add this import
-import ProductsDashboard from './pages/Productsdashboard'; // Add this import
+import ProductsDash from './pages/ProductsDash'; // Add this import
+import InventoryDash from './pages/InventoryDash';
+import OrdersDash from './pages/OrdersDash';
+import SuppliersDash from './pages/SuppliersDash';
+import ReportsDash from './pages/ReportsDash';
+import UserManagementDash from './pages/UserManagementDash';
 
 const App: React.FC = () => {
   return (
@@ -22,7 +27,13 @@ const App: React.FC = () => {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/products/:id" element={<ProductDetails />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/productsdashboard" element={<ProductsDashboard />} />
+        <Route path="/productsdash" element={<ProductsDash />} />
+        <Route path="/inventorydash" element={<InventoryDash />} />
+        <Route path="/ordersdash" element={<OrdersDash />} />
+        <Route path="/suppliersdash" element={<SuppliersDash />} />
+        <Route path="/reportsdash" element={<ReportsDash />} />
+        <Route path="/usermanagementdash" element={<UserManagementDash />} />
+        
         {/* Remove or keep the /profile route based on your needs */}
         {/* <Route path="/profile" element={<Profile />} /> */}
       </Routes>
