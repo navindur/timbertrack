@@ -6,6 +6,7 @@ import promisePool from "./db"; // Import the DB connection file
 import authRoutes from "./routes/authRoutes";
 import orderRoutes from "./routes/orderRoutes";
 import productRoutes from './routes/product.routes';
+import supplierRoutes from './routes/supplierRoutes';
 
 dotenv.config();
 
@@ -39,5 +40,6 @@ app.listen(PORT, () => {
 });
 
 app.use('/products', productRoutes);
+app.use('/api/suppliers', supplierRoutes);
 
 export default app;
