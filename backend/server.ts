@@ -7,6 +7,8 @@ import authRoutes from "./routes/authRoutes";
 import orderRoutes from "./routes/orderRoutes";
 import productRoutes from './routes/product.routes';
 import supplierRoutes from './routes/supplierRoutes';
+import inventoryRoutes from './routes/inventoryRoutes';
+
 
 dotenv.config();
 
@@ -41,5 +43,6 @@ app.listen(PORT, () => {
 
 app.use('/products', productRoutes);
 app.use('/api/suppliers', supplierRoutes);
+app.use('/api', inventoryRoutes);
 
 export default app;

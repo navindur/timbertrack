@@ -296,7 +296,7 @@ const SupplierList: React.FC = () => {
         </Paper>
   
         {/* Add/Edit Dialog */}
-        <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth maxWidth="md">
+        <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth maxWidth="md" disableEnforceFocus disableAutoFocus>
           <DialogTitle>
             {currentSupplier?.id ? 'Edit Supplier' : 'Add New Supplier'}
           </DialogTitle>
