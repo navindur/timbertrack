@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Table,
@@ -145,17 +145,19 @@ const InventoryPage: React.FC = () => {
     setCurrentItem(null);
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!currentItem) return;
-    setCurrentItem({
-      ...currentItem,
+const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  setCurrentItem(prev => {
+    if (!prev) return prev;
+    return {
+      ...prev,
       [e.target.name]: e.target.name === 'price' || 
                        e.target.name === 'quantity' || 
                        e.target.name === 'reorder_level'
         ? Number(e.target.value)
         : e.target.value
-    });
-  };
+    };
+  });
+}, []); // Empty dependency array since we only use prev state
 
   const handleSelectChange = (e: any) => {
     if (!currentItem) return;
@@ -301,10 +303,15 @@ const InventoryPage: React.FC = () => {
     </Paper>
   );
 
+  
   const InventoryFormDialog = () => {
     const [isMounted, setIsMounted] = useState(false);
     const activeElementRef = useRef<HTMLElement | null>(null);
     const selectRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+      console.log('Dialog re-rendered');
+    });
   
     // Track active element before potential re-renders
     useEffect(() => {
@@ -414,7 +421,7 @@ const InventoryPage: React.FC = () => {
             variant="outlined"
             margin="normal"
           />
-          <FormControl fullWidth margin="normal">
+         <FormControl fullWidth margin="normal">
           <InputLabel>Supplier</InputLabel>
           <Select
             ref={selectRef}
