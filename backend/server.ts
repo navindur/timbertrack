@@ -5,7 +5,7 @@ import promisePool from "./db"; // Import the DB connection file
 //import productRoutes from "./routes/productRoutes"; // Adjust the path as needed
 import authRoutes from "./routes/authRoutes";
 import orderRoutes from "./routes/orderRoutes";
-import productRoutes from './routes/product.routes';
+import productRoutes from './routes/productRoutes';
 import supplierRoutes from './routes/supplierRoutes';
 import inventoryRoutes from './routes/inventoryRoutes';
 
@@ -30,18 +30,18 @@ app.get("/", (req, res) => {
   res.send("Hello, Express with TypeScript!");
 });
 
-// Register product routes
+
 app.use("/api/products", productRoutes);
 
 app.use("/api/auth", authRoutes); // Add authentication routes
-app.use("/api/orders", orderRoutes);
+
 
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
-app.use('/products', productRoutes);
+
 app.use('/api/suppliers', supplierRoutes);
 app.use('/api', inventoryRoutes);
 

@@ -15,7 +15,11 @@ export const getInventoryOptions = async (req: Request, res: Response) => {
     const inventory = await productService.fetchInventoryOptions();
     res.status(200).json(inventory);
   } catch (err: any) {
-    res.status(500).json({ message: 'Failed to fetch inventory list.' });
+    console.error('Controller error in getInventoryOptions:', err);
+    res.status(500).json({ 
+      message: 'Failed to fetch inventory list',
+      error: err.message 
+    });
   }
 };
 
@@ -44,15 +48,17 @@ export const updateProduct = async (req: Request, res: Response) => {
 // ✅ Get All Active Products (with search & pagination)
 export const getAllActiveProducts = async (req: Request, res: Response) => {
   try {
-    const { page = '1', limit = '10', search = '', category = '' } = req.query;
+    const { page = 1, limit = 10, search = '', category = '' } = req.query;
+    
     const result = await productService.getAllActiveProducts(
-      parseInt(page as string),
-      parseInt(limit as string),
+      Number(page),
+      Number(limit),
       search as string,
       category as string
     );
+    
     res.status(200).json(result);
-  } catch (err: any) {
-    res.status(500).json({ message: 'Failed to fetch products.' });
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to fetch products' });
   }
 };

@@ -64,20 +64,40 @@ export const updateProduct = async (
   return await ProductModel.updateProduct(id, updatedProduct);
 };
 
+// productService.ts
 export const getAllActiveProducts = async (
   page: number,
   limit: number,
   search?: string,
   category?: string
 ) => {
-  const offset = (page - 1) * limit;
-  const filters = {
-    page,
-    search,
-    category,
-    limit,
-    offset,
-  };
+  try {
+    // Input validation
+    if (page < 1 || limit < 1) {
+      throw new Error('Invalid pagination parameters');
+    }
 
-  return await ProductModel.getAllActiveProducts(filters);
+    const result = await ProductModel.getAllActiveProducts({
+      page,
+      limit,
+      search: search || '',
+      category: category || ''
+    });
+
+    // Get total count for pagination metadata
+    const [total] = await ProductModel.getTotalActiveProducts(search, category);
+
+    return {
+      data: result,
+      pagination: {
+        page,
+        limit,
+        total: total[0].count,
+        totalPages: Math.ceil(total[0].count / limit)
+      }
+    };
+  } catch (error) {
+    console.error('Service layer error:', error);
+    throw error;
+  }
 };

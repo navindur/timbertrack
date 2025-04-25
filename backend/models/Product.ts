@@ -30,10 +30,15 @@ export const createProduct = async (product: Product) => {
 
 // ✅ Get all active inventory items
 export const getActiveInventoryItems = async (): Promise<RowDataPacket[]> => {
-  const [rows] = await db.query<RowDataPacket[]>(
-    'SELECT * FROM inventory WHERE is_active = TRUE'
-  );
-  return rows;
+  try {
+    const [rows] = await db.query<RowDataPacket[]>(
+      'SELECT inventory_id, name, price, quantity, type FROM inventory WHERE is_active = TRUE'
+    );
+    return rows;
+  } catch (error) {
+    console.error('Database error in getActiveInventoryItems:', error);
+    throw error;
+  }
 };
 
 // ✅ Soft delete a product
@@ -82,42 +87,69 @@ export const getProductById = async (id: number): Promise<RowDataPacket | null> 
   
 
 // ✅ Get all active products with search and pagination
+// In models/Product.ts
 interface ProductFilters {
-    page: number;
-    limit: number;
-    search?: string;
-    category?: string;
+  page: number;
+  limit: number;
+  search?: string;
+  category?: string;
+}
+
+export const getAllActiveProducts = async (
+  filters: ProductFilters  // Now accepts a single object
+): Promise<RowDataPacket[]> => {
+  const { page, limit, search, category } = filters;
+  const offset = (page - 1) * limit;
+
+  let query = `SELECT p.*, i.price, i.quantity, i.type AS category 
+               FROM products p
+               JOIN inventory i ON p.inventory_id = i.inventory_id
+               WHERE p.is_active = 1`;
+
+  const values: any[] = [];
+
+  if (search) {
+    query += ' AND p.name LIKE ?';
+    values.push(`%${search}%`);
   }
-  
-  export const getAllActiveProducts = async ({
-    page,
-    limit,
-    search,
-    category,
-  }: ProductFilters): Promise<RowDataPacket[]> => {
-    const offset = (page - 1) * limit;
-  
-    let query = `SELECT p.*, i.price, i.quantity, i.type AS category 
-                 FROM products p
-                 JOIN inventory i ON p.inventory_id = i.inventory_id
-                 WHERE p.is_active = 1`;
-  
-    const values: any[] = [];
-  
-    if (search) {
-      query += ' AND p.name LIKE ?';
-      values.push(`%${search}%`);
-    }
-  
-    if (category) {
-      query += ' AND i.type LIKE ?';
-      values.push(`%${category}%`);
-    }
-  
-    query += ' ORDER BY p.created_at DESC LIMIT ? OFFSET ?';
-    values.push(limit, offset);
-  
+
+  if (category) {
+    query += ' AND i.type LIKE ?';
+    values.push(`%${category}%`);
+  }
+
+  query += ' ORDER BY p.created_at DESC LIMIT ? OFFSET ?';
+  values.push(limit, offset);
+
+  try {
     const [rows] = await db.query<RowDataPacket[]>(query, values);
     return rows;
-  };
+  } catch (error) {
+    console.error('Database error:', error);
+    throw error;
+  }
+};
+
+// models-product.ts
+export const getTotalActiveProducts = async (
+  search?: string,
+  category?: string
+) => {
+  let query = `SELECT COUNT(*) as count FROM products p
+               JOIN inventory i ON p.inventory_id = i.inventory_id
+               WHERE p.is_active = 1`;
   
+  const values = [];
+  
+  if (search) {
+    query += ' AND p.name LIKE ?';
+    values.push(`%${search}%`);
+  }
+  
+  if (category) {
+    query += ' AND i.type = ?';
+    values.push(category);
+  }
+  
+  return db.query<RowDataPacket[]>(query, values);
+};
