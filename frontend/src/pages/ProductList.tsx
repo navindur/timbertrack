@@ -156,40 +156,30 @@ const ProductList: React.FC = () => {
     if (!currentProduct) return;
 
     try {
-      let imageUrl = currentProduct.image_url;
-      
+      const formData = new FormData();
+      formData.append('description', currentProduct.description || '');
+      formData.append('inventory_id', String(currentProduct.inventory_id));
+  
       if (imageFile) {
-        imageUrl = await uploadImageToFirebase(imageFile);
+        formData.append('image', imageFile);
       }
-
-      const productData = {
-        ...currentProduct,
-        image_url: imageUrl
-      };
-
+  
       if (currentProduct.id) {
-        await updateProduct(currentProduct.id, productData);
+        await updateProduct(currentProduct.id, formData); // 👈 must accept FormData
         setSnackbar({
           open: true,
           message: 'Product updated successfully',
           severity: 'success'
         });
       } else {
-        await addProduct(productData);
+        await addProduct(formData); // 👈 must accept FormData
         setSnackbar({
           open: true,
           message: 'Product added successfully',
           severity: 'success'
         });
       }
-
-      // Refresh data
-      const productsData = await getAllProducts({ page, limit, search: searchTerm, category: categoryFilter });
-      setProducts(productsData);
-      setFilteredProducts(productsData);
-      
-      handleCloseDialog();
-    } catch (error) {
+    }catch (error) {
       console.error('Error saving product:', error);
       setSnackbar({
         open: true,
@@ -249,16 +239,38 @@ const ProductList: React.FC = () => {
       </Box>
   
       {/* Main Content */}
-      // In the Main Content Box (replace the ...)
+      
 <Box sx={{ 
   flexGrow: 1,
   p: 3,
   ml: 30,
   width: `calc(100% - 240px)`
 }}>
-  <Typography variant="h4" gutterBottom>
+
+<Box sx={{ 
+  display: 'flex', 
+  justifyContent: 'space-between', // Aligns the items to the left and space between
+  alignItems: 'center', // Vertically aligns the items
+  mb: 3, // Adds space below
+  width: '100%' // Ensures the full width is used
+}}>
+  <Typography variant="h4">
     Product Management
   </Typography>
+
+  {/* Add Product Button */}
+  <Button 
+    variant="contained" 
+    startIcon={<Add />}
+    onClick={handleOpenAddDialog}
+    sx={{ marginLeft: 'auto' }} // Ensures the button is pushed to the right side
+  >
+    Add Product
+  </Button>
+</Box>
+
+
+  
   
   {/* Search and Filter Controls */}
   <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
@@ -293,13 +305,7 @@ const ProductList: React.FC = () => {
       </Select>
     </FormControl>
     
-    <Button 
-      variant="contained" 
-      startIcon={<Add />}
-      onClick={handleOpenAddDialog}
-    >
-      Add Product
-    </Button>
+    
   </Box>
 
   {/* Product Table */}

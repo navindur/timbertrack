@@ -8,20 +8,33 @@ const storage = getStorage();
 
 export const uploadImageToFirebase = async (file: File): Promise<string> => {
   try {
-    // Generate a unique filename
+    // Validate file
+    if (!file) throw new Error('No file provided');
+    if (!file.type.startsWith('image/')) {
+      throw new Error('Only image files are allowed');
+    }
+    if (file.size > 5 * 1024 * 1024) { // 5MB limit
+      throw new Error('File size must be less than 5MB');
+    }
+
+    // Create storage reference
+    const storage = getStorage();
     const fileExtension = file.name.split('.').pop();
     const fileName = `products/${uuidv4()}.${fileExtension}`;
     const storageRef = ref(storage, fileName);
 
-    // Upload the file
-    await uploadBytes(storageRef, file);
+    // Upload with metadata
+    const metadata = {
+      contentType: file.type,
+    };
 
-    // Get the download URL
-    const downloadURL = await getDownloadURL(storageRef);
+    const snapshot = await uploadBytes(storageRef, file, metadata);
+    const downloadURL = await getDownloadURL(snapshot.ref);
+    
     return downloadURL;
   } catch (error) {
-    console.error('Error uploading image:', error);
-    throw new Error('Failed to upload image');
+    console.error('Firebase upload error:', error);
+    throw new Error(`Image upload failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 };
 

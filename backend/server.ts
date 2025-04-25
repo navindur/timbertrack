@@ -5,10 +5,10 @@ import promisePool from "./db"; // Import the DB connection file
 //import productRoutes from "./routes/productRoutes"; // Adjust the path as needed
 import authRoutes from "./routes/authRoutes";
 import orderRoutes from "./routes/orderRoutes";
-import productRoutes from './routes/productRoutes';
+
 import supplierRoutes from './routes/supplierRoutes';
 import inventoryRoutes from './routes/inventoryRoutes';
-
+import productsRoutes from './routes/productRoutes';
 
 dotenv.config();
 
@@ -31,7 +31,7 @@ app.get("/", (req, res) => {
 });
 
 
-app.use("/api/products", productRoutes);
+app.use('/api/products', productsRoutes);
 
 app.use("/api/auth", authRoutes); // Add authentication routes
 

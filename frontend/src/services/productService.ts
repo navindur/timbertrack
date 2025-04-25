@@ -1,5 +1,6 @@
 // src/services/productService.ts
 import { Product, InventoryOption, ProductFilters } from '../types/Product';
+import axios from 'axios';
 
 const API_URL = 'http://localhost:5000/api/products';
 
@@ -52,35 +53,21 @@ export const getInventoryOptions = async (): Promise<InventoryOption[]> => {
 };
 
 // Add new product (matches addProduct import)
-export const addProduct = async (product: Omit<Product, 'id'>): Promise<Product> => {
-  const response = await fetch(API_URL, {
-    method: 'POST',
+export const addProduct = async (formData: FormData) => {
+  return await axios.post('/api/products', formData, {
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'multipart/form-data',
     },
-    body: JSON.stringify(product),
   });
-  if (!response.ok) {
-    throw new Error('Failed to create product');
-  }
-  return await response.json();
 };
 
-// Update product
-export const updateProduct = async (id: number, updates: Partial<Product>): Promise<Product> => {
-  const response = await fetch(`${API_URL}/${id}`, {
-    method: 'PUT',
+export const updateProduct = async (id: number, formData: FormData) => {
+  return await axios.put(`/api/products/${id}`, formData, {
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'multipart/form-data',
     },
-    body: JSON.stringify(updates),
   });
-  if (!response.ok) {
-    throw new Error('Failed to update product');
-  }
-  return await response.json();
 };
-
 // Delete product (matches deleteProduct import)
 export const deleteProduct = async (id: number): Promise<void> => {
   const response = await fetch(`${API_URL}/${id}`, {
@@ -90,3 +77,5 @@ export const deleteProduct = async (id: number): Promise<void> => {
     throw new Error('Failed to delete product');
   }
 };
+
+
