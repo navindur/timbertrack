@@ -101,3 +101,26 @@ export const getAllActiveProducts = async (
     throw error;
   }
 };
+
+// Add to your existing productService.ts
+export const getCustomerProducts = async (
+  page: number,
+  limit: number,
+  search?: string,
+  category?: string
+) => {
+  return await ProductModel.getCustomerProducts({
+    page,
+    limit,
+    search,
+    category
+  });
+};
+
+export const getCustomerProductById = async (id: number) => {
+  const product = await ProductModel.getCustomerProductById(id);
+  if (!product) {
+    throw new Error('Product not found');
+  }
+  return product;
+};

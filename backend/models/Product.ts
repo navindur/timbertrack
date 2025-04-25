@@ -153,3 +153,57 @@ export const getTotalActiveProducts = async (
   
   return db.query<RowDataPacket[]>(query, values);
 };
+
+
+// Add to your existing models-product.ts
+export const getCustomerProducts = async (
+  filters: ProductFilters
+): Promise<RowDataPacket[]> => {
+  const { page, limit, search, category } = filters;
+  const offset = (page - 1) * limit;
+
+  let query = `SELECT 
+    p.id,
+    p.name,
+    p.description,
+    p.image_url,
+    i.price,
+    i.quantity,
+    i.type AS category
+  FROM products p
+  JOIN inventory i ON p.inventory_id = i.inventory_id
+  WHERE p.is_active = TRUE AND i.is_active = TRUE`;
+
+  const values: any[] = [];
+
+  if (search) {
+    query += ' AND (p.name LIKE ? OR p.description LIKE ?)';
+    values.push(`%${search}%`, `%${search}%`);
+  }
+
+  if (category) {
+    query += ' AND i.type = ?';
+    values.push(category);
+  }
+
+  query += ' ORDER BY p.created_at DESC LIMIT ? OFFSET ?';
+  values.push(limit, offset);
+
+  const [rows] = await db.query<RowDataPacket[]>(query, values);
+  return rows;
+};
+
+export const getCustomerProductById = async (id: number): Promise<RowDataPacket | null> => {
+  const [rows] = await db.query<RowDataPacket[]>(
+    `SELECT 
+      p.*, 
+      i.price,
+      i.quantity,
+      i.type AS category
+    FROM products p
+    JOIN inventory i ON p.inventory_id = i.inventory_id
+    WHERE p.id = ? AND p.is_active = TRUE AND i.is_active = TRUE`,
+    [id]
+  );
+  return rows[0] || null;
+};

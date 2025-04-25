@@ -62,3 +62,36 @@ export const getAllActiveProducts = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Failed to fetch products' });
   }
 };
+
+// Add these to your existing productController.ts
+export const getActiveProducts = async (req: Request, res: Response) => {
+  try {
+    const { page = 1, limit = 10, search = '', category = '' } = req.query;
+    
+    const result = await productService.getCustomerProducts(
+      Number(page),
+      Number(limit),
+      search as string,
+      category as string
+    );
+    
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to fetch products' });
+  }
+};
+
+export const getProductById = async (req: Request, res: Response) => {
+  try {
+    const productId = parseInt(req.params.id);
+    const product = await productService.getCustomerProductById(productId);
+    
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+    
+    res.status(200).json(product);
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to fetch product' });
+  }
+};

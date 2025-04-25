@@ -17,6 +17,10 @@ import UserManagementDash from './pages/UserManagementDash';
 import SupplierList from './pages/SupplierList';
 import InventoryList from './pages/InventoryList';
 import ProductList from './pages/ProductList';
+import CustomerProductList from './pages/CustomerProductList';
+
+
+
 const App: React.FC = () => {
   return (
     <Router>
@@ -38,6 +42,7 @@ const App: React.FC = () => {
         <Route path="/supplierlist" element={<SupplierList />} />
         <Route path="/inventorylist" element={<InventoryList />} />
         <Route path="/productlist" element={<ProductList />} />
+        <Route path="/products" element={<CustomerProductList />} />
         
         {/* Remove or keep the /profile route based on your needs */}
         {/* <Route path="/profile" element={<Profile />} /> */}

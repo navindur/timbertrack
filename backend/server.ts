@@ -9,6 +9,8 @@ import orderRoutes from "./routes/orderRoutes";
 import supplierRoutes from './routes/supplierRoutes';
 import inventoryRoutes from './routes/inventoryRoutes';
 import productsRoutes from './routes/productRoutes';
+import customerProductRoutes from './routes/customerProductRoutes';
+
 
 dotenv.config();
 
@@ -32,6 +34,7 @@ app.get("/", (req, res) => {
 
 
 app.use('/api/products', productsRoutes);
+app.use('/api/customer/products', customerProductRoutes);
 
 app.use("/api/auth", authRoutes); // Add authentication routes
 
