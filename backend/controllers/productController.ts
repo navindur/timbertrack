@@ -1,22 +1,58 @@
-// src/controllers/productController.ts
 import { Request, Response } from 'express';
-import pool from '../db';
-import { ProductRow } from '../types/database';
+import * as productService from '../services/productService';
 
-export const getRecentProducts = async (req: Request, res: Response) => {
+export const addProduct = async (req: Request, res: Response) => {
   try {
-    // Type assertion for the query result
-    const [rows] = await pool.query<ProductRow[]>(`
-      SELECT id, name, description, price, category, material 
-      FROM products 
-      ORDER BY id DESC 
-      LIMIT 8
-    `);
-    
-    // The rows will now be properly typed as ProductRow[]
-    res.json(rows);
-  } catch (error) {
-    console.error('Error fetching recent products:', error);
-    res.status(500).json({ message: 'Server error' });
+    const result = await productService.addProduct(req.body, req.file);
+    res.status(201).json({ message: 'Product added successfully.', result });
+  } catch (err: any) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+export const getInventoryOptions = async (req: Request, res: Response) => {
+  try {
+    const inventory = await productService.fetchInventoryOptions();
+    res.status(200).json(inventory);
+  } catch (err: any) {
+    res.status(500).json({ message: 'Failed to fetch inventory list.' });
+  }
+};
+
+// ✅ Soft Delete Product
+export const softDeleteProduct = async (req: Request, res: Response) => {
+  try {
+    const productId = parseInt(req.params.id);
+    await productService.softDeleteProduct(productId);
+    res.status(200).json({ message: 'Product soft-deleted successfully.' });
+  } catch (err: any) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+// ✅ Edit Product (description & image)
+export const updateProduct = async (req: Request, res: Response) => {
+  try {
+    const productId = parseInt(req.params.id);
+    const result = await productService.updateProduct(productId, req.body, req.file);
+    res.status(200).json({ message: 'Product updated successfully.', result });
+  } catch (err: any) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+// ✅ Get All Active Products (with search & pagination)
+export const getAllActiveProducts = async (req: Request, res: Response) => {
+  try {
+    const { page = '1', limit = '10', search = '', category = '' } = req.query;
+    const result = await productService.getAllActiveProducts(
+      parseInt(page as string),
+      parseInt(limit as string),
+      search as string,
+      category as string
+    );
+    res.status(200).json(result);
+  } catch (err: any) {
+    res.status(500).json({ message: 'Failed to fetch products.' });
   }
 };
