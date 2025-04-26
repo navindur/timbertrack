@@ -30,6 +30,8 @@ import { getCustomerProducts, getCustomerProductById } from '../services/custome
 import { Product } from '../types/product';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
+import { useNavigate } from 'react-router-dom'; //new
+
 
 const CustomerProductList: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -38,6 +40,8 @@ const CustomerProductList: React.FC = () => {
   const [categoryFilter, setCategoryFilter] = useState('');
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState<string[]>([]);
+  const navigate = useNavigate(); //new
+
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -153,18 +157,25 @@ const CustomerProductList: React.FC = () => {
           </Box>
         ) : (
           <Grid container spacing={3}>
-            {filteredProducts.map((product) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
-                <Card sx={{ 
-                  height: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  transition: 'transform 0.2s',
-                  '&:hover': {
-                    transform: 'scale(1.02)',
-                    boxShadow: 3
-                  }
-                }}>
+  {filteredProducts.map((product) => (
+    <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
+      <Box 
+        onClick={() => navigate(`/productsview/${product.id}`)} 
+        sx={{ 
+          cursor: 'pointer',
+          height: '100%' // Ensure the Box takes full height
+        }}
+      >
+        <Card sx={{ 
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          transition: 'transform 0.2s',
+          '&:hover': {
+            transform: 'scale(1.02)',
+            boxShadow: 3
+          }
+        }}>
                   <CardMedia
                     component="img"
                     height="200"
@@ -176,9 +187,7 @@ const CustomerProductList: React.FC = () => {
                     <Typography gutterBottom variant="h6" component="div">
                       {product.name}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                      {product.description || 'No description available'}
-                    </Typography>
+                   
                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                       <Chip 
                         label={product.category || 'Uncategorized'} 
@@ -210,6 +219,7 @@ const CustomerProductList: React.FC = () => {
                     </Button>
                   </CardActions>
                 </Card>
+                </Box>
               </Grid>
             ))}
           </Grid>

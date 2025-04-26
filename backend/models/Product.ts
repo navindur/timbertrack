@@ -10,6 +10,9 @@ export interface Product {
   is_active?: boolean;
   created_at?: Date;
   updated_at?: Date;
+  price?: number;//new p view
+  quantity?: number;//new
+  category?: string;//new
 }
 
 // ✅ Create new product
@@ -282,4 +285,26 @@ export const getAvailableCategories = async (): Promise<RowDataPacket[]> => {
   
   const [rows] = await db.query<RowDataPacket[]>(query);
   return rows;
+};
+
+//new 2 4/26 2 pm
+// Get single product details with inventory info
+export const getProductDetails = async (id: number): Promise<RowDataPacket | null> => {
+  try {
+    const [rows] = await db.query<RowDataPacket[]>(
+      `SELECT 
+        p.*,
+        i.price,
+        i.quantity,
+        i.type AS category
+      FROM products p
+      JOIN inventory i ON p.inventory_id = i.inventory_id
+      WHERE p.id = ? AND p.is_active = 1 AND i.is_active = 1`,
+      [id]
+    );
+    return rows.length > 0 ? rows[0] : null;
+  } catch (error) {
+    console.error('Error fetching product details:', error);
+    throw error;
+  }
 };

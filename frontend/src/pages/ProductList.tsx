@@ -36,7 +36,8 @@ import {
     getInventoryOptions,
     updateProduct
 } from '../services/productService';
-import { Product, InventoryOption } from '../types/Product';
+import { Product, InventoryOption } from '../types/product';
+
 
 const ProductList: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);

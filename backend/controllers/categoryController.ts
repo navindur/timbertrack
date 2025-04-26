@@ -38,3 +38,4 @@ export const getCategories = async (req: Request, res: Response) => {
 export const getDiningProducts = (req: Request, res: Response) => handleCategory(req, res);
 export const getLivingProducts = (req: Request, res: Response) => handleCategory(req, res);
 export const getBedroomProducts = (req: Request, res: Response) => handleCategory(req, res);
+export const getOfficeProducts = (req: Request, res: Response) => handleCategory(req, res);
