@@ -1,5 +1,5 @@
 // src/services/productService.ts (customer functions)
-import { Product, ProductFilters } from '../types/Product';
+import { Product, ProductFilters } from '../types/product';
 
 const API_URL = 'http://localhost:5000/api/customer/products';
 
@@ -20,6 +20,7 @@ export const getCustomerProducts = async (
   }
   return await response.json();
 };
+
 
 export const getCustomerProductById = async (id: number): Promise<Product> => {
   const response = await fetch(`${API_URL}/${id}`);

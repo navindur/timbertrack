@@ -1,5 +1,5 @@
 // src/services/productService.ts
-import { Product, InventoryOption, ProductFilters } from '../types/Product';
+import { Product, InventoryOption, ProductFilters } from '../types/product';
 import axios from 'axios';
 
 const API_URL = 'http://localhost:5000/api/products';

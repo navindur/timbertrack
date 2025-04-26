@@ -1,7 +1,11 @@
 import React from 'react';
 import { Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+
+
 
 const HeroSection: React.FC = () => {
+  const navigate = useNavigate();
   return (
     <div
       className="bg-cover bg-center h-[500px] flex items-center justify-center text-black"
@@ -21,19 +25,20 @@ const HeroSection: React.FC = () => {
 
         {/* Call-to-Action Button */}
         <Button
-          variant="contained"
-          sx={{
-            backgroundColor: '#B88E2F', // Use Timber orange
-            color: '#FFFFFF',
-            fontSize: '1rem',
-            padding: '12px 24px',
-            '&:hover': {
-              backgroundColor: '#A63A06', // Darker shade on hover
-            },
-          }}
-        >
-          BUY NOW
-        </Button>
+  variant="contained"
+  sx={{
+    backgroundColor: '#B88E2F',
+    color: '#FFFFFF',
+    fontSize: '1rem',
+    padding: '12px 24px',
+    '&:hover': {
+      backgroundColor: '#A63A06',
+    },
+  }}
+  onClick={() => navigate('/products')} // 👈 Redirects to /products
+>
+  BUY NOW
+</Button>
       </div>
     </div>
   );

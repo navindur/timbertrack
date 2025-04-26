@@ -1,7 +1,7 @@
 import React from 'react';
 import { AppBar, Toolbar, Typography, Button, IconButton, InputBase } from '@mui/material';
 import { Link } from 'react-router-dom';
-import SearchIcon from '@mui/icons-material/Search';
+//import SearchIcon from '@mui/icons-material/Search';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
@@ -25,14 +25,14 @@ const Navbar: React.FC = () => {
 
         {/* Search Bar */}
         {/* No changes needed here */}
-        <div className="flex items-center bg-gray-100 rounded-lg px-2 py-1 mx-4">
+         {/*<div className="flex items-center bg-gray-100 rounded-lg px-2 py-1 mx-4">
           <SearchIcon className="text-gray-500" />
           <InputBase
             placeholder="Search Products"
             className="ml-2"
             inputProps={{ 'aria-label': 'search' }}
           />
-        </div>
+        </div>*/}
 
         {/* Navigation Links */}
         {/* Change text color to `text-white` for better contrast */}

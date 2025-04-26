@@ -28,6 +28,8 @@ import {
 import { Search, ShoppingCart } from '@mui/icons-material';
 import { getCustomerProducts, getCustomerProductById } from '../services/customerproductService';
 import { Product } from '../types/Product';
+import Footer from '../components/Footer';
+import Navbar from '../components/Navbar';
 
 const CustomerProductList: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -80,32 +82,37 @@ const CustomerProductList: React.FC = () => {
   };
 
   return (
+    
     <Box sx={{ 
       display: 'flex',
+      flexDirection: 'column',
       minHeight: '100vh',
       width: '100vw',
-      bgcolor: '#f5f5f5',
-      p: 3
+      bgcolor: '#f5f5f5'
+      
     }}>
+    
+    <Navbar />
+
       {/* Main Content */}
       <Box sx={{ 
         flexGrow: 1,
+        p: 3,
         maxWidth: '1200px',
-        margin: '0 auto'
+        margin: '0 auto',
+        width: '100%'
       }}>
         {/* Header */}
         <Box sx={{ 
           display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center',
-          mb: 4
+          flexDirection: 'column',  // Changed from row to column
+  alignItems: 'center',    // Center align items
+  mb: 4,
+  gap: 2 
         }}>
-          <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
-            Our Products
-          </Typography>
-          
+       
           {/* Search and Filter */}
-          <Box sx={{ display: 'flex', gap: 2 }}>
+          <Box sx={{ display: 'flex', gap: 2,  width: '100%',  justifyContent: 'flex-start' }}>
             <TextField
               placeholder="Search products..."
               variant="outlined"
@@ -179,9 +186,11 @@ const CustomerProductList: React.FC = () => {
                         size="small" 
                       />
                       <Typography variant="h6">
-                        ${typeof product.price === 'number' 
-                          ? product.price.toFixed(2) 
-                          : '0.00'}
+                      Rs.{
+    product.price !== undefined && !isNaN(Number(product.price))
+      ? Number(product.price).toFixed(2)
+      : '0.00'
+  }
                       </Typography>
                     </Box>
                   </CardContent>
@@ -231,6 +240,9 @@ const CustomerProductList: React.FC = () => {
           </Box>
         )}
       </Box>
+
+      <Footer />
+
     </Box>
   );
 };
