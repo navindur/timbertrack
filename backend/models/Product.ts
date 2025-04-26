@@ -207,3 +207,79 @@ export const getCustomerProductById = async (id: number): Promise<RowDataPacket 
   );
   return rows[0] || null;
 };
+
+
+//new change below
+// Add these to your existing Product model
+
+// Get products by category (which is actually inventory.type)
+export const getProductsByCategory = async (
+  category: string,
+  page: number = 1,
+  limit: number = 10
+): Promise<RowDataPacket[]> => {
+  const offset = (page - 1) * limit;
+  
+  // Debug: Log the received category
+  console.log(`[DEBUG] Searching for category: "${category}"`);
+
+  const query = `
+    SELECT 
+      p.id,
+      p.name,
+      p.description,
+      p.image_url,
+      i.price,
+      i.quantity,
+      i.type AS category
+    FROM products p
+    JOIN inventory i ON p.inventory_id = i.inventory_id
+    WHERE p.is_active = 1 
+      AND i.is_active = 1 
+      AND i.type LIKE ?
+    LIMIT ? OFFSET ?
+  `;
+  
+  // Add wildcards for partial matching
+  const categoryParam = `%${category}%`;
+  
+  console.log(`[DEBUG] Executing query: ${query}`);
+  console.log(`[DEBUG] Params:`, [categoryParam, limit, offset]);
+
+  const [rows] = await db.query<RowDataPacket[]>(query, [
+    categoryParam,
+    limit, 
+    offset
+  ]);
+  
+  console.log(`[DEBUG] Found ${rows.length} products`);
+  return rows;
+};
+
+// Get total count for a category
+export const getCategoryProductCount = async (category: string): Promise<number> => {
+  const query = `
+    SELECT COUNT(*) as count 
+    FROM products p
+    JOIN inventory i ON p.inventory_id = i.inventory_id
+    WHERE p.is_active = 1 
+      AND i.is_active = 1 
+      AND i.type LIKE ?
+  `;
+  
+  const [rows] = await db.query<RowDataPacket[]>(query, [`%${category}%`]);
+  return rows[0].count;
+};
+
+// Get available categories
+export const getAvailableCategories = async (): Promise<RowDataPacket[]> => {
+  const query = `
+    SELECT DISTINCT i.type AS category 
+    FROM inventory i
+    JOIN products p ON i.inventory_id = p.inventory_id
+    WHERE i.is_active = TRUE AND p.is_active = TRUE
+  `;
+  
+  const [rows] = await db.query<RowDataPacket[]>(query);
+  return rows;
+};

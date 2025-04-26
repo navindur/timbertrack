@@ -19,7 +19,7 @@ const BrowseTheRange: React.FC = () => {
         <div className="flex flex-col items-center">
           <Button
             component={Link}
-            to="/dining" // Add the link for Dining
+            to="categories/dining" // Add the link for Dining
             className="w-64 h-80 bg-cover bg-center rounded-lg mb-4 p-0" // Remove padding
             style={{ backgroundImage: "url('/Mask Group.png')" }} // Add your Dining image
             sx={{
@@ -50,7 +50,7 @@ const BrowseTheRange: React.FC = () => {
         <div className="flex flex-col items-center">
           <Button
             component={Link}
-            to="/living" // Add the link for Living
+            to="categories/living" // Add the link for Living
             className="w-64 h-80 bg-cover bg-center rounded-lg mb-4 p-0" // Remove padding
             style={{ backgroundImage: "url('/Image-living room.png')" }} // Add your Living image
             sx={{
@@ -81,7 +81,7 @@ const BrowseTheRange: React.FC = () => {
         <div className="flex flex-col items-center">
           <Button
             component={Link}
-            to="/bedroom" // Add the link for Bedroom
+            to="categories/bedroom" // Add the link for Bedroom
             className="w-64 h-80 bg-cover bg-center rounded-lg mb-4 p-0" // Remove padding
             style={{ backgroundImage: "url('/image 101.png')" }} // Add your Bedroom image
             sx={{
@@ -112,7 +112,7 @@ const BrowseTheRange: React.FC = () => {
         <div className="flex flex-col items-center">
           <Button
             component={Link}
-            to="/office" // Add the link for Office
+            to="categories/office" // Add the link for Office
             className="w-64 h-80 bg-cover bg-center rounded-lg mb-4 p-0" // Remove padding
             style={{ backgroundImage: "url('/Images.png')" }} // Add your Office image
             sx={{

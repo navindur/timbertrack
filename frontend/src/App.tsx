@@ -18,6 +18,7 @@ import SupplierList from './pages/SupplierList';
 import InventoryList from './pages/InventoryList';
 import ProductList from './pages/ProductList';
 import CustomerProductList from './pages/CustomerProductList';
+import CategoryPage from './pages/CategoryPage';//new
 
 
 
@@ -43,6 +44,7 @@ const App: React.FC = () => {
         <Route path="/inventorylist" element={<InventoryList />} />
         <Route path="/productlist" element={<ProductList />} />
         <Route path="/products" element={<CustomerProductList />} />
+        <Route path="/categories/:category" element={<CategoryPage />} /> //new
         
         {/* Remove or keep the /profile route based on your needs */}
         {/* <Route path="/profile" element={<Profile />} /> */}

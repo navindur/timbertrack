@@ -28,3 +28,14 @@ export interface Product {
     search?: string;
     category?: string;
   }
+
+  export interface CategoryResponse {
+    products: Product[];
+    total: number;
+    page: number;
+    totalPages: number;
+  }
+  
+  export interface Category {
+    category: string;
+  }

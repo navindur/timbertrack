@@ -27,7 +27,7 @@ import {
 } from '@mui/material';
 import { Search, ShoppingCart } from '@mui/icons-material';
 import { getCustomerProducts, getCustomerProductById } from '../services/customerproductService';
-import { Product } from '../types/Product';
+import { Product } from '../types/product';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 
