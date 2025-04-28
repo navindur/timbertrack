@@ -19,24 +19,23 @@ import InventoryList from './pages/InventoryList';
 import ProductList from './pages/ProductList';
 import CustomerProductList from './pages/CustomerProductList';
 import CategoryPage from './pages/CategoryPage';
-import ProductDetailPage from './pages/ProductDetailPage';//new
-
-
+import ProductDetailPage from './pages/ProductDetailPage';
+import { ProtectedRoute } from './components/auth/ProtectedRoute'; //neww
+import {Unauthorized} from './pages/Unauthorized';//new
+import CustomerProfile from './pages/CustomerProfile';
 
 const App: React.FC = () => {
   return (
     <Router>
       
       <Routes>
-        <Route path="/" element={<Home />} />
-        
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/signup" element={<SignUp />} /> {/* Add this route for the Sign Up page */}
-        <Route path="/signin" element={<SignIn />} />
-        <Route path="/products/:id" element={<ProductDetails />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        
-        <Route path="/inventorydash" element={<InventoryDash />} />
+      <Route path="/unauthorized" element={<Unauthorized />} />
+      <Route path="/signup" element={<SignUp />} /> 
+      <Route path="/signin" element={<SignIn />} />
+
+      <Route element={<ProtectedRoute allowedRoles={['shopowner']} />}>
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/inventorydash" element={<InventoryDash />} />
         <Route path="/ordersdash" element={<OrdersDash />} />
         <Route path="/suppliersdash" element={<SuppliersDash />} />
         <Route path="/reportsdash" element={<ReportsDash />} />
@@ -44,6 +43,23 @@ const App: React.FC = () => {
         <Route path="/supplierlist" element={<SupplierList />} />
         <Route path="/inventorylist" element={<InventoryList />} />
         <Route path="/productlist" element={<ProductList />} />
+      </Route>
+
+
+      <Route element={<ProtectedRoute allowedRoles={['customer']} />}>
+       
+      </Route>
+
+        <Route path="/" element={<Home />} />
+        
+        <Route path="/cart" element={<Cart />} />
+        
+        <Route path="/products/:id" element={<ProductDetails />} />
+        
+
+        <Route path="/customerprofile" element={<CustomerProfile />} />
+        
+        
         <Route path="/products" element={<CustomerProductList />} />
         <Route path="/categories/:category" element={<CategoryPage />} /> 
         <Route path="/productsview/:id" element={<ProductDetailPage />} />//new

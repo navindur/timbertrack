@@ -9,31 +9,46 @@ import {
   Button,
   Grid,
   Link,
+  Alert,
+  CircularProgress
 } from "@mui/material";
 import { Google as GoogleIcon } from "@mui/icons-material";
 import Footer from "../components/Footer";
 import Navbar from '../components/Navbar';
 
 const SignIn: React.FC = () => {
-  const navigate = useNavigate(); // To redirect after login
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null); // Handle errors
-
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null); // Reset error state
-
+    setError(null);
+    setLoading(true);
+  
     try {
       const response = await axiosInstance.post("/auth/login", { email, password });
-      localStorage.setItem("authToken", response.data.token); // Store token
-      navigate("/dashboard"); // Redirect after login
+      
+      // Store authentication data
+      localStorage.setItem("authToken", response.data.token);
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+      
+      // Redirect based on role
+      const userRole = response.data.user.role;
+      if (userRole === 'shopowner') {
+        navigate('/dashboard');  // Shop owners go to dashboard
+      } else {
+        navigate('/');          // Customers go to home page
+      }
+      
     } catch (err: any) {
       setError(err.response?.data?.message || "Login failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
-
   return (
     <div>
       <Navbar />
@@ -73,9 +88,9 @@ const SignIn: React.FC = () => {
               </Typography>
 
               {error && (
-                <Typography color="error" sx={{ marginBottom: "1rem" }}>
+                <Alert severity="error" sx={{ marginBottom: "1rem", width: '100%' }}>
                   {error}
-                </Typography>
+                </Alert>
               )}
 
               <Box component="form" onSubmit={handleLogin} sx={{ width: "100%" }}>
@@ -110,13 +125,14 @@ const SignIn: React.FC = () => {
                   fullWidth
                   type="submit"
                   variant="contained"
+                  disabled={loading}
                   sx={{
                     marginTop: "1rem",
                     backgroundColor: "#B88E2F",
                     "&:hover": { backgroundColor: "#A03A06" },
                   }}
                 >
-                  Log In
+                  {loading ? <CircularProgress size={24} color="inherit" /> : 'Log In'}
                 </Button>
               </Box>
 

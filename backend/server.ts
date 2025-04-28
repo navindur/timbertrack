@@ -12,6 +12,7 @@ import productsRoutes from './routes/productRoutes';
 import customerProductRoutes from './routes/customerProductRoutes';
 import categoryRoutes from './routes/categoryRoutes';
 import productviewRoutes from './routes/productviewRoutes';//new 
+import customerprofileRoutes from './routes/customerprofileRoutes';//new 
 
 
 dotenv.config();
@@ -42,7 +43,7 @@ app.use('/api/categories', categoryRoutes);
 
 app.use('/api/productview', productviewRoutes);
 
-app.use("/api/auth", authRoutes); // Add authentication routes
+app.use("/api", authRoutes); // Add authentication routes
 
 
 // Start the server
@@ -53,5 +54,9 @@ app.listen(PORT, () => {
 
 app.use('/api/suppliers', supplierRoutes);
 app.use('/api', inventoryRoutes);
+
+
+app.use('/api/customers', customerprofileRoutes); //new
+
 
 export default app;

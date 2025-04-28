@@ -4,28 +4,29 @@ import { Google as GoogleIcon } from '@mui/icons-material';
 import Footer from '../components/Footer'; 
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import axiosInstance from '../api/axiosInstance';
 
 const SignUp: React.FC = () => {
   const navigate = useNavigate();
-
-  // State for form inputs (removed phone field)
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
     email: '',
     password: '',
+    phone_num: '',
+    address_line1: '',
+    address_line2: '',
+    city: '',
+    postal_code: ''
   });
-
-  // State for error messages
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  // Handle input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Form validation function (removed phone validation)
   const validateForm = () => {
     if (!formData.first_name || !formData.last_name || !formData.email || !formData.password) {
       return 'All fields are required.';
@@ -39,43 +40,38 @@ const SignUp: React.FC = () => {
     return null;
   };
 
-  // Handle form submission
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setError(null);
     setSuccess(false);
+    setLoading(true);
 
     const validationError = validateForm();
     if (validationError) {
       setError(validationError);
+      setLoading(false);
       return;
     }
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
+      const response = await axiosInstance.post('/auth/signup', formData);
 
-      if (!response.ok) {
-        throw new Error('Signup failed. Try again.');
+      if (response.status === 201) {
+        setSuccess(true);
+        setTimeout(() => navigate('/signin'), 2000);
       }
-
-      setSuccess(true);
-      setTimeout(() => navigate('/signin'), 2000); // Redirect after 2s
     } catch (error: any) {
-      setError(error.message);
+      setError(error.response?.data?.message || 'Signup failed. Try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div>
       <Navbar />
-      {/* Main Content */}
       <Container maxWidth="md" sx={{ marginTop: '2rem', marginBottom: '2rem' }}>
         <Grid container spacing={10}>
-          {/* Left Side: Image */}
           <Grid item xs={12} md={6}>
             <Box
               sx={{
@@ -88,7 +84,6 @@ const SignUp: React.FC = () => {
             />
           </Grid>
 
-          {/* Right Side: Sign Up Form */}
           <Grid item xs={12} md={6}>
             <Box
               sx={{
@@ -101,18 +96,15 @@ const SignUp: React.FC = () => {
                 boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
               }}
             >
-              {/* Logo or Title */}
               <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 'bold' }}>
                 <span style={{ color: '#C24507' }}>Timber</span>
                 <span style={{ color: '#1C486F' }}>Track</span>
               </Typography>
 
-              {/* Sign Up Form */}
               <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 'bold', marginBottom: '1rem' }}>
                 Create an account
               </Typography>
 
-              {/* Error or Success Message */}
               {error && <Alert severity="error">{error}</Alert>}
               {success && <Alert severity="success">Signup successful! Redirecting...</Alert>}
 
@@ -170,22 +162,21 @@ const SignUp: React.FC = () => {
                   </Grid>
                 </Grid>
 
-                {/* Create Account Button */}
                 <Button
                   type="submit"
                   fullWidth
                   variant="contained"
+                  disabled={loading}
                   sx={{
                     marginTop: '1rem',
                     backgroundColor: '#B88E2F',
                     '&:hover': { backgroundColor: '#A03A06' },
                   }}
                 >
-                  Create Account
+                  {loading ? 'Creating...' : 'Create Account'}
                 </Button>
               </Box>
 
-              {/* Divider */}
               <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', marginTop: '1rem', marginBottom: '1rem' }}>
                 <Box sx={{ flex: 1, height: '1px', backgroundColor: '#E0E0E0' }} />
                 <Typography variant="body1" sx={{ margin: '0 0.5rem', color: '#757575' }}>
@@ -194,7 +185,6 @@ const SignUp: React.FC = () => {
                 <Box sx={{ flex: 1, height: '1px', backgroundColor: '#E0E0E0' }} />
               </Box>
 
-              {/* Sign Up with Google */}
               <Button
                 fullWidth
                 variant="outlined"
@@ -209,7 +199,6 @@ const SignUp: React.FC = () => {
                 Sign up with Google
               </Button>
 
-              {/* Already have an account? Log In */}
               <Typography variant="body1" sx={{ color: '#757575' }}>
                 Already have an account?{' '}
                 <Link
@@ -224,8 +213,6 @@ const SignUp: React.FC = () => {
           </Grid>
         </Grid>
       </Container>
-
-      {/* Footer */}
       <Footer />
     </div>
   );

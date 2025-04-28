@@ -9,12 +9,14 @@ import {
   Button,
   CircularProgress,
   Chip,
-  Container
+  Container,
+  TextField,
+  InputAdornment,
+  IconButton
 } from '@mui/material';
-import { ShoppingCart } from '@mui/icons-material';
+import { ShoppingCart, Add, Remove } from '@mui/icons-material';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
-
 
 interface Product {
   id: number;
@@ -32,6 +34,7 @@ const ProductDetailPage = () => {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -47,6 +50,8 @@ const ProductDetailPage = () => {
 
         const data = await response.json();
         setProduct(data);
+        // Reset quantity when product changes
+        setQuantity(1);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load product');
       } finally {
@@ -59,9 +64,22 @@ const ProductDetailPage = () => {
 
   const handleAddToCart = () => {
     if (product) {
-      console.log('Added to cart:', product.id);
+      console.log('Added to cart:', {
+        productId: product.id,
+        quantity: quantity,
+        price: product.price,
+        total: quantity * product.price
+      });
       // Implement your cart logic here
     }
+  };
+
+  const handleQuantityChange = (newQuantity: number) => {
+    if (!product) return;
+    
+    // Ensure quantity is within 1 and available inventory
+    const validatedQuantity = Math.max(1, Math.min(newQuantity, product.quantity));
+    setQuantity(validatedQuantity);
   };
 
   if (loading) {
@@ -130,21 +148,55 @@ const ProductDetailPage = () => {
                   sx={{ mb: 2 }}
                 />
                 
-               <Typography variant="h6">
-                                     Rs.{
-                   product.price !== undefined && !isNaN(Number(product.price))
-                     ? Number(product.price).toFixed(2)
-                     : '0.00'
-                 }
-                                     </Typography>
+                <Typography variant="h5" color="primary" sx={{ mb: 3 }}>
+                  Rs. {product.price !== undefined && !isNaN(Number(product.price))
+                    ? Number(product.price).toFixed(2)
+                    : '0.00'}
+                </Typography>
 
                 <Typography variant="body1" paragraph sx={{ mb: 2 }}>
                   {product.description || 'No description available'}
                 </Typography>
 
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                  Available Quantity: {product.quantity}
-                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                  <Typography variant="body2" color="text.secondary" sx={{ mr: 2 }}>
+                    Available: {product.quantity}
+                  </Typography>
+                  
+                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <IconButton 
+                      onClick={() => handleQuantityChange(quantity - 1)}
+                      disabled={quantity <= 1}
+                    >
+                      <Remove />
+                    </IconButton>
+                    
+                    <TextField
+                      value={quantity}
+                      onChange={(e) => handleQuantityChange(parseInt(e.target.value) || 1)}
+                      type="number"
+                      inputProps={{
+                        min: 1,
+                        max: product.quantity,
+                        style: { textAlign: 'center' }
+                      }}
+                      sx={{
+                        width: '80px',
+                        mx: 1,
+                        '& .MuiInputBase-input': {
+                          padding: '8.5px 14px'
+                        }
+                      }}
+                    />
+                    
+                    <IconButton 
+                      onClick={() => handleQuantityChange(quantity + 1)}
+                      disabled={quantity >= product.quantity}
+                    >
+                      <Add />
+                    </IconButton>
+                  </Box>
+                </Box>
 
                 <Button
                   variant="contained"
@@ -156,7 +208,7 @@ const ProductDetailPage = () => {
                     '&:hover': { bgcolor: '#2563eb' }
                   }}
                 >
-                  Add to Cart
+                  Add to Cart ({quantity})
                 </Button>
               </CardContent>
             </Box>

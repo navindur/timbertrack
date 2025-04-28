@@ -23,6 +23,18 @@ import { useNavigate } from 'react-router-dom';
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
 
+  const handleLogout = () => {
+    // Clear authentication data
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('user');
+    
+    // Redirect to login page
+    navigate('/signin');
+    
+    // Optional: Force a full page reload to reset application state
+    window.location.reload();
+  };
+
   const menuItems = [
     { name: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
     { name: 'Products', icon: <ProductsIcon />, path: '/productlist' },
@@ -31,7 +43,11 @@ const Navbar: React.FC = () => {
     { name: 'Suppliers', icon: <SuppliersIcon />, path: '/supplierlist' },
     { name: 'Reports', icon: <ReportsIcon />, path: '/reportsdash' },
     { name: 'User Management', icon: <UserManagementIcon />, path: '/usermanagementdash' },
-    { name: 'Log out', icon: <LogoutIcon />, path: '/logout' }
+    { 
+      name: 'Log out', 
+      icon: <LogoutIcon />, 
+      onClick: handleLogout // Changed from path to onClick handler
+    }
   ];
 
   return (
@@ -60,7 +76,7 @@ const Navbar: React.FC = () => {
         {menuItems.map((item) => (
           <ListItem key={item.name} disablePadding>
             <ListItemButton 
-              onClick={() => navigate(item.path)}
+              onClick={item.onClick ? item.onClick : () => navigate(item.path!)}
               sx={{ 
                 borderRadius: '4px',
                 py: 1.8,

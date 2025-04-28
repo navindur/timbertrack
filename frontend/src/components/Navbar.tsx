@@ -83,7 +83,7 @@ const Navbar: React.FC = () => {
 </IconButton>
 <IconButton
   component={Link}
-  to="/signup"
+  to="/customerprofile"
   sx={{
     backgroundColor: '#efdecd', // Background color
     color: '#6b7280', // Icon color
