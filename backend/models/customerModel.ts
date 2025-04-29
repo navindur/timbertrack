@@ -4,6 +4,7 @@ import db from '../db'; // your MySQL connection
 interface Customer {
   id?: number;
   user_id: number;
+  
   first_name: string;
   last_name: string;
   phone_num: string;

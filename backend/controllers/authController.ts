@@ -10,9 +10,12 @@ const JWT_SECRET = process.env.JWT_SECRET || 'yoursecretkey';
 
 export const signup = async (req: Request, res: Response) => {
   try {
-    const { email, password, first_name, last_name, phone_num = '', address_line1 = '', address_line2 = '', city = '', postal_code = '' } = req.body;
+    const {
+      email, password, first_name, last_name,
+      phone_num = '', address_line1 = '', address_line2 = '',
+      city = '', postal_code = ''
+    } = req.body;
 
-    // Validation
     if (!email || !password || !first_name || !last_name) {
       return res.status(400).json({ message: 'Missing required fields' });
     }
@@ -31,7 +34,8 @@ export const signup = async (req: Request, res: Response) => {
     });
 
     await CustomerModel.createCustomer({
-    user_id: newUser.id as number, // Type assertion
+      user_id: newUser.id as number,
+      
       first_name,
       last_name,
       phone_num,
@@ -41,19 +45,30 @@ export const signup = async (req: Request, res: Response) => {
       postal_code
     });
 
+    const customer = await CustomerModel.getCustomerByUserId(newUser.id!);
+
+    if (!customer) {
+      return res.status(500).json({ message: 'Customer creation failed' });
+    }
+
     const token = jwt.sign(
-      { userId: newUser.id, role: newUser.role },
+      {
+        userId: newUser.id,
+        customerId: customer.customer_id, // Ensure customerId is always available
+        role: newUser.role
+      },
       JWT_SECRET,
       { expiresIn: '7d' }
     );
 
-    res.status(201).json({ 
+    res.status(201).json({
       message: 'Signup successful',
       token,
       user: {
         id: newUser.id,
         email: newUser.email,
-        role: newUser.role
+        role: newUser.role,
+        customerId: customer.customer_id
       }
     });
   } catch (error) {
@@ -80,8 +95,18 @@ export const login = async (req: Request, res: Response) => {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
+    const customer = await CustomerModel.getCustomerByUserId(user.id!);
+
+    if (!customer) {
+      return res.status(500).json({ message: 'Customer not found' });
+    }
+
     const token = jwt.sign(
-      { userId: user.id, role: user.role },
+      {
+        userId: user.id,
+        customerId: customer.customer_id, // ensure cart works
+        role: user.role
+      },
       JWT_SECRET,
       { expiresIn: '7d' }
     );
@@ -91,8 +116,9 @@ export const login = async (req: Request, res: Response) => {
       token,
       user: {
         id: user.id,
+        email: user.email,
         role: user.role,
-        email: user.email
+        customerId: customer.customer_id
       }
     });
   } catch (error) {
@@ -100,6 +126,7 @@ export const login = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Login failed' });
   }
 };
+
 
 //new
 

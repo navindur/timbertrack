@@ -21,7 +21,7 @@ import { Product } from '../types/product';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 import { useNavigate } from 'react-router-dom'; //new
-
+import { addToCart } from '../services/cartService'; 
 const CategoryPage = () => {
   const { category } = useParams();
   const [allProducts, setAllProducts] = useState<Product[]>([]); // Store all products
@@ -66,10 +66,15 @@ const CategoryPage = () => {
     }
   }, [searchTerm, allProducts]);
 
-  const handleAddToCart = (productId: number) => {
-    console.log('Added to cart:', productId);
-  };
-
+  const handleAddToCart = async (productId: number) => {
+      try {
+         await addToCart(productId, 1);// Always adding quantity 1 for now
+        alert('Product added to cart!');
+      } catch (error) {
+        console.error('Error adding to cart:', error);
+        alert('Failed to add to cart.');
+      }
+    };
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
@@ -193,19 +198,23 @@ const CategoryPage = () => {
                   </Box>
                 </CardContent>
                 <CardActions>
-                  <Button 
-                    size="small" 
-                    startIcon={<ShoppingCart />}
-                    onClick={() => product.id && handleAddToCart(product.id)}
-                    fullWidth
-                    variant="contained"
-                    sx={{
-                      bgcolor: '#3b82f6',
-                      '&:hover': { bgcolor: '#2563eb' }
-                    }}
-                  >
-                    Add to Cart
-                  </Button>
+                <Button 
+  size="small" 
+  startIcon={<ShoppingCart />}
+  onClick={(e) => {
+    e.stopPropagation(); // Prevent card click
+    product.id && handleAddToCart(product.id);
+  }}
+  fullWidth
+  variant="contained"
+  sx={{
+    bgcolor: '#3b82f6',
+    '&:hover': { bgcolor: '#2563eb' }
+  }}
+>
+  Add to Cart
+</Button>
+
                 </CardActions>
               </Card>
                </Box>

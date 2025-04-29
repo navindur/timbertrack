@@ -11,12 +11,14 @@ import {
   Chip,
   Container,
   TextField,
-  InputAdornment,
-  IconButton
+  IconButton,
+  Alert,
+  Snackbar
 } from '@mui/material';
 import { ShoppingCart, Add, Remove } from '@mui/icons-material';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
+import { addToCart } from '../services/cartService';
 
 interface Product {
   id: number;
@@ -25,7 +27,7 @@ interface Product {
   price: number;
   category: string;
   image_url: string;
-  quantity: number;
+  quantity: number; // Available inventory
 }
 
 const ProductDetailPage = () => {
@@ -35,6 +37,11 @@ const ProductDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success' as 'success' | 'error'
+  });
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -50,8 +57,7 @@ const ProductDetailPage = () => {
 
         const data = await response.json();
         setProduct(data);
-        // Reset quantity when product changes
-        setQuantity(1);
+        setQuantity(1); // Reset quantity when product changes
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load product');
       } finally {
@@ -62,15 +68,23 @@ const ProductDetailPage = () => {
     fetchProduct();
   }, [id]);
 
-  const handleAddToCart = () => {
-    if (product) {
-      console.log('Added to cart:', {
-        productId: product.id,
-        quantity: quantity,
-        price: product.price,
-        total: quantity * product.price
+  const handleAddToCart = async () => {
+    if (!product) return;
+
+    try {
+      await addToCart(product.id, quantity);
+      setSnackbar({
+        open: true,
+        message: 'Product added to cart!',
+        severity: 'success'
       });
-      // Implement your cart logic here
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      setSnackbar({
+        open: true,
+        message: 'Failed to add to cart',
+        severity: 'error'
+      });
     }
   };
 
@@ -80,6 +94,10 @@ const ProductDetailPage = () => {
     // Ensure quantity is within 1 and available inventory
     const validatedQuantity = Math.max(1, Math.min(newQuantity, product.quantity));
     setQuantity(validatedQuantity);
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbar(prev => ({ ...prev, open: false }));
   };
 
   if (loading) {
@@ -113,8 +131,6 @@ const ProductDetailPage = () => {
       <Navbar />
       
       <Container maxWidth="lg" sx={{ py: 4, flexGrow: 1 }}>
-        
-
         {product && (
           <Card sx={{ 
             display: 'flex',
@@ -149,10 +165,9 @@ const ProductDetailPage = () => {
                 />
                 
                 <Typography variant="h5" color="primary" sx={{ mb: 3 }}>
-                  Rs. {product.price !== undefined && !isNaN(Number(product.price))
-                    ? Number(product.price).toFixed(2)
-                    : '0.00'}
-                </Typography>
+  Rs. {Number(product.price).toFixed(2)}
+</Typography>
+
 
                 <Typography variant="body1" paragraph sx={{ mb: 2 }}>
                   {product.description || 'No description available'}
@@ -203,12 +218,13 @@ const ProductDetailPage = () => {
                   size="large"
                   startIcon={<ShoppingCart />}
                   onClick={handleAddToCart}
+                  disabled={product.quantity === 0}
                   sx={{
                     bgcolor: '#3b82f6',
                     '&:hover': { bgcolor: '#2563eb' }
                   }}
                 >
-                  Add to Cart ({quantity})
+                  {product.quantity === 0 ? 'Out of Stock' : `Add to Cart (${quantity})`}
                 </Button>
               </CardContent>
             </Box>
@@ -217,6 +233,21 @@ const ProductDetailPage = () => {
       </Container>
 
       <Footer />
+
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <Alert 
+          onClose={handleCloseSnackbar} 
+          severity={snackbar.severity}
+          sx={{ width: '100%' }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

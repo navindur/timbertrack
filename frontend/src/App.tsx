@@ -3,10 +3,10 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './pages/Home'; 
 
-import Cart from './pages/Cart'; // Create this later
+
 import SignUp from './pages/SignUp'; // Import the SignUp component
 import SignIn from './pages/SignIn';
-import ProductDetails from './pages/ProductDetails';
+
 import Dashboard from './pages/Dashboard'; // Add this import
 
 import InventoryDash from './pages/InventoryDash';
@@ -20,9 +20,12 @@ import ProductList from './pages/ProductList';
 import CustomerProductList from './pages/CustomerProductList';
 import CategoryPage from './pages/CategoryPage';
 import ProductDetailPage from './pages/ProductDetailPage';
-import { ProtectedRoute } from './components/auth/ProtectedRoute'; //neww
-import {Unauthorized} from './pages/Unauthorized';//new
+import { ProtectedRoute } from './components/auth/ProtectedRoute';
+import {Unauthorized} from './pages/Unauthorized';
 import CustomerProfile from './pages/CustomerProfile';
+import CartPage from './pages/CartPage';//new
+
+
 
 const App: React.FC = () => {
   return (
@@ -47,14 +50,15 @@ const App: React.FC = () => {
 
 
       <Route element={<ProtectedRoute allowedRoles={['customer']} />}>
+      <Route path="/cart" element={<CartPage />} />
        
       </Route>
 
         <Route path="/" element={<Home />} />
         
-        <Route path="/cart" element={<Cart />} />
         
-        <Route path="/products/:id" element={<ProductDetails />} />
+        
+        
         
 
         <Route path="/customerprofile" element={<CustomerProfile />} />

@@ -31,7 +31,7 @@ import { Product } from '../types/product';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 import { useNavigate } from 'react-router-dom'; //new
-
+import { addToCart } from '../services/cartService'; // new
 
 const CustomerProductList: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -80,9 +80,14 @@ const CustomerProductList: React.FC = () => {
     setCategoryFilter(e.target.value);
   };
 
-  const handleAddToCart = (productId: number) => {
-    // Implement cart functionality
-    console.log('Added to cart:', productId);
+  const handleAddToCart = async (productId: number) => {
+    try {
+       await addToCart(productId, 1);// Always adding quantity 1 for now
+      alert('Product added to cart!');
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      alert('Failed to add to cart.');
+    }
   };
 
   return (
@@ -204,19 +209,23 @@ const CustomerProductList: React.FC = () => {
                     </Box>
                   </CardContent>
                   <CardActions>
-                    <Button 
-                      size="small" 
-                      startIcon={<ShoppingCart />}
-                      onClick={() => product.id && handleAddToCart(product.id)}
-                      fullWidth
-                      variant="contained"
-                      sx={{
-                        bgcolor: '#3b82f6',
-                        '&:hover': { bgcolor: '#2563eb' }
-                      }}
-                    >
-                      Add to Cart
-                    </Button>
+                  <Button 
+  size="small" 
+  startIcon={<ShoppingCart />}
+  onClick={(e) => {
+    e.stopPropagation(); // Prevent card click
+    product.id && handleAddToCart(product.id);
+  }}
+  fullWidth
+  variant="contained"
+  sx={{
+    bgcolor: '#3b82f6',
+    '&:hover': { bgcolor: '#2563eb' }
+  }}
+>
+  Add to Cart
+</Button>
+
                   </CardActions>
                 </Card>
                 </Box>

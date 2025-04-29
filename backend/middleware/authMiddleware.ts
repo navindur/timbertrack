@@ -1,21 +1,37 @@
-// middlewares/authMiddleware.ts
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import  db  from '../db'; // Assuming you have a database connection instance
 
 const JWT_SECRET = process.env.JWT_SECRET || 'yoursecretkey';
 
-export const authenticate = (req: Request, res: Response, next: NextFunction) => {
-  const token = req.headers.authorization?.split(' ')[1];
-  
-  if (!token) {
-    return res.status(401).json({ message: 'No token provided' });
-  }
-
+export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as { userId: number; role: string };
-    (req as any).user = decoded;
+    const token = req.header('Authorization')?.replace('Bearer ', '');
+    
+    if (!token) {
+      throw new Error('Authentication required');
+    }
+
+    const decoded = jwt.verify(token, JWT_SECRET) as { 
+      userId: number;
+      customerId: number;
+    };
+
+    // ✅ Check if customer exists in DB
+    const [rows]: any = await db.query('SELECT customer_id FROM customers WHERE customer_id = ?', [decoded.customerId]);
+    if (rows.length === 0) {
+      return res.status(401).json({ error: 'Invalid customer. Please register.' });
+    }
+
+    // Attach user to request
+    (req as any).user = {
+      userId: decoded.userId,
+      customerId: decoded.customerId
+    };
+
     next();
   } catch (error) {
-    return res.status(401).json({ message: 'Invalid token' });
+    console.error('Auth error:', error);
+    res.status(401).json({ error: 'Please authenticate' });
   }
 };

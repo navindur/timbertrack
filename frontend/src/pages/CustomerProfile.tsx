@@ -15,6 +15,8 @@ import {
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../api/axiosInstance';
 import { AxiosError } from 'axios'; // Import AxiosError
+import Footer from '../components/Footer';
+import Navbar from '../components/Navbar';
 
 interface CustomerData {
   first_name: string;
@@ -142,6 +144,8 @@ const CustomerProfile = () => {
   };
 
   return (
+    <>
+    <Navbar />
     <Box sx={{ p: 4 }}>
       <Paper elevation={3} sx={{ p: 4, maxWidth: 600, mx: 'auto' }}>
         <Typography variant="h4" gutterBottom>
@@ -319,6 +323,8 @@ const CustomerProfile = () => {
         </DialogActions>
       </Dialog>
     </Box>
+    <Footer />
+    </>
   );
 };
 
