@@ -23,7 +23,10 @@ import ProductDetailPage from './pages/ProductDetailPage';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import {Unauthorized} from './pages/Unauthorized';
 import CustomerProfile from './pages/CustomerProfile';
-import CartPage from './pages/CartPage';//new
+import CartPage from './pages/CartPage';
+import CheckoutPage from './pages/CheckoutPage';//new
+import OrderConfirmation from './pages/OrderConfirmation';
+import AllOrderView from './pages/AllOrderView';
 
 
 
@@ -51,7 +54,11 @@ const App: React.FC = () => {
 
       <Route element={<ProtectedRoute allowedRoles={['customer']} />}>
       <Route path="/cart" element={<CartPage />} />
-       
+      <Route path="/checkout" element={<CheckoutPage />} />           //new
+      <Route path="/customerprofile" element={<CustomerProfile />} /> 
+      <Route path="/order-confirmation/:order_id" element={<OrderConfirmation />} />    //new
+      <Route path="/allorderview" element={<AllOrderView />} />    //new
+
       </Route>
 
         <Route path="/" element={<Home />} />
@@ -61,7 +68,7 @@ const App: React.FC = () => {
         
         
 
-        <Route path="/customerprofile" element={<CustomerProfile />} />
+        
         
         
         <Route path="/products" element={<CustomerProductList />} />

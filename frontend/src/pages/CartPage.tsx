@@ -107,8 +107,7 @@ const CartPage = () => {
   };
   
   const handleCheckout = () => {
-    // TODO: Implement checkout logic later
-    alert("Checkout functionality will be added soon!");
+    navigate('/checkout');
   };
   if (loading) return <div className="text-center mt-10">Loading...</div>;
 

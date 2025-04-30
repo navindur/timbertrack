@@ -4,7 +4,7 @@ import * as dotenv from "dotenv";
 import promisePool from "./db"; // Import the DB connection file
 //import productRoutes from "./routes/productRoutes"; // Adjust the path as needed
 import authRoutes from "./routes/authRoutes";
-import orderRoutes from "./routes/orderRoutes";
+
 
 import supplierRoutes from './routes/supplierRoutes';
 import inventoryRoutes from './routes/inventoryRoutes';
@@ -13,8 +13,9 @@ import customerProductRoutes from './routes/customerProductRoutes';
 import categoryRoutes from './routes/categoryRoutes';
 import productviewRoutes from './routes/productviewRoutes';
 import customerprofileRoutes from './routes/customerprofileRoutes';
-import cartRoutes from './routes/cartRoutes'; //new
-
+import cartRoutes from './routes/cartRoutes'; 
+import orderRoutes from './routes/orderRoutes';//new
+import viewallorderroutes from './routes/viewallorderroutes'; //new
 
 dotenv.config();
 
@@ -59,7 +60,8 @@ app.use('/api', inventoryRoutes);
 
 app.use('/api/customers', customerprofileRoutes); 
 
-app.use('/api/cart', cartRoutes);//new
-
+app.use('/api/cart', cartRoutes);
+app.use('/api/orders', orderRoutes);//new
+app.use('/api/allorderview', viewallorderroutes);
 
 export default app;

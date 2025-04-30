@@ -35,3 +35,4 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
     res.status(401).json({ error: 'Please authenticate' });
   }
 };
+

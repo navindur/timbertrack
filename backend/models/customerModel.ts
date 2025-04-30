@@ -1,10 +1,8 @@
-// models/customerModel.ts
-import db from '../db'; // your MySQL connection
+import db from '../db';
 
 interface Customer {
-  id?: number;
+  customer_id?: number;
   user_id: number;
-  
   first_name: string;
   last_name: string;
   phone_num: string;
@@ -22,16 +20,49 @@ export const CustomerModel = {
       `INSERT INTO customers 
         (user_id, first_name, last_name, phone_num, address_line1, address_line2, city, postal_code) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-      [user_id, first_name, last_name, phone_num, address_line1, address_line2, city, postal_code]
+      [user_id, first_name, last_name, phone_num, address_line1 || null, address_line2 || null, city || null, postal_code || null]
     );
   },
 
-  async getCustomerByUserId(userId: number) {
+  async getCustomerByUserId(userId: number): Promise<Customer | null> {
     const [rows] = await db.execute(
       'SELECT * FROM customers WHERE user_id = ?',
       [userId]
     );
-    const result = (rows as any[])[0];
-    return result || null;
+    return (rows as any[])[0] || null;
+  },
+
+  async updateCustomer(userId: number, updates: Partial<Customer>): Promise<void> {
+    const fieldsToUpdate = [];
+    const values = [];
+
+    // Build dynamic update query
+    for (const [key, value] of Object.entries(updates)) {
+      if (value !== undefined) {
+        fieldsToUpdate.push(`${key} = ?`);
+        values.push(value);
+      }
+    }
+
+    if (fieldsToUpdate.length === 0) {
+      return; // Nothing to update
+    }
+
+    values.push(userId); // For WHERE clause
+
+    await db.execute(
+      `UPDATE customers 
+       SET ${fieldsToUpdate.join(', ')}
+       WHERE user_id = ?`,
+      values
+    );
+  },
+
+  async getCustomerById(customerId: number): Promise<Customer | null> {
+    const [rows] = await db.execute(
+      'SELECT * FROM customers WHERE customer_id = ?',
+      [customerId]
+    );
+    return (rows as any[])[0] || null;
   }
 };
