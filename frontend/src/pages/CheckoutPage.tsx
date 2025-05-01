@@ -22,6 +22,9 @@ import {
   ListItemAvatar,
   Avatar,
 } from '@mui/material';
+import Footer from '../components/Footer';
+import Navbar from '../components/Navbar';
+
 
 interface CustomerDetails {
   first_name: string;
@@ -426,6 +429,8 @@ const CheckoutPage = () => {
   }
 
   return (
+    <>
+      <Navbar />
     <Box sx={{ maxWidth: 800, mx: 'auto', p: 3 }}>
       <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
         {steps.map((label) => (
@@ -477,6 +482,8 @@ const CheckoutPage = () => {
         </Box>
       </Box>
     </Box>
+    <Footer />
+    </>
   );
 };
 

@@ -27,6 +27,9 @@ import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';//new
 import OrderConfirmation from './pages/OrderConfirmation';
 import AllOrderView from './pages/AllOrderView';
+import AboutUsPage from './pages/AboutUsPage';
+import OrderList from './pages/OrderList';
+import OwnerOrderDetail from './pages/ownerOrderDetail';
 
 
 
@@ -38,6 +41,7 @@ const App: React.FC = () => {
       <Route path="/unauthorized" element={<Unauthorized />} />
       <Route path="/signup" element={<SignUp />} /> 
       <Route path="/signin" element={<SignIn />} />
+      <Route path="/about-us" element={<AboutUsPage />} />
 
       <Route element={<ProtectedRoute allowedRoles={['shopowner']} />}>
       <Route path="/dashboard" element={<Dashboard />} />
@@ -49,6 +53,8 @@ const App: React.FC = () => {
         <Route path="/supplierlist" element={<SupplierList />} />
         <Route path="/inventorylist" element={<InventoryList />} />
         <Route path="/productlist" element={<ProductList />} />
+        <Route path="/ownerorders" element={<OrderList />} />
+        <Route path="/ownerorders/:id" element={<OwnerOrderDetail />} />
       </Route>
 
 

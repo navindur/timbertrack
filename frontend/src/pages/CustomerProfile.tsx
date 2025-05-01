@@ -147,6 +147,11 @@ const CustomerProfile = () => {
     <>
     <Navbar />
     <Box sx={{ p: 4 }}>
+    <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+    <Button variant="contained" onClick={() => navigate('/allorderview')}>
+      View Orders
+    </Button>
+  </Box>
       <Paper elevation={3} sx={{ p: 4, maxWidth: 600, mx: 'auto' }}>
         <Typography variant="h4" gutterBottom>
           My Profile

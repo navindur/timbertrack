@@ -14,8 +14,9 @@ import categoryRoutes from './routes/categoryRoutes';
 import productviewRoutes from './routes/productviewRoutes';
 import customerprofileRoutes from './routes/customerprofileRoutes';
 import cartRoutes from './routes/cartRoutes'; 
-import orderRoutes from './routes/orderRoutes';//new
-import viewallorderroutes from './routes/viewallorderroutes'; //new
+import orderRoutes from './routes/orderRoutes';
+import viewallorderroutes from './routes/viewallorderroutes'; 
+import ownerorderRoutes from './routes/ownerorderRoutes';//new
 
 dotenv.config();
 
@@ -61,7 +62,8 @@ app.use('/api', inventoryRoutes);
 app.use('/api/customers', customerprofileRoutes); 
 
 app.use('/api/cart', cartRoutes);
-app.use('/api/orders', orderRoutes);//new
+app.use('/api/orders', orderRoutes);
 app.use('/api/allorderview', viewallorderroutes);
+app.use('/api/ownerorders', ownerorderRoutes);
 
 export default app;

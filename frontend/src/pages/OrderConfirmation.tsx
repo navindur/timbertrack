@@ -14,6 +14,9 @@ import {
   Divider,
   CircularProgress,
 } from '@mui/material';
+import Footer from '../components/Footer';
+import Navbar from '../components/Navbar';
+
 
 interface OrderItem {
   id: number;
@@ -140,6 +143,8 @@ const OrderConfirmation = () => {
   };
 
   return (
+    <>
+      <Navbar />
     <Box sx={{ maxWidth: 800, mx: 'auto', p: 3 }}>
       <Typography variant="h4" gutterBottom>
         Order Confirmation
@@ -148,7 +153,7 @@ const OrderConfirmation = () => {
         Thank you for your order!
       </Typography>
       <Typography sx={{ mb: 3 }}>
-        Your order number is #{order.id}. We've sent a confirmation email with your order details.
+        Your order number is #{order.id}. We will update the order status here.
       </Typography>
       
       <Paper sx={{ p: 3, mb: 3 }}>
@@ -227,7 +232,7 @@ const OrderConfirmation = () => {
       <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center', gap: 2 }}>
         <Button
           variant="contained"
-          onClick={() => navigate('/orders')}
+          onClick={() => navigate('/allorderview')}
         >
           View All Orders
         </Button>
@@ -239,6 +244,8 @@ const OrderConfirmation = () => {
         </Button>
       </Box>
     </Box>
+    <Footer />
+    </>
   );
 };
 

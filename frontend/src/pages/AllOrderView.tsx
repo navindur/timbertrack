@@ -15,6 +15,8 @@ import {
   Button,
 } from '@mui/material';
 import { format, parseISO } from 'date-fns';
+import Footer from '../components/Footer';
+import Navbar from '../components/Navbar';
 
 interface Order {
   id: number;
@@ -73,6 +75,8 @@ export const AllOrderView = () => {
   if (error) return <Typography color="error">{error}</Typography>;
 
   return (
+    <>
+      <Navbar />
     <Box sx={{ p: 3, maxWidth: 1200, mx: 'auto' }}>
       <Typography variant="h4" gutterBottom>My Orders</Typography>
       
@@ -130,6 +134,8 @@ export const AllOrderView = () => {
         </TableContainer>
       )}
     </Box>
+    <Footer />
+    </>
   );
 };
 

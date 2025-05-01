@@ -95,21 +95,24 @@ export const login = async (req: Request, res: Response) => {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    const customer = await CustomerModel.getCustomerByUserId(user.id!);
-
-    if (!customer) {
-      return res.status(500).json({ message: 'Customer not found' });
+    let customer = null;
+    if (user.role === 'customer') {
+      customer = await CustomerModel.getCustomerByUserId(user.id!);
+      if (!customer) {
+        return res.status(403).json({ message: 'Customer profile not found. Please complete registration.' });
+      }
     }
 
-    const token = jwt.sign(
-      {
-        userId: user.id,
-        customerId: customer.customer_id, // ensure cart works
-        role: user.role
-      },
-      JWT_SECRET,
-      { expiresIn: '7d' }
-    );
+    const tokenPayload: any = {
+      userId: user.id,
+      role: user.role
+    };
+
+    if (customer) {
+      tokenPayload.customerId = customer.customer_id;
+    }
+
+    const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: '7d' });
 
     res.status(200).json({
       message: 'Login successful',
@@ -118,7 +121,7 @@ export const login = async (req: Request, res: Response) => {
         id: user.id,
         email: user.email,
         role: user.role,
-        customerId: customer.customer_id
+        ...(customer && { customerId: customer.customer_id })
       }
     });
   } catch (error) {
@@ -126,6 +129,7 @@ export const login = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Login failed' });
   }
 };
+
 
 
 //new

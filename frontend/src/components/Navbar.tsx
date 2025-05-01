@@ -49,7 +49,7 @@ const Navbar: React.FC = () => {
         </Button>
         <Button
           component={Link}
-          to="/products"
+          to="/about-us"
           sx={{
             backgroundColor: '#efdecd',
             color: '#6b7280',

@@ -39,7 +39,7 @@ const Navbar: React.FC = () => {
     { name: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
     { name: 'Products', icon: <ProductsIcon />, path: '/productlist' },
     { name: 'Inventory', icon: <InventoryIcon />, path: '/inventorylist' },
-    { name: 'Orders', icon: <OrdersIcon />, path: '/ordersdash' },
+    { name: 'Orders', icon: <OrdersIcon />, path: '/ownerorders' },
     { name: 'Suppliers', icon: <SuppliersIcon />, path: '/supplierlist' },
     { name: 'Reports', icon: <ReportsIcon />, path: '/reportsdash' },
     { name: 'User Management', icon: <UserManagementIcon />, path: '/usermanagementdash' },
