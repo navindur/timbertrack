@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   Table,
+  TextField,
   TableBody,
   TableCell,
   TableContainer,
@@ -18,6 +19,9 @@ import {
   CircularProgress,
   Chip
 } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import InputAdornment from '@mui/material/InputAdornment';
+
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Adminnavbar';
 import { fetchOrders } from '../services/ownerorderService';
@@ -31,12 +35,13 @@ const OrderList: React.FC = () => {
   const [limit] = useState(10);
   const [statusFilter, setStatusFilter] = useState<string>('');
   const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     const loadOrders = async () => {
       setIsLoading(true);
       try {
-        const data = await fetchOrders(page, limit, statusFilter);
+        const data = await fetchOrders(page, limit, statusFilter, searchTerm);
         setOrders(data.orders);
         setTotalOrders(data.total);
       } catch (error) {
@@ -46,7 +51,7 @@ const OrderList: React.FC = () => {
       }
     };
     loadOrders();
-  }, [page, limit, statusFilter]);
+  }, [page, limit, statusFilter, searchTerm]);
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, newPage: number) => {
     setPage(newPage);
@@ -105,22 +110,39 @@ const OrderList: React.FC = () => {
 
         {/* Filter Controls */}
         <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
-          <FormControl sx={{ minWidth: 200 }}>
-            <InputLabel>Status</InputLabel>
-            <Select
-              value={statusFilter}
-              onChange={handleStatusFilterChange}
-              label="Status"
-            >
-              <MenuItem value="">All Statuses</MenuItem>
-              <MenuItem value="pending">Pending</MenuItem>
-              <MenuItem value="processing">Processing</MenuItem>
-              <MenuItem value="shipped">Shipped</MenuItem>
-              <MenuItem value="delivered">Delivered</MenuItem>
-              <MenuItem value="cancelled">Cancelled</MenuItem>
-            </Select>
-          </FormControl>
-        </Box>
+  <TextField
+    placeholder="Search by ID, name, or date (YYYY-MM-DD)"
+    variant="outlined"
+    size="small"
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+    InputProps={{
+      startAdornment: (
+        <InputAdornment position="start">
+          <SearchIcon />
+
+        </InputAdornment>
+      ),
+    }}
+    sx={{ flexGrow: 1, maxWidth: 400 }}
+  />
+  
+  <FormControl sx={{ minWidth: 200 }}>
+    <InputLabel>Status</InputLabel>
+    <Select
+      value={statusFilter}
+      onChange={handleStatusFilterChange}
+      label="Status"
+    >
+      <MenuItem value="">All Statuses</MenuItem>
+      <MenuItem value="pending">Pending</MenuItem>
+      <MenuItem value="processing">Processing</MenuItem>
+      <MenuItem value="shipped">Shipped</MenuItem>
+      <MenuItem value="delivered">Delivered</MenuItem>
+      <MenuItem value="cancelled">Cancelled</MenuItem>
+    </Select>
+  </FormControl>
+</Box>
 
         {/* Orders Table */}
         {isLoading ? (

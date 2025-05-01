@@ -1,22 +1,24 @@
 import { Request, Response } from 'express';
 import * as orderService from '../services/ownerorderService';
 
+// Update the getAllOrders function
 export const getAllOrders = async (req: Request, res: Response) => {
-  try {
-    const { page = 1, limit = 10, status } = req.query;
-    
-    const result = await orderService.fetchAllOrders(
-      Number(page),
-      Number(limit),
-      status as string | undefined
-    );
-    
-    res.status(200).json(result);
-  } catch (err) {
-    console.error('Error fetching orders:', err);
-    res.status(500).json({ message: 'Failed to fetch orders' });
-  }
-};
+    try {
+      const { page = 1, limit = 10, status, search } = req.query;
+      
+      const result = await orderService.fetchAllOrders(
+        Number(page),
+        Number(limit),
+        status as string | undefined,
+        search as string | undefined
+      );
+      
+      res.status(200).json(result);
+    } catch (err) {
+      console.error('Error fetching orders:', err);
+      res.status(500).json({ message: 'Failed to fetch orders' });
+    }
+  };
 
 export const getOrderDetails = async (req: Request, res: Response) => {
   try {

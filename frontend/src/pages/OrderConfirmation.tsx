@@ -17,7 +17,6 @@ import {
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 
-
 interface OrderItem {
   id: number;
   product_id: number;
@@ -56,47 +55,72 @@ const OrderConfirmation = () => {
       navigate('/signin');
       return;
     }
-  
+
     const fetchOrder = async () => {
-        try {
-          const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/orders/${order_id}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          
-          console.log('API Response:', res.data); // Debugging log
-          
-          // Check for success flag and order data
-          if (!res.data.success || !res.data.order) {
-            throw new Error('Invalid response format');
-          }
-          
-          const orderData = res.data.order;
-          
-          // Validate the order data structure
-          if (!orderData.id || !orderData.items || !Array.isArray(orderData.items)) {
-            throw new Error('Order data is incomplete');
-          }
-          
-          setOrder(orderData);
-        } catch (error) {
-          console.error('Full error details:', error);
-          setError(
-            axios.isAxiosError(error)
-              ? error.response?.data?.message || 
-                error.response?.data?.error || 
-                error.message || 
-                'Failed to load order details'
-              : error instanceof Error
-                ? error.message
-                : 'Failed to load order details'
-          );
-        } finally {
-          setLoading(false);
+      try {
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/orders/${order_id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (!res.data.success || !res.data.order) {
+          throw new Error('Invalid response format');
         }
-      };
-  
+
+        const orderData = res.data.order;
+
+        if (!orderData.id || !orderData.items || !Array.isArray(orderData.items)) {
+          throw new Error('Order data is incomplete');
+        }
+
+        setOrder(orderData);
+      } catch (error) {
+        console.error('Error:', error);
+        setError(
+          axios.isAxiosError(error)
+            ? error.response?.data?.message ||
+              error.response?.data?.error ||
+              error.message ||
+              'Failed to load order details'
+            : error instanceof Error
+            ? error.message
+            : 'Failed to load order details'
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchOrder();
   }, [order_id, navigate]);
+
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.innerHTML = `
+      @media print {
+        body {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+        }
+        nav, footer, .no-print {
+          display: none !important;
+        }
+        .print-container {
+          padding: 20px;
+          margin: 0;
+        }
+        .MuiPaper-root {
+          box-shadow: none !important;
+        }
+        button {
+          display: none !important;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
 
   if (loading) {
     return (
@@ -110,11 +134,7 @@ const OrderConfirmation = () => {
     return (
       <Box sx={{ textAlign: 'center', mt: 4 }}>
         <Typography variant="h6" color="error">{error}</Typography>
-        <Button
-          variant="contained"
-          sx={{ mt: 2 }}
-          onClick={() => navigate('/')}
-        >
+        <Button variant="contained" sx={{ mt: 2 }} onClick={() => navigate('/')}>
           Return to Home
         </Button>
       </Box>
@@ -125,18 +145,13 @@ const OrderConfirmation = () => {
     return (
       <Box sx={{ textAlign: 'center', mt: 4 }}>
         <Typography variant="h6">Order not found</Typography>
-        <Button
-          variant="contained"
-          sx={{ mt: 2 }}
-          onClick={() => navigate('/')}
-        >
+        <Button variant="contained" sx={{ mt: 2 }} onClick={() => navigate('/')}>
           Continue Shopping
         </Button>
       </Box>
     );
   }
 
-  // Safely format payment method
   const formatPaymentMethod = (method: string) => {
     if (!method) return 'Unknown';
     return method.replace(/_/g, ' ');
@@ -144,107 +159,113 @@ const OrderConfirmation = () => {
 
   return (
     <>
-      <Navbar />
-    <Box sx={{ maxWidth: 800, mx: 'auto', p: 3 }}>
-      <Typography variant="h4" gutterBottom>
-        Order Confirmation
-      </Typography>
-      <Typography variant="h6" gutterBottom>
-        Thank you for your order!
-      </Typography>
-      <Typography sx={{ mb: 3 }}>
-        Your order number is #{order.id}. We will update the order status here.
-      </Typography>
-      
-      <Paper sx={{ p: 3, mb: 3 }}>
+      <div className="no-print">
+        <Navbar />
+      </div>
+
+      <Box className="print-container" sx={{ maxWidth: 800, mx: 'auto', p: 3 }}>
+      <Typography
+          variant="h5"
+          sx={{ display: 'none', '@media print': { display: 'block', textAlign: 'center', mb: 3 } }}
+        >
+          Jayarani Furnitures – Order Receipt
+        </Typography>
+        <Typography variant="h4" gutterBottom>
+          Order Confirmation
+        </Typography>
         <Typography variant="h6" gutterBottom>
-          Order Summary
+          Thank you for your order!
         </Typography>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-          <Typography>Order Date:</Typography>
-          <Typography>
-            {new Date(order.created_at).toLocaleDateString(undefined, {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit'
-            })}
-          </Typography>
-        </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-          <Typography>Status:</Typography>
-          <Typography sx={{ textTransform: 'capitalize' }}>
-            {order.status || 'Processing'}
-          </Typography>
-        </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-          <Typography>Payment Method:</Typography>
-          <Typography sx={{ textTransform: 'capitalize' }}>
-            {formatPaymentMethod(order.payment_method)}
-          </Typography>
-        </Box>
-      </Paper>
-      
-      <Typography variant="h6" gutterBottom>
-        Shipping Address
-      </Typography>
-      <Paper sx={{ p: 2, mb: 3 }}>
-        <Typography>
-          {order.first_name} {order.last_name}
+        <Typography sx={{ mb: 3 }}>
+          Your order number is #{order.id}. We will update the order status here.
         </Typography>
-        <Typography>{order.address_line1}</Typography>
-        {order.address_line2 && <Typography>{order.address_line2}</Typography>}
-        <Typography>
-          {order.city}, {order.postal_code}
-        </Typography>
-        <Typography>Phone: {order.phone_num}</Typography>
-      </Paper>
-      
-      <Typography variant="h6" gutterBottom>
-        Order Items
-      </Typography>
-      <List>
-        {order.items?.map((item) => (
-          <ListItem key={item.id} divider>
-            <ListItemAvatar>
-              <Avatar src={item.image_url} alt={item.name} />
-            </ListItemAvatar>
-            <ListItemText
-              primary={item.name}
-              secondary={`Quantity: ${item.quantity}`}
-            />
-            <Typography variant="body2">
-              Rs.{(item.price * item.quantity).toFixed(2)}
+
+        <Paper sx={{ p: 3, mb: 3 }}>
+          <Typography variant="h6" gutterBottom>
+            Order Summary
+          </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+            <Typography>Order Date:</Typography>
+            <Typography>
+              {new Date(order.created_at).toLocaleDateString(undefined, {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
             </Typography>
-          </ListItem>
-        ))}
-      </List>
-      <Divider sx={{ my: 2 }} />
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <Typography variant="h6">
-       Total Rs.{(typeof order.total_price === 'number' 
-  ? order.total_price.toFixed(2) 
-  : parseFloat(order.total_price || '0').toFixed(2))}
+          </Box>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+            <Typography>Status:</Typography>
+            <Typography sx={{ textTransform: 'capitalize' }}>
+              {order.status || 'Processing'}
+            </Typography>
+          </Box>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+            <Typography>Payment Method:</Typography>
+            <Typography sx={{ textTransform: 'capitalize' }}>
+              {formatPaymentMethod(order.payment_method)}
+            </Typography>
+          </Box>
+        </Paper>
+
+        <Typography variant="h6" gutterBottom>
+          Shipping Address
         </Typography>
+        <Paper sx={{ p: 2, mb: 3 }}>
+          <Typography>{order.first_name} {order.last_name}</Typography>
+          <Typography>{order.address_line1}</Typography>
+          {order.address_line2 && <Typography>{order.address_line2}</Typography>}
+          <Typography>{order.city}, {order.postal_code}</Typography>
+          <Typography>Phone: {order.phone_num}</Typography>
+        </Paper>
+
+        <Typography variant="h6" gutterBottom>
+          Order Items
+        </Typography>
+        <List>
+          {order.items.map((item) => (
+            <ListItem key={item.id} divider>
+              <ListItemAvatar>
+                <Avatar src={item.image_url} alt={item.name} />
+              </ListItemAvatar>
+              <ListItemText
+                primary={item.name}
+                secondary={`Quantity: ${item.quantity}`}
+              />
+              <Typography variant="body2">
+                Rs.{(item.price * item.quantity).toFixed(2)}
+              </Typography>
+            </ListItem>
+          ))}
+        </List>
+
+        <Divider sx={{ my: 2 }} />
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Typography variant="h6">
+            Total Rs.{(typeof order.total_price === 'number'
+              ? order.total_price.toFixed(2)
+              : parseFloat(order.total_price || '0').toFixed(2))}
+          </Typography>
+        </Box>
+
+        <Box className="no-print" sx={{ mt: 4, display: 'flex', justifyContent: 'center', gap: 2 }}>
+          <Button variant="contained" onClick={() => navigate('/allorderview')}>
+            View All Orders
+          </Button>
+          <Button variant="outlined" onClick={() => navigate('/')}>
+            Continue Shopping
+          </Button>
+          <Button variant="outlined" onClick={() => window.print()}>
+            Print / Save as PDF
+          </Button>
+        </Box>
       </Box>
-      
-      <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center', gap: 2 }}>
-        <Button
-          variant="contained"
-          onClick={() => navigate('/allorderview')}
-        >
-          View All Orders
-        </Button>
-        <Button
-          variant="outlined"
-          onClick={() => navigate('/')}
-        >
-          Continue Shopping
-        </Button>
-      </Box>
-    </Box>
-    <Footer />
+
+      <div className="no-print">
+        <Footer />
+      </div>
     </>
   );
 };

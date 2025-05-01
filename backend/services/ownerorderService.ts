@@ -1,12 +1,14 @@
 import * as orderModel from '../models/ownerorderModel';
 
+// Update the fetchAllOrders function
 export const fetchAllOrders = async (
-  page: number = 1,
-  limit: number = 10,
-  status?: string
-) => {
-  return orderModel.getAllOrders(page, limit, status);
-};
+    page: number = 1,
+    limit: number = 10,
+    status?: string,
+    searchTerm?: string
+  ) => {
+    return orderModel.getAllOrders(page, limit, status, searchTerm);
+  };
 
 export const fetchOrderDetails = async (orderId: number) => {
   return orderModel.getOrderById(orderId);

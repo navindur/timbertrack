@@ -28,45 +28,109 @@ export interface OrderItem {
 }
 
 export const getAllOrders = async (
-  page: number = 1,
-  limit: number = 10,
-  status?: string
-): Promise<{ orders: Order[]; total: number }> => {
-  const offset = (page - 1) * limit;
-  
-  let baseQuery = `
-    SELECT o.*, 
-           CONCAT(c.first_name, ' ', c.last_name) AS customer_name,
-           u.email AS customer_email
-    FROM orders o
-    JOIN customers c ON o.customer_id = c.customer_id
-    JOIN users u ON c.user_id = u.id
-  `;
-  
-  let countQuery = 'SELECT COUNT(*) as total FROM orders o';
-  
-  const values: any[] = [];
-  const countValues: any[] = [];
-  
-  if (status) {
-    baseQuery += ' WHERE o.status = ?';
-    values.push(status);
+    page: number = 1,
+    limit: number = 10,
+    status?: string,
+    searchTerm?: string
+  ): Promise<{ orders: Order[]; total: number }> => {
+    const offset = (page - 1) * limit;
     
-    countQuery += ' WHERE o.status = ?';
-    countValues.push(status);
-  }
+    let baseQuery = `
+      SELECT o.*, 
+             CONCAT(c.first_name, ' ', c.last_name) AS customer_name,
+             u.email AS customer_email
+      FROM orders o
+      JOIN customers c ON o.customer_id = c.customer_id
+      JOIN users u ON c.user_id = u.id
+    `;
+    
+    let countQuery = `
+      SELECT COUNT(*) as total 
+      FROM orders o
+      JOIN customers c ON o.customer_id = c.customer_id
+      JOIN users u ON c.user_id = u.id
+    `;
+    
+    const whereClauses: string[] = [];
+    const queryParams: any[] = [];
+    const countParams: any[] = [];
   
-  baseQuery += ' ORDER BY o.created_at DESC LIMIT ? OFFSET ?';
-  values.push(limit, offset);
+    // Status filter
+    if (status) {
+      whereClauses.push('o.status = ?');
+      queryParams.push(status);
+      countParams.push(status);
+    }
   
-  const [orders] = await db.query<RowDataPacket[]>(baseQuery, values);
-  const [totalRows] = await db.query<RowDataPacket[]>(countQuery, countValues);
+    // Search filter
+    if (searchTerm && searchTerm.trim() !== '') {
+      const searchConditions: string[] = [];
+      const searchParams: any[] = [];
+      
+      // Search by order ID (only if searchTerm is a number)
+      const orderId = parseInt(searchTerm);
+      if (!isNaN(orderId)) {
+        searchConditions.push('o.id = ?');
+        searchParams.push(orderId);
+      }
+      
+      // Search by customer name (split into first and last name)
+      const nameParts = searchTerm.trim().split(/\s+/);
+      if (nameParts.length > 0) {
+        searchConditions.push('(c.first_name LIKE ? OR c.last_name LIKE ?)');
+        searchParams.push(`%${nameParts[0]}%`, `%${nameParts[0]}%`);
+        
+        if (nameParts.length > 1) {
+          searchConditions.push('(c.first_name LIKE ? OR c.last_name LIKE ?)');
+          searchParams.push(`%${nameParts[1]}%`, `%${nameParts[1]}%`);
+        }
+      }
+      
+      // Search by date (only if searchTerm matches date format)
+      if (/^\d{4}-\d{2}-\d{2}$/.test(searchTerm)) {
+        searchConditions.push('DATE(o.created_at) = ?');
+        searchParams.push(searchTerm);
+      } else if (/^\d{4}-\d{2}$/.test(searchTerm)) {
+        // Search by month if format is YYYY-MM
+        searchConditions.push('DATE_FORMAT(o.created_at, "%Y-%m") = ?');
+        searchParams.push(searchTerm);
+      } else if (/^\d{4}$/.test(searchTerm)) {
+        // Search by year if format is YYYY
+        searchConditions.push('YEAR(o.created_at) = ?');
+        searchParams.push(searchTerm);
+      }
+      
+      if (searchConditions.length > 0) {
+        whereClauses.push(`(${searchConditions.join(' OR ')})`);
+        queryParams.push(...searchParams);
+        countParams.push(...searchParams);
+      }
+    }
   
-  return {
-    orders: orders as Order[],
-    total: totalRows[0].total
+    // Combine WHERE clauses if any exist
+    if (whereClauses.length > 0) {
+      const whereClause = ' WHERE ' + whereClauses.join(' AND ');
+      baseQuery += whereClause;
+      countQuery += whereClause;
+    }
+  
+    // Add sorting and pagination
+    baseQuery += ' ORDER BY o.created_at DESC LIMIT ? OFFSET ?';
+    queryParams.push(limit, offset);
+  
+    // Debug logging (remove in production)
+    console.log('Executing query:', baseQuery);
+    console.log('With parameters:', queryParams);
+  
+    // Execute both queries
+    const [orders] = await db.query<RowDataPacket[]>(baseQuery, queryParams);
+    const [totalRows] = await db.query<RowDataPacket[]>(countQuery, countParams);
+  
+    return {
+      orders: orders as Order[],
+      total: totalRows[0].total
+    };
   };
-};
 
 export const getOrderById = async (orderId: number): Promise<OrderWithDetails | null> => {
   // Get order basic info
