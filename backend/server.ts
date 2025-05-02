@@ -16,7 +16,8 @@ import customerprofileRoutes from './routes/customerprofileRoutes';
 import cartRoutes from './routes/cartRoutes'; 
 import orderRoutes from './routes/orderRoutes';
 import viewallorderroutes from './routes/viewallorderroutes'; 
-import ownerorderRoutes from './routes/ownerorderRoutes';//new
+import ownerorderRoutes from './routes/ownerorderRoutes';
+import walkinOrderRoutes from './routes/walkinOrderRoutes';//new
 
 dotenv.config();
 
@@ -65,5 +66,6 @@ app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/allorderview', viewallorderroutes);
 app.use('/api/ownerorders', ownerorderRoutes);
+app.use('/api/walkin-orders', walkinOrderRoutes);
 
 export default app;

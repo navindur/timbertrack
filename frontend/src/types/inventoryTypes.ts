@@ -1,6 +1,6 @@
 // src/features/inventory/types/inventoryTypes.ts
 export interface InventoryItem {
-    inventory_id?: number;
+    inventory_id: number;
     name: string;
     type: string;
     price: number;

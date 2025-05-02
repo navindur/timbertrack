@@ -36,3 +36,17 @@ export const useInventory = () => {
     // ... other methods
   };
 };
+
+// In your inventoryService.ts
+export const getAvailableInventory = async (): Promise<InventoryItem[]> => {
+  try {
+    const response = await fetch('/api/inventory'); // Or your actual endpoint
+    if (!response.ok) {
+      throw new Error('Failed to fetch available inventory');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching available inventory:', error);
+    throw error;
+  }
+};

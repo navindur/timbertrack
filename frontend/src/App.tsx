@@ -30,6 +30,9 @@ import AllOrderView from './pages/AllOrderView';
 import AboutUsPage from './pages/AboutUsPage';
 import OrderList from './pages/OrderList';
 import OwnerOrderDetail from './pages/ownerOrderDetail';
+import WalkinOrder from './pages/WalkinOrder';
+import WalkinReceipt from './pages/WalkinReceipt';
+
 
 
 
@@ -42,6 +45,7 @@ const App: React.FC = () => {
       <Route path="/signup" element={<SignUp />} /> 
       <Route path="/signin" element={<SignIn />} />
       <Route path="/about-us" element={<AboutUsPage />} />
+      <Route path="/order-confirmation/:order_id" element={<OrderConfirmation />} />
 
       <Route element={<ProtectedRoute allowedRoles={['shopowner']} />}>
       <Route path="/dashboard" element={<Dashboard />} />
@@ -55,6 +59,9 @@ const App: React.FC = () => {
         <Route path="/productlist" element={<ProductList />} />
         <Route path="/ownerorders" element={<OrderList />} />
         <Route path="/ownerorders/:id" element={<OwnerOrderDetail />} />
+        <Route path="/walkin-order" element={<WalkinOrder />} />
+<Route path="/walkin-orders/:id/receipt" element={<WalkinReceipt />} />
+
       </Route>
 
 
@@ -62,7 +69,7 @@ const App: React.FC = () => {
       <Route path="/cart" element={<CartPage />} />
       <Route path="/checkout" element={<CheckoutPage />} />           //new
       <Route path="/customerprofile" element={<CustomerProfile />} /> 
-      <Route path="/order-confirmation/:order_id" element={<OrderConfirmation />} />    //new
+          //new
       <Route path="/allorderview" element={<AllOrderView />} />    //new
 
       </Route>

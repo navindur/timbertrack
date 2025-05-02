@@ -4,6 +4,17 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:5000/api/products';
 
+export interface WalkinProduct {
+  id: number;
+  name: string;
+  price: number;
+  inventory_quantity: number;
+  inventory_id: number;
+  image_url?: string;
+  // Add other fields as needed
+}
+
+
 // Get all products with filters (matches getAllProducts import)
 export const getAllProducts = async (filters: ProductFilters): Promise<Product[]> => {
   const { page, limit, search, category } = filters;
@@ -27,12 +38,51 @@ export const getAllProducts = async (filters: ProductFilters): Promise<Product[]
   } else if (data?.data && Array.isArray(data.data)) {
     return data.data; // For paginated responses
   } else if (data?.products && Array.isArray(data.products)) {
-    return data.data;
+    return data.products;
   }
   
   console.error('Unexpected API response format:', data);
   return []; // Fallback to empty array
 };
+
+// Get available products for walk-in orders (with inventory data)
+export const getAvailableProducts = async (): Promise<WalkinProduct[]> => {
+  try {
+    const response = await axios.get(`${API_URL}/`);
+    
+    // Handle different response formats
+    let productsData = response.data;
+    
+    // If response is wrapped in a data property
+    if (response.data && response.data.data) {
+      productsData = response.data.data;
+    }
+    // If response is wrapped in a products property
+    else if (response.data && response.data.products) {
+      productsData = response.data.products;
+    }
+    
+    // Ensure we're working with an array
+    if (!Array.isArray(productsData)) {
+      console.error('Expected array but got:', productsData);
+      return [];
+    }
+    
+    return productsData.map(product => ({
+      id: product.id,
+      name: product.name,
+      price: product.price || 0,
+      inventory_quantity: product.quantity || product.inventory_quantity || 0,
+      inventory_id: product.inventory_id,
+      image_url: product.image_url,
+      description: product.description
+    }));
+  } catch (error) {
+    console.error('Error fetching available products:', error);
+    throw new Error('Failed to fetch available products');
+  }
+};
+
 
 // Get product by ID
 export const getProductById = async (id: number): Promise<Product> => {
@@ -54,7 +104,7 @@ export const getInventoryOptions = async (): Promise<InventoryOption[]> => {
 
 // Add new product (matches addProduct import)
 export const addProduct = async (formData: FormData) => {
-  return await axios.post('/api/products', formData, {
+  return await axios.post(API_URL, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
@@ -62,12 +112,13 @@ export const addProduct = async (formData: FormData) => {
 };
 
 export const updateProduct = async (id: number, formData: FormData) => {
-  return await axios.put(`/api/products/${id}`, formData, {
+  return await axios.put(`${API_URL}/${id}`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
   });
 };
+
 // Delete product (matches deleteProduct import)
 export const deleteProduct = async (id: number): Promise<void> => {
   const response = await fetch(`${API_URL}/${id}`, {
@@ -77,5 +128,3 @@ export const deleteProduct = async (id: number): Promise<void> => {
     throw new Error('Failed to delete product');
   }
 };
-
-

@@ -19,6 +19,7 @@ import {
   ExitToApp as LogoutIcon
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import { Storefront as WalkInIcon } from '@mui/icons-material';
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
@@ -37,6 +38,7 @@ const Navbar: React.FC = () => {
 
   const menuItems = [
     { name: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
+    { name: 'Walk-In Orders', icon: <WalkInIcon />, path: '/walkin-order' },
     { name: 'Products', icon: <ProductsIcon />, path: '/productlist' },
     { name: 'Inventory', icon: <InventoryIcon />, path: '/inventorylist' },
     { name: 'Orders', icon: <OrdersIcon />, path: '/ownerorders' },

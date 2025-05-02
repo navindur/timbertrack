@@ -169,6 +169,14 @@ const OrderDetail: React.FC = () => {
                 <strong>Total:</strong> Rs.{Number(order.total_price).toFixed(2)}
 
               </Typography>
+              <Button 
+    variant="outlined" 
+    size="small" 
+    sx={{ mt: 2 }}
+    onClick={() => navigate(`/walkin-orders/${order.id}/receipt`)}
+  >
+    View Receipt
+  </Button>
             </Grid>
             <Grid item xs={12}>
               <Typography variant="h6" gutterBottom>
