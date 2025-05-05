@@ -44,7 +44,7 @@ const Navbar: React.FC = () => {
     { name: 'Orders', icon: <OrdersIcon />, path: '/ownerorders' },
     { name: 'Suppliers', icon: <SuppliersIcon />, path: '/supplierlist' },
     { name: 'Reports', icon: <ReportsIcon />, path: '/reportsdash' },
-    { name: 'User Management', icon: <UserManagementIcon />, path: '/usermanagementdash' },
+    { name: 'User Management', icon: <UserManagementIcon />, path: '/customerinfo' },
     { 
       name: 'Log out', 
       icon: <LogoutIcon />, 

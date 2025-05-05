@@ -32,6 +32,8 @@ import OrderList from './pages/OrderList';
 import OwnerOrderDetail from './pages/ownerOrderDetail';
 import WalkinOrder from './pages/WalkinOrder';
 import WalkinReceipt from './pages/WalkinReceipt';
+import CustomerList from './pages/CustomerList';
+import CustomerDetail from './pages/CustomerDetail';
 
 
 
@@ -61,6 +63,9 @@ const App: React.FC = () => {
         <Route path="/ownerorders/:id" element={<OwnerOrderDetail />} />
         <Route path="/walkin-order" element={<WalkinOrder />} />
 <Route path="/walkin-orders/:id/receipt" element={<WalkinReceipt />} />
+
+<Route path="/customerinfo" element={<CustomerList />} />
+<Route path="/customerinfo/:id" element={<CustomerDetail />} />
 
       </Route>
 
