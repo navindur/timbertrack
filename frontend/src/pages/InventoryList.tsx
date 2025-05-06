@@ -488,7 +488,7 @@ const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) =
       }}>
         <Box className="flex justify-between items-center mb-6">
           <Typography variant="h4" className="text-gray-800 font-bold">
-            <InventoryIcon className="mr-2" />
+            
             Inventory Management
           </Typography>
           <Button

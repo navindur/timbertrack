@@ -34,6 +34,7 @@ import WalkinOrder from './pages/WalkinOrder';
 import WalkinReceipt from './pages/WalkinReceipt';
 import CustomerList from './pages/CustomerList';
 import CustomerDetail from './pages/CustomerDetail';
+import ReportsDashboard from './pages/ReportsDashboard'; //new
 
 
 
@@ -43,6 +44,7 @@ const App: React.FC = () => {
     <Router>
       
       <Routes>
+
       <Route path="/unauthorized" element={<Unauthorized />} />
       <Route path="/signup" element={<SignUp />} /> 
       <Route path="/signin" element={<SignIn />} />
@@ -50,8 +52,8 @@ const App: React.FC = () => {
       <Route path="/order-confirmation/:order_id" element={<OrderConfirmation />} />
 
       <Route element={<ProtectedRoute allowedRoles={['shopowner']} />}>
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/inventorydash" element={<InventoryDash />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/inventorydash" element={<InventoryDash />} />
         <Route path="/ordersdash" element={<OrdersDash />} />
         <Route path="/suppliersdash" element={<SuppliersDash />} />
         <Route path="/reportsdash" element={<ReportsDash />} />
@@ -62,21 +64,18 @@ const App: React.FC = () => {
         <Route path="/ownerorders" element={<OrderList />} />
         <Route path="/ownerorders/:id" element={<OwnerOrderDetail />} />
         <Route path="/walkin-order" element={<WalkinOrder />} />
-<Route path="/walkin-orders/:id/receipt" element={<WalkinReceipt />} />
-
-<Route path="/customerinfo" element={<CustomerList />} />
-<Route path="/customerinfo/:id" element={<CustomerDetail />} />
-
+        <Route path="/walkin-orders/:id/receipt" element={<WalkinReceipt />} />
+        <Route path="/customerinfo" element={<CustomerList />} />
+        <Route path="/customerinfo/:id" element={<CustomerDetail />} />
+        <Route path="/reports" element={<ReportsDashboard />} />
       </Route>
 
 
       <Route element={<ProtectedRoute allowedRoles={['customer']} />}>
-      <Route path="/cart" element={<CartPage />} />
-      <Route path="/checkout" element={<CheckoutPage />} />           //new
-      <Route path="/customerprofile" element={<CustomerProfile />} /> 
-          //new
-      <Route path="/allorderview" element={<AllOrderView />} />    //new
-
+        <Route path="/cart" element={<CartPage />} />
+        <Route path="/checkout" element={<CheckoutPage />} />           
+        <Route path="/customerprofile" element={<CustomerProfile />} />
+        <Route path="/allorderview" element={<AllOrderView />} /> 
       </Route>
 
         <Route path="/" element={<Home />} />

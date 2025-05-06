@@ -19,7 +19,9 @@ import viewallorderroutes from './routes/viewallorderroutes';
 import ownerorderRoutes from './routes/ownerorderRoutes';
 import walkinOrderRoutes from './routes/walkinOrderRoutes';
 import dashboardRoutes from './routes/dashboardroutes';
-import customerinfoRoutes from './routes/customerinfoRoutes';//new
+import customerinfoRoutes from './routes/customerinfoRoutes';
+import reportRoutes from './routes/reportroutes';//new
+
 
 dotenv.config();
 
@@ -72,5 +74,6 @@ app.use('/api/walkin-orders', walkinOrderRoutes);
 
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/customerinfo', customerinfoRoutes); 
+app.use('/api/reports', reportRoutes); //new
 
 export default app;
