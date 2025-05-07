@@ -2,10 +2,7 @@ import express from "express";
 const cors = require("cors");
 import * as dotenv from "dotenv";
 import promisePool from "./db"; // Import the DB connection file
-//import productRoutes from "./routes/productRoutes"; // Adjust the path as needed
 import authRoutes from "./routes/authRoutes";
-
-
 import supplierRoutes from './routes/supplierRoutes';
 import inventoryRoutes from './routes/inventoryRoutes';
 import productsRoutes from './routes/productRoutes';
@@ -20,7 +17,8 @@ import ownerorderRoutes from './routes/ownerorderRoutes';
 import walkinOrderRoutes from './routes/walkinOrderRoutes';
 import dashboardRoutes from './routes/dashboardroutes';
 import customerinfoRoutes from './routes/customerinfoRoutes';
-import reportRoutes from './routes/reportroutes';//new
+import reportRoutes from './routes/reportroutes';
+import customOrderRoutes from "./routes/customOrderRoutes"; //new
 
 
 dotenv.config();
@@ -74,6 +72,7 @@ app.use('/api/walkin-orders', walkinOrderRoutes);
 
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/customerinfo', customerinfoRoutes); 
-app.use('/api/reports', reportRoutes); //new
+app.use('/api/reports', reportRoutes); 
+app.use("/api/custom-orders", customOrderRoutes); //new
 
 export default app;

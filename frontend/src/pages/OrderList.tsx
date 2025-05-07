@@ -104,9 +104,19 @@ const OrderList: React.FC = () => {
         ml: 30,
         width: `calc(100% - 240px)`
       }}>
-        <Typography variant="h4" gutterBottom>
-          Order Management
-        </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+  <Typography variant="h4">
+    Order Management
+  </Typography>
+  <Button
+    variant="contained"
+    color="primary"
+    onClick={() => navigate('/ownercustom-ordersview')}
+  >
+    Custom Orders
+  </Button>
+</Box>
+
 
         {/* Filter Controls */}
         <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>

@@ -266,7 +266,7 @@ const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) =
                 <TableRow key={item.inventory_id} hover>
                   <TableCell>{item.name}</TableCell>
                   <TableCell>{item.type}</TableCell>
-                  <TableCell>${Number(item.price).toFixed(2)}</TableCell>
+                  <TableCell>Rs.{Number(item.price).toFixed(2)}</TableCell>
                   <TableCell>{item.quantity}</TableCell>
                   <TableCell>{item.reorder_level}</TableCell>
                   <TableCell>
@@ -395,7 +395,7 @@ const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) =
             variant="outlined"
             margin="normal"
             InputProps={{
-              startAdornment: <InputAdornment position="start">$</InputAdornment>,
+              startAdornment: <InputAdornment position="start">Rs.</InputAdornment>,
             }}
             inputProps={{
               step: "0.01"

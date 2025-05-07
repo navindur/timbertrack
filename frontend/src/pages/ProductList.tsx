@@ -345,7 +345,7 @@ const ProductList: React.FC = () => {
               <TableCell>{product.name}</TableCell>
               <TableCell>{product.description}</TableCell>
               <TableCell>
-  ${typeof product.price === 'number' 
+  Rs.{typeof product.price === 'number' 
     ? product.price.toFixed(2)
     : Number(product.price || 0).toFixed(2)}
 </TableCell>

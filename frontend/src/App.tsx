@@ -34,7 +34,12 @@ import WalkinOrder from './pages/WalkinOrder';
 import WalkinReceipt from './pages/WalkinReceipt';
 import CustomerList from './pages/CustomerList';
 import CustomerDetail from './pages/CustomerDetail';
-import ReportsDashboard from './pages/ReportsDashboard'; //new
+import ReportsDashboard from './pages/ReportsDashboard';
+import { AuthProvider } from './context/AuthContext'; //new
+import CustomOrderPage from "./pages/CustomOrderPage"; //new
+import MyCustomOrdersPage from "./pages/MyCustomOrdersPage"; //new
+import ShopOwnerCustomOrders from "./pages/ShopOwnerCustomOrders"; //new
+import CustomOrderCheckout from "./pages/CustomOrderCheckout"; //new
 
 
 
@@ -42,9 +47,9 @@ import ReportsDashboard from './pages/ReportsDashboard'; //new
 const App: React.FC = () => {
   return (
     <Router>
+      <AuthProvider>          {/*neww*/}
       
       <Routes>
-
       <Route path="/unauthorized" element={<Unauthorized />} />
       <Route path="/signup" element={<SignUp />} /> 
       <Route path="/signin" element={<SignIn />} />
@@ -68,6 +73,10 @@ const App: React.FC = () => {
         <Route path="/customerinfo" element={<CustomerList />} />
         <Route path="/customerinfo/:id" element={<CustomerDetail />} />
         <Route path="/reports" element={<ReportsDashboard />} />
+
+        <Route path="/ownercustom-ordersview" element={<ShopOwnerCustomOrders />} /> 
+        
+        
       </Route>
 
 
@@ -76,6 +85,11 @@ const App: React.FC = () => {
         <Route path="/checkout" element={<CheckoutPage />} />           
         <Route path="/customerprofile" element={<CustomerProfile />} />
         <Route path="/allorderview" element={<AllOrderView />} /> 
+
+        <Route path="/custom-order" element={<CustomOrderPage />} /> 
+        <Route path="/my-custom-orders" element={<MyCustomOrdersPage />} />  
+        <Route path="/custom-order-checkout/:orderId" element={<CustomOrderCheckout />} />  
+
       </Route>
 
         <Route path="/" element={<Home />} />
@@ -95,6 +109,7 @@ const App: React.FC = () => {
         {/* Remove or keep the /profile route based on your needs */}
         {/* <Route path="/profile" element={<Profile />} /> */}
       </Routes>
+      </AuthProvider> {/*new*/}
     </Router>
   );
 };

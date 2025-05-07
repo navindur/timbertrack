@@ -60,6 +60,19 @@ const Navbar: React.FC = () => {
           About Us
         </Button>
 
+        <Button
+          component={Link}
+          to="/my-custom-orders"
+          sx={{
+            backgroundColor: '#efdecd',
+            color: '#6b7280',
+            '&:hover': { backgroundColor: '#f0ead6' },
+            margin: '0 8px',
+          }}
+        >
+          CUSTOM ORDERS
+        </Button>
+
         {/* Cart Icon */}
         <IconButton
           component={Link}
