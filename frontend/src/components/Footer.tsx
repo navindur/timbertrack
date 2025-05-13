@@ -19,37 +19,33 @@ const Footer: React.FC = () => {
             <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
               Quick Links
             </Typography>
-            <MuiLink href="#" color="inherit" underline="hover" display="block">
+            <MuiLink href="/" color="inherit" underline="hover" display="block">
               Home
             </MuiLink>
-            <MuiLink href="#" color="inherit" underline="hover" display="block">
+            <MuiLink href="/products" color="inherit" underline="hover" display="block">
               Shop
             </MuiLink>
-            <MuiLink href="#" color="inherit" underline="hover" display="block">
+            <MuiLink href="/about-us" color="inherit" underline="hover" display="block">
               About Us
             </MuiLink>
-            <MuiLink href="#" color="inherit" underline="hover" display="block">
-              Blog
-            </MuiLink>
+           
           </Grid>
 
           {/* Customer Service */}
           <Grid item xs={12} sm={6} md={3}>
             <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
-              Customer Service
+              Services
             </Typography>
-            <MuiLink href="#" color="inherit" underline="hover" display="block">
-              FAQ
+            <MuiLink href="/cart" color="inherit" underline="hover" display="block">
+            Cart
             </MuiLink>
-            <MuiLink href="#" color="inherit" underline="hover" display="block">
-              Shipping & Returns
+            <MuiLink href="/my-custom-orders" color="inherit" underline="hover" display="block">
+            Custom Orders
             </MuiLink>
-            <MuiLink href="#" color="inherit" underline="hover" display="block">
-              Privacy Policy
+            <MuiLink href="/customerprofile" color="inherit" underline="hover" display="block">
+            Profile
             </MuiLink>
-            <MuiLink href="#" color="inherit" underline="hover" display="block">
-              Terms & Conditions
-            </MuiLink>
+            
           </Grid>
 
           {/* Contact Information */}
@@ -64,7 +60,7 @@ const Footer: React.FC = () => {
               Galle Road, Kaluthara North
             </Typography>
             <Typography variant="body1" gutterBottom>
-              Email: support@timbertrack.com
+              Email: timbertrack@gmail.com
             </Typography>
             <Typography variant="body1" gutterBottom>
               Phone: 034 223 7741
@@ -77,18 +73,14 @@ const Footer: React.FC = () => {
               Follow Us
             </Typography>
             <Box sx={{ display: 'flex', gap: '1rem' }}>
-              <MuiLink href="#" color="inherit">
+              <MuiLink href="http://facebook.com/" color="inherit">
                 <Facebook fontSize="large" />
               </MuiLink>
-              <MuiLink href="#" color="inherit">
-                <Twitter fontSize="large" />
-              </MuiLink>
-              <MuiLink href="#" color="inherit">
+              
+              <MuiLink href="http://instagram.com/" color="inherit">
                 <Instagram fontSize="large" />
               </MuiLink>
-              <MuiLink href="#" color="inherit">
-                <LinkedIn fontSize="large" />
-              </MuiLink>
+             
             </Box>
           </Grid>
         </Grid>

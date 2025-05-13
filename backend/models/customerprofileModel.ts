@@ -9,6 +9,12 @@ interface Customer {
   address_line2?: string;
   city?: string;
   postal_code?: string;
+  email?: string;
+}
+
+interface UserInfo {
+  id: number;
+  email: string;
 }
 
 export const CustomerModel = {
@@ -44,5 +50,33 @@ export const CustomerModel = {
        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
       [user_id, first_name, last_name, phone_num, address_line1, address_line2, city, postal_code]
     );
+  },
+
+  // Email-related methods
+  async checkEmailExists(email: string): Promise<boolean> {
+    const [rows] = await db.execute(
+      `SELECT COUNT(*) as count FROM users WHERE email = ?`,
+      [email]
+    );
+    return (rows as any)[0].count > 0;
+  },
+
+  async updateUserEmail(userId: number, newEmail: string): Promise<void> {
+    await db.execute(
+      `UPDATE users SET email = ? WHERE id = ?`,
+      [newEmail, userId]
+    );
+  },
+
+  async getUserById(userId: number): Promise<UserInfo | null> {
+    const [rows] = await db.execute(
+      `SELECT id, email FROM users WHERE id = ?`,
+      [userId]
+    );
+    return (rows as UserInfo[])[0] || null;
+  },
+
+  isValidEmail(email: string): boolean {
+    return /^(?!\.)(?!.*\.\.)[A-Z0-9._%+-]+(?<!\.)@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email);
   }
 };
