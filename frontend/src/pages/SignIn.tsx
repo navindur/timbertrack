@@ -104,7 +104,10 @@ const SignIn: React.FC = () => {
                       required
                       size="small"
                       value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      onChange={(e) => setEmail(e.target.value.toLowerCase())} // Convert to lowercase
+  inputProps={{
+    style: { textTransform: 'lowercase' } // Visual hint
+  }}
                     />
                   </Grid>
                   <Grid item xs={12}>
