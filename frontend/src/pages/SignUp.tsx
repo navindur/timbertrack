@@ -24,19 +24,81 @@ const SignUp: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    let value = e.target.value;
+  
+    // Auto-capitalize first letter for name fields
+    if (e.target.name === 'first_name' || e.target.name === 'last_name') {
+      if (value.length === 1) {
+        value = value.toUpperCase();
+      } else if (value.length > 1) {
+        value = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+      }
+    }
+    // Convert email to lowercase as user types
+    else if (e.target.name === 'email') {
+      value = value.toLowerCase();
+    }
+  
+    setFormData({ ...formData, [e.target.name]: value });
   };
 
   const validateForm = () => {
     if (!formData.first_name || !formData.last_name || !formData.email || !formData.password) {
       return 'All fields are required.';
     }
-    if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      return 'Enter a valid email address.';
-    }
-    if (formData.password.length < 8) {
-      return 'Password must be at least 8 characters.';
-    }
+    // First name validation
+  if (!/^[A-Z][a-z]*$/.test(formData.first_name)) {
+    return 'First name must contain only letters.';
+  }
+
+  // First name length: 2 to 30 characters
+if (formData.first_name.length < 2 || formData.first_name.length > 30) {
+  return 'First name must be between 2 and 30 characters.';
+}
+
+  // Last name validation
+  if (!/^[A-Z][a-z]*$/.test(formData.last_name)) {
+    return 'Last name must contain only letters.';
+  }
+
+  // Last name length: 2 to 30 characters
+if (formData.last_name.length < 2 || formData.last_name.length > 30) {
+  return 'Last name must be between 2 and 30 characters.';
+}
+
+
+  // First and last name cannot be same
+  if (formData.first_name.toLowerCase() === formData.last_name.toLowerCase()) {
+    return 'First name and last name cannot be the same.';
+  }
+
+
+  if (!/^(?!\.)(?!.*\.\.)[A-Z0-9._%+-]+(?<!\.)@[A-Z0-9.-]+\.[A-Z]{2,}$/i
+.test(formData.email)) {
+    return 'Enter a valid email address.';
+  }
+
+  if (formData.password.length < 8) {
+    return 'Password must be at least 8 characters.';
+  }
+  if (formData.password.length > 64) {
+    return 'Password must not exceed 64 characters.';
+  }
+  if (/\s/.test(formData.password)) {
+    return 'Password must not contain spaces or tabs.';
+  }
+  if (!/[A-Z]/.test(formData.password)) {
+    return 'Password must contain at least one uppercase letter.';
+  }
+  if (!/[a-z]/.test(formData.password)) {
+    return 'Password must contain at least one lowercase letter.';
+  }
+  if (!/[0-9]/.test(formData.password)) {
+    return 'Password must contain at least one number.';
+  }
+  if (!/[!@#$%^&*(),.?":{}|<>]/.test(formData.password)) {
+    return 'Password must contain at least one special character.';
+  }
     return null;
   };
 

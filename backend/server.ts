@@ -49,7 +49,7 @@ app.use('/api/categories', categoryRoutes);
 
 app.use('/api/productview', productviewRoutes);
 
-app.use("/api", authRoutes); // Add authentication routes
+app.use("/api", authRoutes); // for signup and signin
 
 
 // Start the server
