@@ -68,6 +68,43 @@ const CheckoutPage = () => {
   const [loading, setLoading] = useState(true);
   const [hasCustomerDetails, setHasCustomerDetails] = useState(false);
   const navigate = useNavigate();
+  const [validationErrors, setValidationErrors] = useState<{ [key: string]: string }>({});
+
+
+  const validateCustomerDetails = () => {
+  const errors: { [key: string]: string } = {};
+
+  if (!customerDetails.first_name.trim()) {
+    errors.first_name = 'First name is required';
+  }
+
+  if (!customerDetails.last_name.trim()) {
+    errors.last_name = 'Last name is required';
+  }
+
+  if (!customerDetails.phone_num.trim()) {
+    errors.phone_num = 'Phone number is required';
+  } else if (!/^\d{10}$/.test(customerDetails.phone_num.trim())) {
+    errors.phone_num = 'Phone number must be 10 digits';
+  }
+
+  if (!customerDetails.address_line1.trim()) {
+    errors.address_line1 = 'Address line 1 is required';
+  }
+
+  if (!customerDetails.city.trim()) {
+    errors.city = 'City is required';
+  }
+
+  if (!customerDetails.postal_code.trim()) {
+    errors.postal_code = 'Postal code is required';
+  } else if (!/^\d{5,6}$/.test(customerDetails.postal_code.trim())) {
+    errors.postal_code = 'Postal code must be 5 or 6 digits';
+  }
+
+  setValidationErrors(errors);
+  return Object.keys(errors).length === 0;
+};
 
   useEffect(() => {
     const token = localStorage.getItem('authToken');
@@ -84,6 +121,9 @@ const CheckoutPage = () => {
       navigate('/signin');
       return;
     }
+
+    
+
 
     const fetchData = async () => {
       try {
@@ -160,30 +200,35 @@ const CheckoutPage = () => {
     setPaymentMethod(e.target.value);
   };
 
-  const handleSubmitCustomerDetails = async () => {
-    const token = localStorage.getItem('authToken');
-    const userString = localStorage.getItem('user');
-    const user = userString ? JSON.parse(userString) : null;
+ const handleSubmitCustomerDetails = async () => {
+  if (!validateCustomerDetails()) {
+    return;
+  }
 
-    if (!token || !user?.id) {
-      navigate('/signin');
-      return;
-    }
+  const token = localStorage.getItem('authToken');
+  const userString = localStorage.getItem('user');
+  const user = userString ? JSON.parse(userString) : null;
 
-    try {
-      const customerId = user?.customerId || user?.id;
-      await axios.put(
-        `${import.meta.env.VITE_API_BASE_URL}/customers/${customerId}`,
-        customerDetails,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setHasCustomerDetails(true);
-      handleNext();
-    } catch (error) {
-      console.error('Error updating customer details:', error);
-      alert('Failed to update customer details. Please try again.');
-    }
-  };
+  if (!token || !user?.id) {
+    navigate('/signin');
+    return;
+  }
+
+  try {
+    const customerId = user?.customerId || user?.id;
+    await axios.put(
+      `${import.meta.env.VITE_API_BASE_URL}/customers/${customerId}`,
+      customerDetails,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    setHasCustomerDetails(true);
+    handleNext();
+  } catch (error) {
+    console.error('Error updating customer details:', error);
+    alert('Failed to update customer details. Please try again.');
+  }
+};
+
 
   const handlePlaceOrder = async () => {
     const token = localStorage.getItem('authToken');
@@ -238,6 +283,8 @@ const CheckoutPage = () => {
                   name="first_name"
                   value={customerDetails.first_name}
                   onChange={handleCustomerDetailsChange}
+                  error={!!validationErrors.first_name}
+  helperText={validationErrors.first_name}
                 />
                 <TextField
                   required
@@ -246,6 +293,8 @@ const CheckoutPage = () => {
                   name="last_name"
                   value={customerDetails.last_name}
                   onChange={handleCustomerDetailsChange}
+                  error={!!validationErrors.last_name}
+  helperText={validationErrors.last_name}
                 />
               </Box>
               <TextField
@@ -255,6 +304,8 @@ const CheckoutPage = () => {
                 name="phone_num"
                 value={customerDetails.phone_num}
                 onChange={handleCustomerDetailsChange}
+                              error={!!validationErrors.phone_num}
+  helperText={validationErrors.phone_num}
               />
               <TextField
                 required
@@ -263,6 +314,8 @@ const CheckoutPage = () => {
                 name="address_line1"
                 value={customerDetails.address_line1}
                 onChange={handleCustomerDetailsChange}
+                                              error={!!validationErrors.address_line1}
+  helperText={validationErrors.address_line1}
               />
               <TextField
                 fullWidth
@@ -270,6 +323,8 @@ const CheckoutPage = () => {
                 name="address_line2"
                 value={customerDetails.address_line2}
                 onChange={handleCustomerDetailsChange}
+                                                              error={!!validationErrors.address_line2}
+  helperText={validationErrors.address_line2}
               />
               <Box sx={{ display: 'flex', gap: 2 }}>
                 <TextField
@@ -279,6 +334,9 @@ const CheckoutPage = () => {
                   name="city"
                   value={customerDetails.city}
                   onChange={handleCustomerDetailsChange}
+              error={!!validationErrors.city}
+  helperText={validationErrors.city}
+                  
                 />
                 <TextField
                   required
@@ -287,6 +345,8 @@ const CheckoutPage = () => {
                   name="postal_code"
                   value={customerDetails.postal_code}
                   onChange={handleCustomerDetailsChange}
+                              error={!!validationErrors.postal_code}
+  helperText={validationErrors.postal_code}
                 />
               </Box>
             </Box>

@@ -28,7 +28,7 @@ export const getSalesSummary = async (req: Request, res: Response) => {
       return res.status(400).json({ message: 'Start and end dates are required' });
     }
 
-    const summary = await getSalesSummaryService(start as string, end as string) as SalesSummary;
+    const summary = await getSalesSummaryService(start as string, end as string);
 
     res.status(200).json(summary);
   } catch (err) {
@@ -37,29 +37,32 @@ export const getSalesSummary = async (req: Request, res: Response) => {
   }
 };
 
-
 export const getSalesSummaryPDF = async (req: Request, res: Response) => {
-    try {
-      const { start, end } = req.query;
-      if (!start || !end) {
-        return res.status(400).json({ message: 'Start and end dates are required' });
-      }
-  
-      const summary = await getSalesSummaryService(start as string, end as string) as SalesSummary;
-
-      generateSalesSummaryPDF({
-        total_orders: summary.total_orders,
-        total_revenue: summary.total_revenue,
-        total_items_sold: summary.total_items_sold,
-        start_date: start as string,
-        end_date: end as string,
-      }, res);
-    } catch (error) {
-      console.error('PDF export error:', error);
-      res.status(500).json({ message: 'Error generating PDF' });
+  try {
+    const { start, end } = req.query;
+    if (!start || !end) {
+      return res.status(400).json({ message: 'Start and end dates are required' });
     }
-  };
-  
+
+    const summary = await getSalesSummaryService(start as string, end as string);
+
+    // Define the PDF data structure inline
+    generateSalesSummaryPDF({
+      ...summary,
+      start_date: start as string,
+      end_date: end as string,
+    }, res);
+  } catch (error) {
+    console.error('PDF export error:', error);
+    res.status(500).json({ message: 'Error generating PDF' });
+  }
+};
+
+
+
+
+
+
 // Sales by Product
 export const getSalesByProduct = async (req: Request, res: Response) => {
   try {
@@ -91,7 +94,7 @@ export const getSalesByProductPDF = async (req: Request, res: Response) => {
         item.id,
         item.name,
         item.total_quantity,
-        `$${Number(item.total_revenue).toFixed(2)}`
+        `Rs.${Number(item.total_revenue).toFixed(2)}`
       ])
     }, res, 'sales_by_product.pdf');
   } catch (error) {
@@ -130,7 +133,7 @@ export const getSalesByCategoryPDF = async (req: Request, res: Response) => {
       data: (results as any[]).map(item => [
         item.category,
         item.total_quantity,
-        `$${Number(item.total_revenue).toFixed(2)}`
+        `Rs.${Number(item.total_revenue).toFixed(2)}`
       ])
     }, res, 'sales_by_category.pdf');
   } catch (error) {
@@ -169,7 +172,7 @@ export const getSalesByPaymentMethodPDF = async (req: Request, res: Response) =>
       data: (results as any[]).map(item => [
         item.payment_method,
         item.order_count,
-        `$${Number(item.revenue).toFixed(2)}`
+        `Rs.${Number(item.revenue).toFixed(2)}`
       ])
     }, res, 'sales_by_payment_method.pdf');
   } catch (error) {
@@ -234,8 +237,8 @@ export const getInventoryValuationPDF = async (req: Request, res: Response) => {
         item.name,
         item.type,
         item.quantity,
-        `$${Number(item.price).toFixed(2)}`,
-        `$${Number(item.total_value).toFixed(2)}`
+        `Rs.${Number(item.price).toFixed(2)}`,
+        `Rs.${Number(item.total_value).toFixed(2)}`
       ])
     }, res, 'inventory_valuation.pdf');
   } catch (error) {
@@ -275,7 +278,7 @@ export const getTopCustomersPDF = async (req: Request, res: Response) => {
         item.customer_id,
         `${item.first_name} ${item.last_name}`,
         item.email,
-        `$${Number(item.total_spent).toFixed(2)}`,
+        `Rs.${Number(item.total_spent).toFixed(2)}`,
         item.total_orders
       ])
     }, res, 'top_customers.pdf');
@@ -311,7 +314,7 @@ export const getCustomerOrderHistoryPDF = async (req: Request, res: Response) =>
         new Date(item.created_at).toLocaleDateString(),
         item.product_name,
         item.quantity,
-        `$${Number(item.price).toFixed(2)}`,
+        `Rs.${Number(item.price).toFixed(2)}`,
         item.status
       ])
     }, res, `customer_${customerId}_order_history.pdf`);
@@ -351,7 +354,7 @@ export const getOrdersByStatusPDF = async (req: Request, res: Response) => {
       data: (results as any[]).map(item => [
         item.status,
         item.count,
-        `$${Number(item.revenue).toFixed(2)}`
+        `Rs.${Number(item.revenue).toFixed(2)}`
       ])
     }, res, 'orders_by_status.pdf');
   } catch (error) {

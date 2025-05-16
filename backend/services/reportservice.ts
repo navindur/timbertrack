@@ -1,27 +1,113 @@
 // src/services/reportservice.ts
 
 import db from '../db';
+import { RowDataPacket } from 'mysql2/promise';
 
-// Existing sales summary service
-export const getSalesSummaryService = async (start: string, end: string) => {
-  const [summary] = await db.execute(
+
+// src/services/reportservice.ts
+
+interface RegularOrderSummary {
+  total_regular_orders: number;
+  total_regular_revenue: number;
+  total_items_sold: number;
+}
+
+interface CustomOrderSummary {
+  total_custom_orders: number;
+  total_custom_revenue: number;
+}
+
+interface SalesSummaryResult {
+  total_orders: number;
+  total_revenue: number;
+  total_items_sold: number;
+  regular_orders: number;
+  regular_revenue: number;
+  custom_orders: number;
+  custom_revenue: number;
+  regular_percentage: number;
+  custom_percentage: number;
+}
+
+interface RegularSummaryRow extends RowDataPacket {
+  total_regular_orders: number;
+  total_regular_revenue: number;
+  total_items_sold: number;
+}
+
+interface CustomSummaryRow extends RowDataPacket {
+  total_custom_orders: number;
+  total_custom_revenue: number;
+}
+
+export const getSalesSummaryService = async (start: string, end: string): Promise<SalesSummaryResult> => {
+  // Regular orders summary
+  const [regularRows] = await db.query<RegularSummaryRow[]>(
     `
     SELECT 
-      COUNT(*) AS total_orders,
-      SUM(total_price) AS total_revenue,
-      (
+      COUNT(*) AS total_regular_orders,
+      COALESCE(SUM(total_price), 0) AS total_regular_revenue,
+      COALESCE((
         SELECT SUM(oi.quantity)
         FROM order_items oi
         JOIN orders o ON oi.order_id = o.id
         WHERE o.created_at BETWEEN ? AND ?
-      ) AS total_items_sold
+      ), 0) AS total_items_sold
     FROM orders
     WHERE created_at BETWEEN ? AND ?
     `,
     [start, end, start, end]
   );
 
-  return Array.isArray(summary) ? summary[0] : summary;
+  // Custom orders summary
+  const [customRows] = await db.query<CustomSummaryRow[]>(
+    `
+    SELECT 
+      COUNT(*) AS total_custom_orders,
+      COALESCE(SUM(estimated_price), 0) AS total_custom_revenue
+    FROM custom_orders
+    WHERE payment_status = 'paid' 
+      AND request_date BETWEEN ? AND ?
+    `,
+    [start, end]
+  );
+
+  const regularData = regularRows[0] || {
+    total_regular_orders: 0,
+    total_regular_revenue: 0,
+    total_items_sold: 0
+  };
+
+  const customData = customRows[0] || {
+    total_custom_orders: 0,
+    total_custom_revenue: 0
+  };
+
+const regularRevenue = Number(regularData.total_regular_revenue) || 0;
+const customRevenue = Number(customData.total_custom_revenue) || 0;
+
+const total_orders = regularData.total_regular_orders + customData.total_custom_orders;
+const total_revenue = regularRevenue + customRevenue;
+
+const regular_percentage = total_revenue > 0
+  ? Math.round((regularRevenue / total_revenue) * 100)
+  : 0;
+
+const custom_percentage = total_revenue > 0
+  ? Math.round((customRevenue / total_revenue) * 100)
+  : 0;
+
+return {
+  total_orders,
+  total_revenue,
+  total_items_sold: regularData.total_items_sold,
+  regular_orders: regularData.total_regular_orders,
+  regular_revenue: regularRevenue,
+  custom_orders: customData.total_custom_orders,
+  custom_revenue: customRevenue,
+  regular_percentage,
+  custom_percentage
+};
 };
 
 // Sales by Product

@@ -210,26 +210,54 @@ const ReportsDashboard: React.FC = () => {
   };
 
   const renderSalesSummary = () => {
-    const data = reportData as any;
-    return (
-      <Box sx={{ mt: 3 }}>
-        <Box sx={{ display: 'flex', gap: 3, mb: 4 }}>
-          <Paper sx={{ p: 3, flex: 1 }}>
-            <Typography variant="h6">Total Orders</Typography>
-            <Typography variant="h4">{data.total_orders}</Typography>
-          </Paper>
-          <Paper sx={{ p: 3, flex: 1 }}>
-            <Typography variant="h6">Total Revenue</Typography>
-            <Typography variant="h4">Rs.{Number(data.total_revenue).toFixed(2)}</Typography>
-          </Paper>
-          <Paper sx={{ p: 3, flex: 1 }}>
-            <Typography variant="h6">Items Sold</Typography>
-            <Typography variant="h4">{data.total_items_sold}</Typography>
-          </Paper>
-        </Box>
+  const data = reportData as any;
+  return (
+    <Box sx={{ mt: 3 }}>
+      <Box sx={{ display: 'flex', gap: 3, mb: 4 }}>
+        <Paper sx={{ p: 3, flex: 1 }}>
+          <Typography variant="h6">Total Orders</Typography>
+          <Typography variant="h4">{data.total_orders}</Typography>
+        </Paper>
+        <Paper sx={{ p: 3, flex: 1 }}>
+          <Typography variant="h6">Total Revenue</Typography>
+          <Typography variant="h4">Rs.{Number(data.total_revenue).toFixed(2)}</Typography>
+        </Paper>
+        <Paper sx={{ p: 3, flex: 1 }}>
+          <Typography variant="h6">Items Sold</Typography>
+          <Typography variant="h4">{data.total_items_sold}</Typography>
+        </Paper>
       </Box>
-    );
-  };
+
+      <Typography variant="h6" sx={{ mb: 2 }}>Sales Breakdown</Typography>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Type</TableCell>
+              <TableCell align="right">Orders</TableCell>
+              <TableCell align="right">Revenue</TableCell>
+              <TableCell align="right">Percentage</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            <TableRow>
+              <TableCell>Regular Orders</TableCell>
+              <TableCell align="right">{data.regular_orders}</TableCell>
+              <TableCell align="right">Rs.{Number(data.regular_revenue).toFixed(2)}</TableCell>
+              <TableCell align="right">{data.regular_percentage}%</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Custom Orders</TableCell>
+              <TableCell align="right">{data.custom_orders}</TableCell>
+              <TableCell align="right">Rs.{Number(data.custom_revenue).toFixed(2)}</TableCell>
+              <TableCell align="right">{data.custom_percentage}%</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Box>
+  );
+};
 
   const renderSalesByProduct = () => {
     const data = reportData as any[];

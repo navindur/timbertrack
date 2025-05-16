@@ -58,13 +58,19 @@ const MyCustomOrdersPage: React.FC = () => {
     navigate(`/custom-order-checkout/${orderId}`);
   };
 
-  if (!customer) {
-    return (
-      <Box sx={{ p: 3 }}>
-        <Typography>You must be logged in as a customer to view this page.</Typography>
-      </Box>
-    );
-  }
+/*if (!customer) {
+  return (
+    <Box sx={{ p: 3 }}>
+      <Typography variant="h6" gutterBottom>
+        Unable to load your profile
+      </Typography>
+      <Typography variant="body1" color="textSecondary">
+        You must be logged in as a customer to view this page. If you are already logged in, please try refreshing the page or logging in again.
+      </Typography>
+    </Box>
+  );
+}*/
+
 
   return (
     <>
