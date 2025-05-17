@@ -341,7 +341,7 @@ export const getOrdersByStatus = async (req: Request, res: Response) => {
     const results = await getOrdersByStatusService(start as string, end as string);
     res.status(200).json(results);
   } catch (err) {
-    console.error('Error fetching orders by status:', err);
+    console.error('Error fetching normal orders by status:', err);
     res.status(500).json({ message: 'Internal server error' });
   }
 };
@@ -355,9 +355,9 @@ export const getOrdersByStatusPDF = async (req: Request, res: Response) => {
     const results = await getOrdersByStatusService(start as string, end as string);
     
     generateGenericReportPDF({
-      title: 'Orders by Status Report',
+      title: 'Normal Orders by Status Report',
       period: `${start} to ${end}`,
-      subtitle: 'Comprehensive Orders by Status overview',
+      subtitle: 'Comprehensive Normal Orders by Status overview',
       columns: ['Status', 'Order Count', 'Revenue'],
       data: (results as any[]).map(item => [
         item.status,

@@ -429,9 +429,12 @@ const ReportsDashboard: React.FC = () => {
             {data.map((row) => (
               <TableRow key={row.payment_method}>
                 <TableCell>
-                  {row.payment_method === 'cash_on_delivery' 
-                    ? 'Cash on Delivery' 
-                    : 'Credit Card'}
+                  
+                                {row.payment_method === 'cash'
+  ? 'Cash (walk-in)'
+  : row.payment_method === 'cash_on_delivery'
+  ? 'Cash on Delivery'
+  : 'Card Payment'}
                 </TableCell>
                 <TableCell align="right">{row.order_count}</TableCell>
                 <TableCell align="right">Rs.{Number(row.revenue).toFixed(2)}</TableCell>
@@ -523,7 +526,7 @@ const ReportsDashboard: React.FC = () => {
     <Tab label="Low Stock Alerts" value="low-stock" />
     <Tab label="Inventory Valuation" value="inventory-valuation" />
     <Tab label="Top Customers" value="top-customers" />
-    <Tab label="Orders by Status" value="orders-status" />
+    <Tab label="Normal Orders by Status" value="orders-status" />
   </Tabs>
         </Paper>
 

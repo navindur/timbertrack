@@ -4,7 +4,7 @@ export interface Order {
     created_at: string;
     status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
     total_price: number;
-    payment_method: 'cash_on_delivery' | 'credit_card';
+    payment_method: 'cash' | 'cash_on_delivery' | 'credit_card';
     updated_at: string;
     customer_name?: string;
     customer_email?: string;

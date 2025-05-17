@@ -17,6 +17,11 @@ const ShopOwnerCustomOrders: React.FC = () => {
   const [imageModalOpen, setImageModalOpen] = useState(false); //new
   const [selectedImage, setSelectedImage] = useState(''); //new
   const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState("");
+const [statusFilter, setStatusFilter] = useState("all");
+const [paymentFilter, setPaymentFilter] = useState("all");
+const [productionFilter, setProductionFilter] = useState("all");
+const [actionFilter, setActionFilter] = useState("all");
 
 
   useEffect(() => {
@@ -94,6 +99,33 @@ const ShopOwnerCustomOrders: React.FC = () => {
     }
   };
 
+const filteredOrders = orders.filter(order => {
+  // Search term matching
+  const matchesSearch = 
+    order.custom_order_id.toString().includes(searchTerm.toLowerCase()) ||
+    `${order.first_name} ${order.last_name}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    format(new Date(order.request_date), "MMM dd, yyyy").toLowerCase().includes(searchTerm.toLowerCase());
+  
+  // Status filter
+  const matchesStatus = statusFilter === "all" || order.status.toLowerCase() === statusFilter;
+  
+  // Payment filter
+  const matchesPayment = paymentFilter === "all" || order.payment_status.toLowerCase() === paymentFilter;
+  
+  // Production filter
+  const matchesProduction = productionFilter === "all" || order.production_status.toLowerCase() === productionFilter;
+  
+  // Action availability filter
+  const matchesAction = 
+    actionFilter === "all" ||
+    (actionFilter === "needs_action" && order.status === "Pending") ||
+    (actionFilter === "no_action" && order.status !== "Pending");
+
+  return matchesSearch && matchesStatus && matchesPayment && matchesProduction && matchesAction;
+});
+
+
+
   return (
     <Box sx={{ 
       display: 'flex', 
@@ -129,6 +161,82 @@ const ShopOwnerCustomOrders: React.FC = () => {
           Normal Orders
         </Button>
       </Box>
+
+<Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap' }}>
+  {/* Search Bar */}
+<TextField
+  label="Search Orders"
+  variant="outlined"
+  size="medium"
+  value={searchTerm}
+  onChange={(e) => setSearchTerm(e.target.value)}
+  sx={{ width: 425 }}
+  placeholder="Order ID, Customer Name, or Date (Month date, yyyy)"
+
+/>
+
+  {/* Status Filter */}
+  <FormControl size="small" sx={{ minWidth: 150 }}>
+    <InputLabel>Status</InputLabel>
+    <Select
+      value={statusFilter}
+      label="Status"
+      onChange={(e) => setStatusFilter(e.target.value)}
+    >
+      <MenuItem value="all">All Statuses</MenuItem>
+      <MenuItem value="pending">Pending</MenuItem>
+      <MenuItem value="accepted">Accepted</MenuItem>
+      <MenuItem value="rejected">Rejected</MenuItem>
+    </Select>
+  </FormControl>
+
+  {/* Payment Filter */}
+  <FormControl size="small" sx={{ minWidth: 150 }}>
+    <InputLabel>Payment</InputLabel>
+    <Select
+      value={paymentFilter}
+      label="Payment"
+      onChange={(e) => setPaymentFilter(e.target.value)}
+    >
+      <MenuItem value="all">All Payments</MenuItem>
+      <MenuItem value="paid">Paid</MenuItem>
+      <MenuItem value="unpaid">Unpaid</MenuItem>
+    </Select>
+  </FormControl>
+
+  {/* Production Filter */}
+  <FormControl size="small" sx={{ minWidth: 150 }}>
+    <InputLabel>Production</InputLabel>
+    <Select
+      value={productionFilter}
+      label="Production"
+      onChange={(e) => setProductionFilter(e.target.value)}
+    >
+      <MenuItem value="all">All Statuses</MenuItem>
+      <MenuItem value="not_started">Not Started</MenuItem>
+      <MenuItem value="in_progress">In Progress</MenuItem>
+      <MenuItem value="finished">Finished</MenuItem>
+      <MenuItem value="shipped">Shipped</MenuItem>
+      <MenuItem value="delivered">Delivered</MenuItem>
+    </Select>
+  </FormControl>
+
+  {/* Action Filter */}
+  <FormControl size="small" sx={{ minWidth: 180 }}>
+    <InputLabel>Action Needed</InputLabel>
+    <Select
+      value={actionFilter}
+      label="Action Needed"
+      onChange={(e) => setActionFilter(e.target.value)}
+    >
+      <MenuItem value="all">All Orders</MenuItem>
+      <MenuItem value="needs_action">Needs Action</MenuItem>
+      <MenuItem value="no_action">No Action Needed</MenuItem>
+    </Select>
+  </FormControl>
+</Box>
+
+
       
       {loading ? (
         <CircularProgress />
@@ -155,7 +263,7 @@ const ShopOwnerCustomOrders: React.FC = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {orders.map((order) => (
+              {filteredOrders.map((order) => (
                 <TableRow key={order.custom_order_id}>
                   <TableCell>{order.custom_order_id}</TableCell>
                   <TableCell>{order.first_name} {order.last_name}</TableCell>

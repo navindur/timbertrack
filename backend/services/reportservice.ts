@@ -157,14 +157,29 @@ export const getSalesByPaymentMethodService = async (start: string, end: string)
       payment_method,
       COUNT(*) AS order_count,
       SUM(total_price) AS revenue
-    FROM orders
-    WHERE created_at BETWEEN ? AND ?
+    FROM (
+      SELECT 
+        payment_method,
+        total_price
+      FROM orders
+      WHERE created_at BETWEEN ? AND ?
+
+      UNION ALL
+
+      SELECT 
+        'credit_card' AS payment_method,
+        estimated_price AS total_price
+      FROM custom_orders
+      WHERE request_date BETWEEN ? AND ?
+        AND payment_status = 'paid'
+    ) AS combined
     GROUP BY payment_method
     `,
-    [start, end]
+    [start, end, start, end]
   );
   return results;
 };
+
 
 // Low Stock Alerts
 export const getLowStockService = async () => {

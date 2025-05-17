@@ -185,9 +185,12 @@ const OrderList: React.FC = () => {
                       <TableCell>Rs.{Number(order.total_price).toFixed(2)}
                       </TableCell>
                       <TableCell>
-                        {order.payment_method === 'cash_on_delivery' 
-                          ? 'Cash on Delivery' 
-                          : 'Credit Card'}
+                       {order.payment_method === 'cash'
+  ? 'Cash (walk-in)'
+  : order.payment_method === 'cash_on_delivery'
+  ? 'Cash on Delivery'
+  : 'Card Payment'}
+
                       </TableCell>
                       <TableCell>
                         <Chip 

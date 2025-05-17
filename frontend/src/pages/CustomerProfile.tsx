@@ -57,6 +57,7 @@ const CustomerProfile = () => {
     confirmPassword: ''
   });
   const [originalData, setOriginalData] = useState<CustomerData | null>(null);
+  
 
   // Validation functions
   const validateName = (name: string, fieldName: string): string | null => {

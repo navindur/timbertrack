@@ -125,15 +125,24 @@ const WalkinReceipt: React.FC = () => {
                   <Typography variant="subtitle1">Payment Method</Typography>
                 </TableCell>
                 <TableCell align="right">
-                  {receiptData.payment_method === 'cash_on_delivery' ? 'Cash' : 'Card'}
+                  
+                 {
+  receiptData.payment_method === 'cash'
+    ? 'Cash'
+    : receiptData.payment_method === 'cash_on_delivery'
+    ? 'Cash on Delivery'
+    : 'Card Payment'
+}
                 </TableCell>
               </TableRow>
             </TableBody>
           </Table>
         </TableContainer>
 
-        <Box sx={{ mt: 3, textAlign: 'center' }}>
+        <Box sx={{ mt: 3, textAlign: 'justify' }}>
           <Typography>Thank you for your purchase!</Typography>
+         <Typography> This receipt also serves as your warranty card. All products are covered under a 2-year warranty from the date of purchase. Please retain this receipt and present it to claim warranty services if needed.
+            </Typography>
         </Box>
       </Paper>
 

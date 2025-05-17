@@ -62,6 +62,8 @@ const WalkinOrder: React.FC = () => {
   const [openSuccessDialog, setOpenSuccessDialog] = useState(false);
   const [createdOrderId, setCreatedOrderId] = useState<number | null>(null);
   const navigate = useNavigate();
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -111,6 +113,69 @@ const WalkinOrder: React.FC = () => {
     );
   };
 
+const validateCustomer = () => {
+  const newErrors: Record<string, string> = {};
+
+  const { first_name, last_name, phone_num, address_line1, city, postal_code } = customer;
+
+  // First Name
+  if (!first_name.trim()) {
+    newErrors.first_name = 'First name is required';
+  } else if (!/^[A-Za-z]{2,30}$/.test(first_name)) {
+    newErrors.first_name = 'Must be 2–30 letters only';
+  }
+
+  // Last Name
+  if (!last_name.trim()) {
+    newErrors.last_name = 'Last name is required';
+  } else if (!/^[A-Za-z]{2,30}$/.test(last_name)) {
+    newErrors.last_name = 'Must be 2–30 letters only';
+  }
+
+  // First and Last name cannot be the same
+  if (
+    first_name.trim().toLowerCase() === last_name.trim().toLowerCase() &&
+    first_name.trim() !== '' &&
+    last_name.trim() !== ''
+  ) {
+    newErrors.last_name = 'Last name cannot be the same as first name';
+  }
+
+  // Phone Number
+  if (!phone_num.trim()) {
+    newErrors.phone_num = 'Phone number is required';
+  } else if (!/^0\d{9}$/.test(phone_num)) {
+    newErrors.phone_num = 'Must start with 0 and be 10 digits';
+  }
+
+  // Address Line 1
+  if (!address_line1.trim()) {
+    newErrors.address_line1 = 'Address is required';
+  } else if (!/^[A-Za-z0-9\s,.'-]{5,100}$/.test(address_line1)) {
+    newErrors.address_line1 = 'Must be 5–100 valid characters';
+  }
+
+  // City
+  if (!city.trim()) {
+    newErrors.city = 'City is required';
+  } else if (!/^[A-Za-z\s]{2,50}$/.test(city)) {
+    newErrors.city = 'Must be 2–50 letters and spaces';
+  }
+
+  // Postal Code
+  if (!postal_code.trim()) {
+    newErrors.postal_code = 'Postal code is required';
+  } else if (!/^\d{5}$/.test(postal_code)) {
+    newErrors.postal_code = 'Must be exactly 5 digits';
+  }
+
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
+};
+
+
+
+
   const calculateTotal = () => {
     return cart.reduce((total, item) => total + (item.price * item.cartQuantity), 0);
   };
@@ -121,38 +186,38 @@ const WalkinOrder: React.FC = () => {
   };
 
   const handleSubmitOrder = async () => {
-    if (cart.length === 0) {
-      alert('Please add items to the cart');
-      return;
-    }
+  if (!validateCustomer()) {
+    return;
+  }
 
-    if (!customer.first_name || !customer.last_name || !customer.phone_num) {
-      alert('Please provide customer name and phone number');
-      return;
-    }
+  if (cart.length === 0) {
+    alert('Please add items to the cart');
+    return;
+  }
 
-    try {
-      const orderItems = cart.map(item => ({
-        product_id: item.id,
-        quantity: item.cartQuantity,
-        price: item.price
-      }));
+  try {
+    const orderItems = cart.map(item => ({
+      product_id: item.id,
+      quantity: item.cartQuantity,
+      price: item.price
+    }));
 
-      const totalAmount = calculateTotal();
-      const result = await createWalkinOrder({
-        customer,
-        items: orderItems,
-        paymentMethod,
-        totalAmount
-      });
+    const totalAmount = calculateTotal();
+    const result = await createWalkinOrder({
+      customer,
+      items: orderItems,
+      paymentMethod,
+      totalAmount
+    });
 
-      setCreatedOrderId(result.orderId);
-      setOpenSuccessDialog(true);
-    } catch (error) {
-      console.error('Error creating order:', error);
-      alert('Failed to create order');
-    }
-  };
+    setCreatedOrderId(result.orderId);
+    setOpenSuccessDialog(true);
+  } catch (error) {
+    console.error('Error creating order:', error);
+    alert('Failed to create order');
+  }
+};
+
 
   const handlePrintReceipt = () => {
     if (createdOrderId) {
@@ -218,7 +283,10 @@ const WalkinOrder: React.FC = () => {
                           size="small"
                           variant="outlined"
                           onClick={() => addToCart(product)}
-                          disabled={product.inventory_quantity === 0}
+                          disabled={
+    product.inventory_quantity === 0 ||
+    cart.find(item => item.id === product.id)?.cartQuantity === product.inventory_quantity
+  }
                         >
                           Add
                         </Button>
@@ -326,6 +394,8 @@ const WalkinOrder: React.FC = () => {
                   name="first_name"
                   value={customer.first_name}
                   onChange={handleCustomerChange}
+                  error={!!errors.first_name}
+                  helperText={errors.first_name}
                   required
                 />
               </Grid>
@@ -336,6 +406,8 @@ const WalkinOrder: React.FC = () => {
                   name="last_name"
                   value={customer.last_name}
                   onChange={handleCustomerChange}
+                  error={!!errors.last_name}
+                  helperText={errors.last_name}
                   required
                 />
               </Grid>
@@ -346,16 +418,21 @@ const WalkinOrder: React.FC = () => {
                   name="phone_num"
                   value={customer.phone_num}
                   onChange={handleCustomerChange}
+                  error={!!errors.phone_num}
+                  helperText={errors.phone_num}
                   required
                 />
               </Grid>
               <Grid item xs={12}>
                 <TextField
                   fullWidth
-                  label="Address Line 1"
+                  label="Address 1"
                   name="address_line1"
                   value={customer.address_line1}
                   onChange={handleCustomerChange}
+                  error={!!errors.address_line1}
+                  helperText={errors.address_line1}
+                  required
                 />
               </Grid>
               <Grid item xs={12}>
@@ -365,6 +442,9 @@ const WalkinOrder: React.FC = () => {
                   name="city"
                   value={customer.city}
                   onChange={handleCustomerChange}
+                  error={!!errors.city}
+                  helperText={errors.city}
+                  required
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -374,6 +454,9 @@ const WalkinOrder: React.FC = () => {
                   name="postal_code"
                   value={customer.postal_code}
                   onChange={handleCustomerChange}
+                  error={!!errors.postal_code}
+                  helperText={errors.postal_code}
+                  required
                 />
               </Grid>
             </Grid>

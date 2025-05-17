@@ -73,7 +73,7 @@ export const createWalkinOrder = async (
           customerId,
           'pending',
           totalAmount,
-          paymentMethod === 'cash' ? 'cash_on_delivery' : 'credit_card'
+          paymentMethod === 'cash' ? 'cash' : 'credit_card'
         ]
       );
   

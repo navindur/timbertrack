@@ -161,9 +161,11 @@ const OrderDetail: React.FC = () => {
               </Typography>
               <Typography>
                 <strong>Payment Method:</strong> 
-                {order.payment_method === 'cash_on_delivery' 
-                  ? ' Cash on Delivery' 
-                  : ' Credit Card'}
+                {order.payment_method === 'cash'
+  ? 'Cash (walk-in)'
+  : order.payment_method === 'cash_on_delivery'
+  ? 'Cash on Delivery'
+  : 'Card Payment'}
               </Typography>
               <Typography>
                 <strong>Total:</strong> Rs.{Number(order.total_price).toFixed(2)}
