@@ -40,6 +40,7 @@ import CustomOrderPage from "./pages/CustomOrderPage"; //new
 import MyCustomOrdersPage from "./pages/MyCustomOrdersPage"; //new
 import ShopOwnerCustomOrders from "./pages/ShopOwnerCustomOrders"; //new
 import CustomOrderCheckout from "./pages/CustomOrderCheckout"; //new
+import CustomOrderReceipt from './pages/CustomOrderReceipt';
 
 
 
@@ -105,6 +106,7 @@ const App: React.FC = () => {
         <Route path="/products" element={<CustomerProductList />} />
         <Route path="/categories/:category" element={<CategoryPage />} /> 
         <Route path="/productsview/:id" element={<ProductDetailPage />} />//new
+        <Route path="/custom-orders/:orderId/receipt" element={<CustomOrderReceipt />} />
         
         {/* Remove or keep the /profile route based on your needs */}
         {/* <Route path="/profile" element={<Profile />} /> */}

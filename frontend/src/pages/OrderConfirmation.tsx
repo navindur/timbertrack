@@ -249,6 +249,11 @@ const OrderConfirmation = () => {
               : parseFloat(order.total_price || '0').toFixed(2))}
           </Typography>
         </Box>
+        <Box sx={{ mt: 4 }}>
+  <Typography variant="body1" sx={{ display: 'none', '@media print': { display: 'block', textAlign: 'justify', mb: 3 } }}>
+    This receipt also serves as your warranty card. All products are covered under a 2-year warranty from the date of purchase. Please retain this receipt and present it to claim warranty services if needed.
+  </Typography>
+</Box>
 
         <Box className="no-print" sx={{ mt: 4, display: 'flex', justifyContent: 'center', gap: 2 }}>
           <Button variant="contained" onClick={() => navigate('/allorderview')}>

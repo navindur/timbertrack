@@ -63,4 +63,12 @@ router.get(
   CustomOrderController.getOrderById
 );
 
+
+router.get(
+  '/:id/receipt',
+  authenticate,
+  CustomOrderController.getOrderReceipt
+);
+
+
 export default router;

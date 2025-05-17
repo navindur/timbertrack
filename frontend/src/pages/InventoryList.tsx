@@ -41,6 +41,178 @@ interface InventoryItem {
   created_at?: Date;
 }
 
+interface InventoryFormDialogProps {
+  openDialog: boolean;
+  currentItem: InventoryItem | null;
+  handleCloseDialog: () => void;
+  handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleSelectChange: (e: any) => void;
+  handleSubmit: () => void;
+  suppliers: any[];
+}
+
+const InventoryFormDialog: React.FC<InventoryFormDialogProps> = React.memo(({
+  openDialog,
+  currentItem,
+  handleCloseDialog,
+  handleInputChange,
+  handleSelectChange,
+  handleSubmit,
+  suppliers
+}) => {
+  const [isMounted, setIsMounted] = useState(false);
+  const activeElementRef = useRef<HTMLElement | null>(null);
+  const selectRef = useRef<HTMLDivElement>(null);
+
+  // Track active element before potential re-renders
+  useEffect(() => {
+    const handleFocusIn = (e: FocusEvent) => {
+      activeElementRef.current = e.target as HTMLElement;
+    };
+    document.addEventListener('focusin', handleFocusIn);
+    return () => document.removeEventListener('focusin', handleFocusIn);
+  }, []);
+
+  // Restore focus after re-renders
+  useEffect(() => {
+    if (isMounted && activeElementRef.current) {
+      if (activeElementRef.current.classList.contains('MuiSelect-nativeInput')) {
+        if (selectRef.current) {
+          const selectButton = selectRef.current.querySelector('.MuiSelect-select') as HTMLElement;
+          selectButton?.focus();
+        }
+      } else {
+        activeElementRef.current.focus();
+      }
+    }
+  });
+
+  // Initial focus when dialog opens
+  useEffect(() => {
+    if (openDialog && !isMounted) {
+      setIsMounted(true);
+      const timer = setTimeout(() => {
+        const nameInput = document.querySelector('[name="name"]') as HTMLInputElement;
+        nameInput?.focus();
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+    if (!openDialog) {
+      setIsMounted(false);
+    }
+  }, [openDialog, isMounted]);
+
+  if (!currentItem) return null;
+
+  return (
+    <Dialog
+      open={openDialog}
+      onClose={handleCloseDialog}
+      fullWidth
+      maxWidth="md"
+      disableEnforceFocus
+      disableRestoreFocus
+      disableAutoFocus
+    >
+      <DialogTitle>
+        {currentItem.inventory_id ? 'Edit Inventory Item' : 'Add New Inventory Item'}
+      </DialogTitle>
+      <DialogContent className="space-y-4 pt-4">
+        <TextField
+          fullWidth
+          label="Name"
+          name="name"
+          value={currentItem.name}
+          onChange={handleInputChange}
+          variant="outlined"
+          required
+          margin="normal"
+        />
+        <TextField
+          fullWidth
+          label="Type"
+          name="type"
+          value={currentItem.type}
+          onChange={handleInputChange}
+          variant="outlined"
+          margin="normal"
+        />
+        <TextField
+          fullWidth
+          label="Price"
+          name="price"
+          type="number"
+          value={currentItem.price}
+          onChange={handleInputChange}
+          variant="outlined"
+          margin="normal"
+          InputProps={{
+            startAdornment: <InputAdornment position="start">Rs.</InputAdornment>,
+          }}
+          inputProps={{
+            step: "0.01"
+          }}
+        />
+        <TextField
+          fullWidth
+          label="Quantity"
+          name="quantity"
+          type="number"
+          value={currentItem.quantity}
+          onChange={handleInputChange}
+          variant="outlined"
+          margin="normal"
+        />
+        <TextField
+          fullWidth
+          label="Reorder Level"
+          name="reorder_level"
+          type="number"
+          value={currentItem.reorder_level}
+          onChange={handleInputChange}
+          variant="outlined"
+          margin="normal"
+        />
+        <FormControl fullWidth margin="normal">
+          <InputLabel>Supplier</InputLabel>
+          <Select
+            ref={selectRef}
+            name="supplier_id"
+            value={currentItem.supplier_id}
+            onChange={handleSelectChange}
+            label="Supplier"
+            MenuProps={{
+              disablePortal: true,
+              disableAutoFocus: true,
+              disableEnforceFocus: true,
+            }}
+          >
+            <MenuItem value={0}>Select Supplier</MenuItem>
+            {suppliers.map(supplier => (
+              <MenuItem key={supplier.id} value={supplier.id}>
+                {supplier.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleCloseDialog} color="secondary">
+          Cancel
+        </Button>
+        <Button 
+          onClick={handleSubmit} 
+          color="primary" 
+          variant="contained"
+          disabled={!currentItem.name || !currentItem.type}
+        >
+          {currentItem.inventory_id ? 'Update' : 'Save'}
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+});
+
 const InventoryPage: React.FC = () => {
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
   const [filteredInventory, setFilteredInventory] = useState<InventoryItem[]>([]);
@@ -145,19 +317,19 @@ const InventoryPage: React.FC = () => {
     setCurrentItem(null);
   };
 
-const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-  setCurrentItem(prev => {
-    if (!prev) return prev;
-    return {
-      ...prev,
-      [e.target.name]: e.target.name === 'price' || 
-                       e.target.name === 'quantity' || 
-                       e.target.name === 'reorder_level'
-        ? Number(e.target.value)
-        : e.target.value
-    };
-  });
-}, []); // Empty dependency array since we only use prev state
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setCurrentItem(prev => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        [e.target.name]: e.target.name === 'price' || 
+                         e.target.name === 'quantity' || 
+                         e.target.name === 'reorder_level'
+          ? Number(e.target.value)
+          : e.target.value
+      };
+    });
+  }, []);
 
   const handleSelectChange = (e: any) => {
     if (!currentItem) return;
@@ -303,164 +475,6 @@ const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) =
     </Paper>
   );
 
-  
-  const InventoryFormDialog = () => {
-    const [isMounted, setIsMounted] = useState(false);
-    const activeElementRef = useRef<HTMLElement | null>(null);
-    const selectRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-      console.log('Dialog re-rendered');
-    });
-  
-    // Track active element before potential re-renders
-    useEffect(() => {
-      const handleFocusIn = (e: FocusEvent) => {
-        activeElementRef.current = e.target as HTMLElement;
-      };
-      document.addEventListener('focusin', handleFocusIn);
-      return () => document.removeEventListener('focusin', handleFocusIn);
-    }, []);
-  
-    // Restore focus after re-renders
-    useEffect(() => {
-      if (isMounted && activeElementRef.current) {
-        // Special handling for Select dropdown
-        if (activeElementRef.current.classList.contains('MuiSelect-nativeInput')) {
-          if (selectRef.current) {
-            const selectButton = selectRef.current.querySelector('.MuiSelect-select') as HTMLElement;
-            selectButton?.focus();
-          }
-        } else {
-          activeElementRef.current.focus();
-        }
-      }
-    });
-  
-    // Initial focus when dialog opens
-    useEffect(() => {
-      if (openDialog && !isMounted) {
-        setIsMounted(true);
-        const timer = setTimeout(() => {
-          const nameInput = document.querySelector('[name="name"]') as HTMLInputElement;
-          nameInput?.focus();
-        }, 50);
-        return () => clearTimeout(timer);
-      }
-      if (!openDialog) {
-        setIsMounted(false);
-      }
-    }, [openDialog, isMounted]);
-  
-    return (
-      <Dialog
-        open={openDialog}
-        onClose={handleCloseDialog}
-        fullWidth
-        maxWidth="md"
-        disableEnforceFocus
-        disableRestoreFocus
-        disableAutoFocus
-      >
-        <DialogTitle>
-          {currentItem?.inventory_id ? 'Edit Inventory Item' : 'Add New Inventory Item'}
-        </DialogTitle>
-        <DialogContent className="space-y-4 pt-4">
-          <TextField
-            fullWidth
-            label="Name"
-            name="name"
-            value={currentItem?.name || ''}
-            onChange={handleInputChange}
-            variant="outlined"
-            required
-            margin="normal"
-          />
-          <TextField
-            fullWidth
-            label="Type"
-            name="type"
-            value={currentItem?.type || ''}
-            onChange={handleInputChange}
-            variant="outlined"
-            margin="normal"
-          />
-          <TextField
-            fullWidth
-            label="Price"
-            name="price"
-            type="number"
-            value={currentItem?.price || 0}
-            onChange={handleInputChange}
-            variant="outlined"
-            margin="normal"
-            InputProps={{
-              startAdornment: <InputAdornment position="start">Rs.</InputAdornment>,
-            }}
-            inputProps={{
-              step: "0.01"
-            }}
-          />
-          <TextField
-            fullWidth
-            label="Quantity"
-            name="quantity"
-            type="number"
-            value={currentItem?.quantity || 0}
-            onChange={handleInputChange}
-            variant="outlined"
-            margin="normal"
-          />
-          <TextField
-            fullWidth
-            label="Reorder Level"
-            name="reorder_level"
-            type="number"
-            value={currentItem?.reorder_level || 0}
-            onChange={handleInputChange}
-            variant="outlined"
-            margin="normal"
-          />
-         <FormControl fullWidth margin="normal">
-          <InputLabel>Supplier</InputLabel>
-          <Select
-            ref={selectRef}
-            name="supplier_id"
-            value={currentItem?.supplier_id || 0}
-            onChange={handleSelectChange}
-            label="Supplier"
-            MenuProps={{
-              disablePortal: true, // Helps with focus management
-              disableAutoFocus: true, // Prevents focus stealing
-              disableEnforceFocus: true, // Prevents focus containment
-            }}
-          >
-            <MenuItem value={0}>Select Supplier</MenuItem>
-            {suppliers.map(supplier => (
-              <MenuItem key={supplier.id} value={supplier.id}>
-                {supplier.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleCloseDialog} color="secondary">
-          Cancel
-        </Button>
-        <Button 
-          onClick={handleSubmit} 
-          color="primary" 
-          variant="contained"
-          disabled={!currentItem?.name || !currentItem?.type}
-        >
-          {currentItem?.inventory_id ? 'Update' : 'Save'}
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
-};
-
   return (
     <Box sx={{ 
       display: 'flex', 
@@ -469,7 +483,6 @@ const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) =
       overflow: 'hidden',
       bgcolor: '#efdecd'
     }}>
-      {/* Navbar - Fixed width */}
       <Box sx={{ 
         width: 240, 
         flexShrink: 0,
@@ -479,7 +492,6 @@ const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) =
         <Navbar />
       </Box>
   
-      {/* Main Content */}
       <Box sx={{ 
         flexGrow: 1,
         p: 3,
@@ -488,7 +500,6 @@ const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) =
       }}>
         <Box className="flex justify-between items-center mb-6">
           <Typography variant="h4" className="text-gray-800 font-bold">
-            
             Inventory Management
           </Typography>
           <Button
@@ -502,7 +513,6 @@ const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) =
           </Button>
         </Box>
 
-        {/* Search Bar */}
         <Box sx={{ mb: 3 }}>
           <TextField
             fullWidth
@@ -521,9 +531,17 @@ const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) =
         </Box>
   
         <InventoryTable />
-        <InventoryFormDialog />
+        
+        <InventoryFormDialog
+          openDialog={openDialog}
+          currentItem={currentItem}
+          handleCloseDialog={handleCloseDialog}
+          handleInputChange={handleInputChange}
+          handleSelectChange={handleSelectChange}
+          handleSubmit={handleSubmit}
+          suppliers={suppliers}
+        />
   
-        {/* Delete Confirmation Dialog */}
         <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
           <DialogTitle>Confirm Delete</DialogTitle>
           <DialogContent>
@@ -539,7 +557,6 @@ const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) =
           </DialogActions>
         </Dialog>
   
-        {/* Snackbar Notification */}
         <Snackbar
           open={snackbar.open}
           autoHideDuration={6000}

@@ -89,6 +89,7 @@ export const getSalesByProductPDF = async (req: Request, res: Response) => {
     generateGenericReportPDF({
       title: 'Sales by Product Report',
       period: `${start} to ${end}`,
+      subtitle: 'Comprehensive Sales by Product overview',
       columns: ['Product ID', 'Product Name', 'Quantity Sold', 'Revenue'],
       data: (results as any[]).map(item => [
         item.id,
@@ -129,6 +130,7 @@ export const getSalesByCategoryPDF = async (req: Request, res: Response) => {
     generateGenericReportPDF({
       title: 'Sales by Category Report',
       period: `${start} to ${end}`,
+      subtitle: 'Comprehensive Sales by Category overview',
       columns: ['Category', 'Quantity Sold', 'Revenue'],
       data: (results as any[]).map(item => [
         item.category,
@@ -168,6 +170,7 @@ export const getSalesByPaymentMethodPDF = async (req: Request, res: Response) =>
     generateGenericReportPDF({
       title: 'Sales by Payment Method Report',
       period: `${start} to ${end}`,
+      subtitle: 'Comprehensive Payment MethodS overview',
       columns: ['Payment Method', 'Order Count', 'Revenue'],
       data: (results as any[]).map(item => [
         item.payment_method,
@@ -199,6 +202,7 @@ export const getLowStockPDF = async (req: Request, res: Response) => {
     generateGenericReportPDF({
       title: 'Low Stock Alerts Report',
       period: 'Current',
+      subtitle: 'Comprehensive Low Stock overview',
       columns: ['Inventory ID', 'Product Name', 'Current Quantity', 'Reorder Level'],
       data: (results as any[]).map(item => [
         item.inventory_id,
@@ -231,6 +235,7 @@ export const getInventoryValuationPDF = async (req: Request, res: Response) => {
     generateGenericReportPDF({
       title: 'Inventory Valuation Report',
       period: 'Current',
+      subtitle: 'Comprehensive Inventory Valuation overview',
       columns: ['Inventory ID', 'Name', 'Type', 'Quantity', 'Unit Price', 'Total Value'],
       data: (results as any[]).map(item => [
         item.inventory_id,
@@ -273,6 +278,7 @@ export const getTopCustomersPDF = async (req: Request, res: Response) => {
     generateGenericReportPDF({
       title: 'Top Customers Report',
       period: `${start} to ${end}`,
+      subtitle: 'Comprehensive Top Customers overview',
       columns: ['Customer ID', 'Name', 'Email', 'Total Spent', 'Total Orders'],
       data: (results as any[]).map(item => [
         item.customer_id,
@@ -308,6 +314,7 @@ export const getCustomerOrderHistoryPDF = async (req: Request, res: Response) =>
     generateGenericReportPDF({
       title: 'Customer Order History',
       period: `Customer ID: ${customerId}`,
+      subtitle: 'Comprehensive Customer Order overview',
       columns: ['Order ID', 'Date', 'Product', 'Quantity', 'Price', 'Status'],
       data: (results as any[]).map(item => [
         item.order_id,
@@ -350,6 +357,7 @@ export const getOrdersByStatusPDF = async (req: Request, res: Response) => {
     generateGenericReportPDF({
       title: 'Orders by Status Report',
       period: `${start} to ${end}`,
+      subtitle: 'Comprehensive Orders by Status overview',
       columns: ['Status', 'Order Count', 'Revenue'],
       data: (results as any[]).map(item => [
         item.status,

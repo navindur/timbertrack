@@ -68,25 +68,62 @@ const ProductDetailPage = () => {
     fetchProduct();
   }, [id]);
 
-  const handleAddToCart = async () => {
-    if (!product) return;
+const handleAddToCart = async () => {
+  if (!product) return;
 
-    try {
-      await addToCart(product.id, quantity);
+  try {
+    // First fetch the current cart items for this product
+    const response = await fetch('/api/cart', {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch cart items');
+    }
+
+    const cartData = await response.json();
+    
+    // Handle different possible response formats
+    let cartItems = [];
+    if (Array.isArray(cartData)) {
+      cartItems = cartData;
+    } else if (cartData?.cartItems && Array.isArray(cartData.cartItems)) {
+      cartItems = cartData.cartItems;
+    } else if (cartData?.items && Array.isArray(cartData.items)) {
+      cartItems = cartData.items;
+    }
+
+    const existingCartItem = cartItems.find((item: any) => item.product_id === product.id);
+    const currentQuantityInCart = existingCartItem ? existingCartItem.quantity : 0;
+    const totalRequestedQuantity = currentQuantityInCart + quantity;
+
+    if (totalRequestedQuantity > product.quantity) {
       setSnackbar({
         open: true,
-        message: 'Product added to cart!',
-        severity: 'success'
-      });
-    } catch (error) {
-      console.error('Error adding to cart:', error);
-      setSnackbar({
-        open: true,
-        message: 'Failed to add to cart',
+        message: `Cannot add to cart. You already have ${currentQuantityInCart} in your cart, and only ${product.quantity} available.`,
         severity: 'error'
       });
+      return;
     }
-  };
+
+    // If validation passes, add to cart
+    await addToCart(product.id, quantity);
+    setSnackbar({
+      open: true,
+      message: 'Product added to cart!',
+      severity: 'success'
+    });
+  } catch (error) {
+    console.error('Error adding to cart:', error);
+    setSnackbar({
+      open: true,
+      message: error instanceof Error ? error.message : 'Failed to add to cart',
+      severity: 'error'
+    });
+  }
+};
 
   const handleQuantityChange = (newQuantity: number) => {
     if (!product) return;

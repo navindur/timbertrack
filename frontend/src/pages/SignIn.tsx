@@ -145,20 +145,7 @@ const SignIn: React.FC = () => {
                 <Box sx={{ flex: 1, height: "1px", backgroundColor: "#E0E0E0" }} />
               </Box>
 
-              <Button
-                fullWidth
-                variant="outlined"
-                startIcon={<GoogleIcon />}
-                sx={{
-                  marginBottom: "1rem",
-                  color: "#757575",
-                  borderColor: "#E0E0E0",
-                  "&:hover": { borderColor: "#C24507", color: "#C24507" },
-                }}
-              >
-                Sign in with Google
-              </Button>
-
+              
               <Typography variant="body1" sx={{ color: "#757575" }}>
                 Don't have an account?{" "}
                 <Link href="/signup" sx={{ color: "#B88E2F", textDecoration: "none", "&:hover": { textDecoration: "underline" } }}>

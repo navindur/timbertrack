@@ -182,6 +182,74 @@ export const CustomOrderController = {
     }
   },
 
+getOrderReceipt: async (req: Request, res: Response) => {
+  try {
+    const orderId = parseInt(req.params.id);
+    const userId = (req as any).user.id; // From auth middleware
+    
+    if (isNaN(orderId)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid order ID'
+      });
+    }
+
+    // Get the order with customer details
+    const order = await CustomOrderModel.findById(orderId);
+    
+    if (!order) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'Order not found' 
+      });
+    }
+
+    // Verify the requesting user owns the order or is admin/shopowner
+    const isOwner = order.customer_id === (req as any).user.customerId;
+    const isAdmin = (req as any).user.role === 'shopowner' || (req as any).user.role === 'admin';
+    
+    if (!isOwner && !isAdmin) {
+      return res.status(403).json({ 
+        success: false, 
+        message: 'Unauthorized to view this receipt' 
+      });
+    }
+
+    // Format the response
+    const responseData = {
+      success: true,
+      data: {
+        custom_order_id: order.custom_order_id,
+        request_date: order.request_date,
+        details: order.details,
+        estimated_price: order.estimated_price,
+        status: order.status,
+        payment_status: order.payment_status,
+        customer: {
+          first_name: order.first_name,
+          last_name: order.last_name,
+          phone_num: order.phone_num,
+          address_line1: order.address_line1,
+          address_line2: order.address_line2,
+          city: order.city,
+          postal_code: order.postal_code
+        }
+      }
+    };
+
+    res.status(200).json(responseData);
+  } catch (error) {
+    const err = error as Error;
+    console.error('Error fetching order receipt:', err);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Failed to fetch order receipt',
+      error: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
+  }
+},
+
+
 // Add this to your CustomOrderController
 getOrderById: async (req: Request, res: Response) => {
   try {
@@ -202,6 +270,9 @@ getOrderById: async (req: Request, res: Response) => {
         message: 'Order not found' 
       });
     }
+
+
+    
 
     // Ensure the response includes all required fields
     const responseData = {

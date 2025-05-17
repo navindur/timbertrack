@@ -547,18 +547,7 @@ const ReportsDashboard: React.FC = () => {
               />
               {activeTab === 'sales-category' && (
                 <FormControl sx={{ minWidth: 120 }}>
-                  <InputLabel>Category</InputLabel>
-                  <Select
-                    value={categoryFilter}
-                    onChange={handleCategoryChange}
-                    label="Category"
-                  >
-                    <MenuItem value="">All Categories</MenuItem>
-                    {/* You would populate these from your inventory categories */}
-                    <MenuItem value="Electronics">Electronics</MenuItem>
-                    <MenuItem value="Clothing">Clothing</MenuItem>
-                    <MenuItem value="Food">Food</MenuItem>
-                  </Select>
+               
                 </FormControl>
               )}
             </Box>

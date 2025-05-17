@@ -106,6 +106,7 @@ const MyCustomOrdersPage: React.FC = () => {
                 <TableCell>Payment</TableCell>
                 <TableCell>Production</TableCell>
                 <TableCell>Actions</TableCell>
+                <TableCell>Receipts</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -152,6 +153,15 @@ const MyCustomOrdersPage: React.FC = () => {
                       </Button>
                     )}
                   </TableCell>
+                   <TableCell>
+                                                            <Button
+                                                              variant="outlined"
+                                                              size="small"
+                                                              onClick={() => navigate(`/custom-orders/${order.custom_order_id}/receipt`)}
+                                                            >
+                                                              View
+                                                            </Button>
+                                                          </TableCell>
                 </TableRow>
               ))}
             </TableBody>

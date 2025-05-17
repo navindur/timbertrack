@@ -247,19 +247,7 @@ if (formData.last_name.length < 2 || formData.last_name.length > 30) {
                 <Box sx={{ flex: 1, height: '1px', backgroundColor: '#E0E0E0' }} />
               </Box>
 
-              <Button
-                fullWidth
-                variant="outlined"
-                startIcon={<GoogleIcon />}
-                sx={{
-                  marginBottom: '1rem',
-                  color: '#757575',
-                  borderColor: '#E0E0E0',
-                  '&:hover': { borderColor: '#C24507', color: '#C24507' },
-                }}
-              >
-                Sign up with Google
-              </Button>
+              
 
               <Typography variant="body1" sx={{ color: '#757575' }}>
                 Already have an account?{' '}

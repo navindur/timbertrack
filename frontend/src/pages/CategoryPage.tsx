@@ -13,7 +13,9 @@ import {
   CircularProgress,
   Pagination,
   TextField,
-  InputAdornment
+  InputAdornment,
+    Alert,
+  Snackbar
 } from '@mui/material';
 import { ShoppingCart, Search } from '@mui/icons-material';
 import { fetchCategoryProducts } from '../services/categoryServices';
@@ -33,6 +35,12 @@ const CategoryPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const limit = 12;
   const navigate = useNavigate(); //new
+   const [snackbar, setSnackbar] = useState({
+        open: false,
+        message: '',
+        severity: 'success' as 'success' | 'error'
+      });
+  
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -67,14 +75,85 @@ const CategoryPage = () => {
   }, [searchTerm, allProducts]);
 
   const handleAddToCart = async (productId: number) => {
-      try {
-         await addToCart(productId, 1);// Always adding quantity 1 for now
-        alert('Product added to cart!');
-      } catch (error) {
-        console.error('Error adding to cart:', error);
-        alert('Failed to add to cart.');
+  try {
+    // Find the product in our local state
+    const product = allProducts.find(p => p.id === productId);
+    
+    if (!product) {
+      throw new Error('Product not found');
+    }
+
+       // Check if product is out of stock
+    if (product.quantity === undefined) {
+  throw new Error('Product quantity not available');
+}
+
+if (product.quantity <= 0) {
+  setSnackbar({
+    open: true,
+    message: 'This product is out of stock',
+    severity: 'error'
+  });
+  return;
+}
+
+
+    // Fetch current cart items
+    const cartResponse = await fetch('/api/cart', {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
       }
-    };
+    });
+    
+    if (!cartResponse.ok) {
+      throw new Error('Failed to fetch cart items');
+    }
+
+    const cartData = await cartResponse.json();
+    
+    // Handle different possible cart response formats
+    let cartItems = [];
+    if (Array.isArray(cartData)) {
+      cartItems = cartData;
+    } else if (cartData?.cartItems) {
+      cartItems = cartData.cartItems;
+    } else if (cartData?.items) {
+      cartItems = cartData.items;
+    }
+
+    // Find existing item in cart
+    const existingCartItem = cartItems.find((item: any) => 
+      item.product_id === productId || item.id === productId
+    );
+
+    // Calculate total quantity that would be in cart after adding
+    const currentQty = existingCartItem?.quantity || 0;
+    const requestedQty = 1; // We're adding 1 item
+    const totalQty = currentQty + requestedQty;
+
+    // Validate against available inventory
+    if (totalQty > product.quantity) {
+      alert(`Cannot add to cart. You already have ${currentQty} in your cart, and only ${product.quantity} available.`);
+      return;
+    }
+
+    // If validation passes, add to cart
+    await addToCart(productId, requestedQty);
+    setSnackbar({
+      open: true,
+      message: 'Product added to cart!',
+      severity: 'success'
+    });
+    
+  } catch (error) {
+    console.error('Error adding to cart:', error);
+    setSnackbar({
+      open: true,
+      message: error instanceof Error ? error.message : 'Failed to add to cart',
+      severity: 'error'
+    });
+  }
+};
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
@@ -94,6 +173,11 @@ const CategoryPage = () => {
       </Box>
     );
   }
+
+  const handleCloseSnackbar = () => {
+    setSnackbar(prev => ({ ...prev, open: false }));
+  };
+
 
   return (
     <Box sx={{ 
@@ -263,6 +347,20 @@ const CategoryPage = () => {
       </Box>
 
       <Footer />
+          <Snackbar
+                    open={snackbar.open}
+                    autoHideDuration={6000}
+                    onClose={handleCloseSnackbar}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                  >
+                    <Alert 
+                      onClose={handleCloseSnackbar} 
+                      severity={snackbar.severity}
+                      sx={{ width: '100%' }}
+                    >
+                      {snackbar.message}
+                    </Alert>
+                  </Snackbar>
     </Box>
   );
 };

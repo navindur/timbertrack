@@ -24,6 +24,22 @@ export const CustomerModel = {
     );
   },
 
+   async findByIdWithCustomer(orderId: number): Promise<any> {
+    const [rows] = await db.execute(
+      `SELECT co.*, 
+              c.first_name, c.last_name, c.phone_num, 
+              c.address_line1, c.address_line2, c.city, c.postal_code
+       FROM custom_orders co
+       JOIN customers c ON co.customer_id = c.customer_id
+       WHERE co.custom_order_id = ?`,
+      [orderId]
+    );
+    return (rows as any[])[0] || null;
+  },
+
+
+  
+
   async getCustomerByUserId(userId: number): Promise<Customer | null> {
     const [rows] = await db.execute(
       'SELECT * FROM customers WHERE user_id = ?',
