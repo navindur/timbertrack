@@ -4,28 +4,43 @@ import {
   Grid, 
   Card, 
   CardContent, 
+  TextField, 
   Typography, 
   Select, 
   MenuItem, 
   FormControl, 
   InputLabel,
   Paper,
+  Button,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
+  Alert,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
   CircularProgress
 } from '@mui/material';
 import axios from 'axios';
 import Navbar from '../components/Adminnavbar';
 import SalesChart  from '../components/SalesChart';
+import axiosInstance from '../api/axiosInstance';
+import { AxiosError } from 'axios';
 
 interface StatCardProps {
   title: string;
   value: string | number;
   icon?: React.ReactNode;
+}
+
+interface PasswordData {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
 }
 
 const StatCard: React.FC<StatCardProps> = ({ title, value, icon }) => (
@@ -60,6 +75,15 @@ const DashboardPage = () => {
     lowInventory: [],
     recentOrders: []
   });
+  const [error, setError] = useState('');
+   const [success, setSuccess] = useState('');
+   const [openPasswordDialog, setOpenPasswordDialog] = useState(false);
+   const [passwordData, setPasswordData] = useState<PasswordData>({
+     currentPassword: '',
+     newPassword: '',
+     confirmPassword: ''
+   });
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -109,6 +133,61 @@ const DashboardPage = () => {
     }).format(value);
   };
 
+const validatePassword = (password: string): string | null => {
+    if (password.length < 8) return 'Must be at least 8 characters';
+    if (!/[A-Z]/.test(password)) return 'Must contain uppercase letter';
+    if (!/[a-z]/.test(password)) return 'Must contain lowercase letter';
+    if (!/[0-9]/.test(password)) return 'Must contain number';
+    if (!/[^A-Za-z0-9]/.test(password)) return 'Must contain special character';
+    return null;
+  };
+
+   const handleOpenPasswordDialog = () => {
+    setError('');
+    setSuccess('');
+    setPasswordData({
+      currentPassword: '',
+      newPassword: '',
+      confirmPassword: ''
+    });
+    setOpenPasswordDialog(true);
+  };
+
+const handlePasswordChange = async () => {
+    // Validate password match
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      setError('New passwords do not match');
+      return;
+    }
+
+    // Validate password strength
+    const passwordError = validatePassword(passwordData.newPassword);
+    if (passwordError) {
+      setError(passwordError);
+      return;
+    }
+
+    try {
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      await axiosInstance.put('/auth/change-password', {
+        userId: user.id,
+        currentPassword: passwordData.currentPassword,
+        newPassword: passwordData.newPassword
+      });
+      setSuccess('Password changed successfully');
+      setOpenPasswordDialog(false);
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err: unknown) {
+      if (err instanceof AxiosError) {
+        setError(err.response?.data?.message || 'Failed to change password');
+      } else {
+        setError('An unknown error occurred');
+      }
+    }
+  };
+
+
+
   return (
     <Box
       sx={{
@@ -141,28 +220,39 @@ const DashboardPage = () => {
         }}
       >
         <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            mb: 3
-          }}
-        >
-          <Typography variant="h4">Dashboard Overview</Typography>
-          <FormControl sx={{ minWidth: 120 }} size="small">
-            <InputLabel>Time Range</InputLabel>
-            <Select
-              value={timeRange}
-              label="Time Range"
-              onChange={(e) => setTimeRange(e.target.value)}
-            >
-              <MenuItem value="day">Today</MenuItem>
-              <MenuItem value="month">This Month</MenuItem>
-              <MenuItem value="year">This Year</MenuItem>
-              <MenuItem value="all">All Time</MenuItem>
-            </Select>
-          </FormControl>
-        </Box>
+  sx={{
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    mb: 3
+  }}
+>
+  <Typography variant="h4">Dashboard Overview</Typography>
+
+  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+    <FormControl sx={{ minWidth: 120 }} size="small">
+      <InputLabel>Time Range</InputLabel>
+      <Select
+        value={timeRange}
+        label="Time Range"
+        onChange={(e) => setTimeRange(e.target.value)}
+      >
+        <MenuItem value="day">Today</MenuItem>
+        <MenuItem value="month">This Month</MenuItem>
+        <MenuItem value="year">This Year</MenuItem>
+        <MenuItem value="all">All Time</MenuItem>
+      </Select>
+    </FormControl>
+
+    <Button 
+      variant="outlined" 
+      onClick={handleOpenPasswordDialog}
+    >
+      Change Password
+    </Button>
+  </Box>
+</Box>
+
 
         {loading ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
@@ -295,6 +385,72 @@ const DashboardPage = () => {
           </>
         )}
       </Box>
+
+ <Dialog open={openPasswordDialog} onClose={() => setOpenPasswordDialog(false)}>
+          <DialogTitle>Change Password</DialogTitle>
+          <DialogContent>
+            {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+            {success && <Alert severity="success" sx={{ mb: 2 }}>{success}</Alert>}
+            
+            <TextField
+              label="Current Password"
+              type="password"
+              fullWidth
+              margin="normal"
+              value={passwordData.currentPassword}
+              onChange={(e) => setPasswordData({...passwordData, currentPassword: e.target.value})}
+            />
+            
+            <TextField
+              label="New Password"
+              type="password"
+              fullWidth
+              margin="normal"
+              value={passwordData.newPassword}
+              onChange={(e) => setPasswordData({...passwordData, newPassword: e.target.value})}
+              error={!!validatePassword(passwordData.newPassword) && passwordData.newPassword.length > 0}
+              helperText={
+                passwordData.newPassword.length > 0 
+                  ? validatePassword(passwordData.newPassword) || 'Password meets requirements' 
+                  : 'At least 8 characters with uppercase, lowercase, number, and special character'
+              }
+            />
+            
+            <TextField
+              label="Confirm New Password"
+              type="password"
+              fullWidth
+              margin="normal"
+              value={passwordData.confirmPassword}
+              onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})}
+              error={passwordData.confirmPassword.length > 0 && 
+                    passwordData.newPassword !== passwordData.confirmPassword}
+              helperText={
+                passwordData.confirmPassword.length > 0 && 
+                passwordData.newPassword !== passwordData.confirmPassword 
+                  ? 'Passwords do not match' 
+                  : ''
+              }
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setOpenPasswordDialog(false)}>Cancel</Button>
+            <Button 
+              onClick={handlePasswordChange} 
+              variant="contained"
+              disabled={
+                !passwordData.currentPassword || 
+                !passwordData.newPassword || 
+                !passwordData.confirmPassword ||
+                !!validatePassword(passwordData.newPassword) ||
+                passwordData.newPassword !== passwordData.confirmPassword
+              }
+            >
+              Change Password
+            </Button>
+          </DialogActions>
+        </Dialog>
+
     </Box>
   );
 };
