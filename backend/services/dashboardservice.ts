@@ -16,11 +16,22 @@ const getDateCondition = (range: string): string => {
 
 // 1. Total Orders
 export const getTotalOrders = async (range: string): Promise<number> => {
+  const dateCondition = getDateCondition(range);
+
   const [rows] = await db.query(
-    `SELECT COUNT(*) AS total FROM orders WHERE ${getDateCondition(range)}`
+    `
+    SELECT COUNT(*) AS total FROM (
+      SELECT id FROM orders WHERE ${dateCondition}
+      UNION ALL
+      SELECT custom_order_id FROM custom_orders 
+      WHERE payment_status = 'paid' AND ${dateCondition.replace(/created_at/g, 'request_date')}
+    ) AS combined_orders
+    `
   );
+
   return (rows as any)[0].total;
 };
+
 
 // 2. Total Active Products
 export const getTotalProducts = async (): Promise<number> => {
@@ -48,11 +59,27 @@ export const getLowInventory = async (): Promise<any[]> => {
 
 // 5. Sales Revenue
 export const getSalesRevenue = async (range: string): Promise<number> => {
+  const dateCondition = getDateCondition(range);
+
   const [rows] = await db.query(
-    `SELECT SUM(total_price) AS total FROM orders WHERE status != 'cancelled' AND ${getDateCondition(range)}`
+    `
+    SELECT SUM(total) AS total_revenue FROM (
+      SELECT total_price AS total 
+      FROM orders 
+      WHERE status != 'cancelled' AND ${dateCondition}
+      
+      UNION ALL
+      
+      SELECT estimated_price AS total 
+      FROM custom_orders 
+      WHERE payment_status = 'paid' AND ${dateCondition.replace(/created_at/g, 'request_date')}
+    ) AS combined_revenue
+    `
   );
-  return (rows as any)[0].total || 0;
+
+  return (rows as any)[0].total_revenue || 0;
 };
+
 
 export const getRecentOrders = async (): Promise<any[]> => {
     const [rows] = await db.query(
@@ -70,6 +97,27 @@ export const getRecentOrders = async (): Promise<any[]> => {
     );
     return rows as any[];
   };
+
+export const getRecentCustomOrders = async (): Promise<any[]> => {
+  const [rows] = await db.query(
+    `SELECT 
+      co.custom_order_id AS id,
+      co.customer_id,
+      CONCAT(c.first_name, ' ', c.last_name) AS customer_name,
+      co.estimated_price AS total_price,
+      co.status,
+      co.request_date AS created_at
+    FROM custom_orders co
+    JOIN customers c ON co.customer_id = c.customer_id
+    
+    ORDER BY co.request_date DESC
+    LIMIT 5`
+  );
+  return rows as any[];
+};
+
+
+
 
 
   //new
@@ -113,3 +161,44 @@ export const getSalesTrend = async (range: string): Promise<any[]> => {
   
     return rows as any[];
   };
+
+
+  export const getCustomSalesTrend = async (range: string): Promise<any[]> => {
+  let groupBy, dateFormat, orderBy;
+
+  switch (range) {
+    case 'day':
+      groupBy = 'DATE(request_date)';
+      dateFormat = '%Y-%m-%d';
+      orderBy = 'DATE(request_date)';
+      break;
+    case 'month':
+      groupBy = 'DATE_FORMAT(request_date, "%Y-%m")';
+      dateFormat = '%Y-%m';
+      orderBy = 'DATE_FORMAT(request_date, "%Y-%m")';
+      break;
+    case 'year':
+      groupBy = 'YEAR(request_date)';
+      dateFormat = '%Y';
+      orderBy = 'YEAR(request_date)';
+      break;
+    default:
+      groupBy = 'DATE(request_date)';
+      dateFormat = '%Y-%m-%d';
+      orderBy = 'DATE(request_date)';
+  }
+
+  const [rows] = await db.query(
+    `SELECT 
+      ${groupBy} AS period,
+      SUM(estimated_price) AS total_sales,
+      COUNT(*) AS order_count
+    FROM custom_orders
+    WHERE payment_status = 'paid'
+    GROUP BY period
+    ORDER BY ${orderBy} ASC
+    LIMIT 30`
+  );
+
+  return rows as any[];
+};

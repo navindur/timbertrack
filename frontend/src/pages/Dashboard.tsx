@@ -43,6 +43,8 @@ interface PasswordData {
   confirmPassword: string;
 }
 
+
+
 const StatCard: React.FC<StatCardProps> = ({ title, value, icon }) => (
   <Card sx={{ height: '100%' }}>
     <CardContent>
@@ -65,6 +67,7 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, icon }) => (
 
 const DashboardPage = () => {
   const [salesTrend, setSalesTrend] = useState<any[]>([]); //new
+  const [customSalesTrend, setcustomSalesTrend] = useState<any[]>([]); //new
   const [timeRange, setTimeRange] = useState<string>('day');
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
@@ -73,7 +76,8 @@ const DashboardPage = () => {
     totalCustomers: 0,
     salesRevenue: 0,
     lowInventory: [],
-    recentOrders: []
+    recentOrders: [],
+    recentCustomOrders: [],
   });
   const [error, setError] = useState('');
    const [success, setSuccess] = useState('');
@@ -83,7 +87,7 @@ const DashboardPage = () => {
      newPassword: '',
      confirmPassword: ''
    });
-  
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -96,7 +100,9 @@ const DashboardPage = () => {
           salesRes, 
           inventoryRes,
           recentOrdersRes,
-          trendRes
+          recentCustomOrdersRes,
+          trendRes,
+          customtrendRes
         ] = await Promise.all([
           axios.get(`/api/dashboard/total-orders?range=${timeRange}`),
           axios.get('/api/dashboard/total-products'),
@@ -104,8 +110,12 @@ const DashboardPage = () => {
           axios.get(`/api/dashboard/sales-revenue?range=${timeRange}`),
           axios.get('/api/dashboard/low-inventory'),
           axios.get('/api/dashboard/recent-orders'),
-          axios.get(`/api/dashboard/sales-trend?range=${timeRange}`)
+          axios.get('/api/dashboard/recent-customorders'),
+          axios.get(`/api/dashboard/sales-trend?range=${timeRange}`),
+          axios.get(`/api/dashboard/custom-sales-trend?range=${timeRange}`)
         ]);
+
+        
 
         setStats({
           totalOrders: ordersRes.data.total,
@@ -113,9 +123,11 @@ const DashboardPage = () => {
           totalCustomers: customersRes.data.total,
           salesRevenue: salesRes.data.total,
           lowInventory: inventoryRes.data.items,
-          recentOrders: recentOrdersRes.data.orders
+          recentOrders: recentOrdersRes.data.orders,
+          recentCustomOrders: recentCustomOrdersRes.data.customOrders || []
         });
         setSalesTrend(trendRes.data.trendData || []);
+        setcustomSalesTrend(customtrendRes.data.trendData || []);
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
       } finally {
@@ -268,7 +280,7 @@ const handlePasswordChange = async () => {
                 <StatCard title="Active Products" value={stats.totalProducts} />
               </Grid>
               <Grid item xs={12} sm={6} md={3}>
-                <StatCard title="Total Customers" value={stats.totalCustomers} />
+                <StatCard title="Total New Customers" value={stats.totalCustomers} />
               </Grid>
               <Grid item xs={12} sm={6} md={3}>
                 <StatCard title="Sales Revenue" value={formatCurrency(stats.salesRevenue)} />
@@ -319,7 +331,7 @@ const handlePasswordChange = async () => {
               <Grid item xs={12} md={6}>
               <Paper sx={{ p: 2 }}>
   <Typography variant="h6" gutterBottom>
-    Recent Orders
+    Recent Normal Orders
   </Typography>
   <TableContainer>
     <Table size="small">
@@ -366,10 +378,69 @@ const handlePasswordChange = async () => {
   </TableContainer>
 </Paper>
               </Grid>
+<Grid item xs={12} md={6}>
+  <Paper sx={{ p: 2 }}>
+    <Typography variant="h6" gutterBottom>
+      Recent Custom Orders
+    </Typography>
+    <TableContainer>
+      <Table size="small">
+        <TableHead>
+          <TableRow>
+            <TableCell>Order ID</TableCell>
+            <TableCell>Customer</TableCell>
+            <TableCell align="right">Amount</TableCell>
+            <TableCell>Status</TableCell>
+            <TableCell>Date</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {stats.recentCustomOrders?.length > 0 ? (
+            stats.recentCustomOrders.map((order: any) => (
+              <TableRow key={order.custom_order_id}>
+                <TableCell>#{order.id}</TableCell>
+                <TableCell>{order.customer_name}</TableCell>
+                <TableCell align="right">{formatCurrency(order.total_price)}</TableCell>
+                <TableCell>
+                  <Typography 
+                    color={
+                      order.production_status === 'delivered' ? 'success.main' :
+                      order.production_status === 'not_started' ? 'text.secondary' :
+                      'warning.main'
+                    }
+                  >
+                    {order.status.replace('_', ' ')}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  {new Date(order.created_at).toLocaleDateString()}
+                </TableCell>
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={5} align="center">
+                No recent custom orders
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  </Paper>
+</Grid>
+
+
+
+
+
+
+
+
               <Grid item xs={12} md={6}>
               <Paper sx={{ p: 2, height: '400px' }}>
   <Typography variant="h6" gutterBottom>
-    Sales Trends
+    Sales Trend for Normal Orders
   </Typography>
   {salesTrend.length > 0 ? (
     <SalesChart 
@@ -381,6 +452,26 @@ const handlePasswordChange = async () => {
   )}
 </Paper>
               </Grid>
+
+
+<Grid item xs={12} md={6}>
+  <Paper sx={{ p: 2, height: '400px' }}>
+    <Typography variant="h6" gutterBottom>
+      Sales Trend for Custom Orders
+    </Typography>
+    {customSalesTrend.length > 0 ? (
+      <SalesChart 
+        data={customSalesTrend} 
+        currency="LKR" 
+      />
+    ) : (
+      <Typography color="text.secondary">No custom order sales data available</Typography>
+    )}
+  </Paper>
+</Grid>
+
+
+
             </Grid>
           </>
         )}

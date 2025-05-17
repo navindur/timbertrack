@@ -69,7 +69,7 @@ export const generateSalesSummaryPDF = (
     rows: [
       ['Total Orders', data.total_orders.toString()],
       ['Total Revenue', `${Number(data.total_revenue).toFixed(2)}`],
-      ['Items Sold', data.total_items_sold.toString()]
+      ['Total Items from Inventory Sold', data.total_items_sold.toString()]
     ]
   };
   drawEnhancedTable(doc, summaryTable, 50, doc.y, {

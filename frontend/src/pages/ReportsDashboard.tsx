@@ -223,7 +223,7 @@ const ReportsDashboard: React.FC = () => {
           <Typography variant="h4">Rs.{Number(data.total_revenue).toFixed(2)}</Typography>
         </Paper>
         <Paper sx={{ p: 3, flex: 1 }}>
-          <Typography variant="h6">Items Sold</Typography>
+          <Typography variant="h6">Total Items from Inventory Sold</Typography>
           <Typography variant="h4">{data.total_items_sold}</Typography>
         </Paper>
       </Box>
