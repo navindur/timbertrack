@@ -1,6 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar';
+import RedirectHandler from './components/RedirectHandler';
+
+
+
 import Home from './pages/Home'; 
 
 
@@ -46,9 +49,11 @@ import CustomOrderReceipt from './pages/CustomOrderReceipt';
 
 
 const App: React.FC = () => {
+
   return (
     <Router>
       <AuthProvider>          {/*neww*/}
+         <RedirectHandler /> 
       
       <Routes>
       <Route path="/unauthorized" element={<Unauthorized />} />
@@ -84,7 +89,7 @@ const App: React.FC = () => {
       <Route element={<ProtectedRoute allowedRoles={['customer']} />}>
         <Route path="/cart" element={<CartPage />} />
         <Route path="/checkout" element={<CheckoutPage />} />           
-        <Route path="/customerprofile" element={<CustomerProfile />} />
+        
         <Route path="/allorderview" element={<AllOrderView />} /> 
 
         <Route path="/custom-order" element={<CustomOrderPage />} /> 
@@ -102,7 +107,7 @@ const App: React.FC = () => {
 
         
         
-        
+        <Route path="/customerprofile" element={<CustomerProfile />} />
         <Route path="/products" element={<CustomerProductList />} />
         <Route path="/categories/:category" element={<CategoryPage />} /> 
         <Route path="/productsview/:id" element={<ProductDetailPage />} />//new
