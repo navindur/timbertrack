@@ -154,41 +154,58 @@ const ProductList: React.FC = () => {
   };
 
   const handleSubmit = async () => {
-    if (!currentProduct) return;
+  if (!currentProduct) return;
+  
+  // Check if inventory item is selected
+  if (!currentProduct.inventory_id) {
+    setSnackbar({
+      open: true,
+      message: 'Please select an inventory item',
+      severity: 'error'
+    });
+    return;
+  }
 
-    try {
-      const formData = new FormData();
-      formData.append('description', currentProduct.description || '');
-      formData.append('inventory_id', String(currentProduct.inventory_id));
+  try {
+    const formData = new FormData();
+    formData.append('description', currentProduct.description || '');
+    formData.append('inventory_id', String(currentProduct.inventory_id));
   
-      if (imageFile) {
-        formData.append('image', imageFile);
-      }
+    if (imageFile) {
+      formData.append('image', imageFile);
+    }
   
-      if (currentProduct.id) {
-        await updateProduct(currentProduct.id, formData); // 👈 must accept FormData
-        setSnackbar({
-          open: true,
-          message: 'Product updated successfully',
-          severity: 'success'
-        });
-      } else {
-        await addProduct(formData); // 👈 must accept FormData
-        setSnackbar({
-          open: true,
-          message: 'Product added successfully',
-          severity: 'success'
-        });
-      }
-    }catch (error) {
-      console.error('Error saving product:', error);
+    if (currentProduct.id) {
+      await updateProduct(currentProduct.id, formData);
       setSnackbar({
         open: true,
-        message: error instanceof Error ? error.message : 'Failed to save product',
-        severity: 'error'
+        message: 'Product updated successfully',
+        severity: 'success'
+      });
+    } else {
+      await addProduct(formData);
+      setSnackbar({
+        open: true,
+        message: 'Product added successfully',
+        severity: 'success'
       });
     }
-  };
+    
+    // Refresh data
+    const productsData = await getAllProducts({ page, limit, search: searchTerm, category: categoryFilter });
+    setProducts(productsData);
+    setFilteredProducts(productsData);
+    
+    handleCloseDialog();
+  } catch (error) {
+    console.error('Error saving product:', error);
+    setSnackbar({
+      open: true,
+      message: error instanceof Error ? error.message : 'Failed to save product',
+      severity: 'error'
+    });
+  }
+};
 
   const handleDelete = async () => {
     if (!currentProduct?.id) return;
@@ -216,6 +233,14 @@ const ProductList: React.FC = () => {
       });
     }
   };
+
+  const getAvailableInventoryOptions = () => {
+  const usedInventoryIds = products.map(p => p.inventory_id);
+  return inventoryOptions.filter(
+    option => !usedInventoryIds.includes(option.inventory_id) || 
+             (currentProduct?.inventory_id === option.inventory_id)
+  );
+};
 
   const handleCloseSnackbar = () => {
     setSnackbar({ ...snackbar, open: false });
@@ -276,7 +301,7 @@ const ProductList: React.FC = () => {
   {/* Search and Filter Controls */}
   <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
     <TextField
-      placeholder="Search products..."
+      placeholder="Search products"
       variant="outlined"
       size="small"
       value={searchTerm}
@@ -293,17 +318,17 @@ const ProductList: React.FC = () => {
     <FormControl size="small" sx={{ minWidth: 120 }}>
       <InputLabel>Category</InputLabel>
       <Select
-        value={categoryFilter}
-        onChange={handleCategoryChange}
-        label="Category"
-      >
-        <MenuItem value="">All Categories</MenuItem>
-        {inventoryOptions.map((option) => (
-          <MenuItem key={option.inventory_id} value={option.type}>
-            {option.type}
-          </MenuItem>
-        ))}
-      </Select>
+  value={categoryFilter}
+  onChange={handleCategoryChange}
+  label="Category"
+>
+  <MenuItem value="">All Categories</MenuItem>
+  <MenuItem value="Dining">Dining</MenuItem>
+  <MenuItem value="Bedroom">Bedroom</MenuItem>
+  <MenuItem value="Living">Living</MenuItem>
+  <MenuItem value="Office">Office</MenuItem>
+</Select>
+
     </FormControl>
     
     
@@ -374,19 +399,23 @@ const ProductList: React.FC = () => {
     <DialogContent>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
         <FormControl fullWidth>
-          <InputLabel>Inventory Item</InputLabel>
-          <Select
-            value={currentProduct?.inventory_id || ''}
-            onChange={handleSelectChange}
-            label="Inventory Item"
-          >
-            {inventoryOptions.map((option) => (
-              <MenuItem key={option.inventory_id} value={option.inventory_id}>
-                {option.name} (${option.price})
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+  <InputLabel>Inventory Item</InputLabel>
+  <Select
+    value={currentProduct?.inventory_id || ''}
+    onChange={handleSelectChange}
+    label="Inventory Item"
+    disabled={!!currentProduct?.id} // Disable changing inventory item when editing
+  >
+    {getAvailableInventoryOptions().map((option) => (
+      <MenuItem key={option.inventory_id} value={option.inventory_id}>
+        {option.name} (Rs.{option.price})
+      </MenuItem>
+    ))}
+    {getAvailableInventoryOptions().length === 0 && (
+      <MenuItem disabled>No available inventory items</MenuItem>
+    )}
+  </Select>
+</FormControl>
         
         <TextField
           name="description"

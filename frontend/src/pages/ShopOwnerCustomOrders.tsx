@@ -390,28 +390,31 @@ const filteredOrders = orders.filter(order => {
      <Dialog open={priceDialogOpen} onClose={() => setPriceDialogOpen(false)}>
   <DialogTitle>Accept Custom Order</DialogTitle>
   <DialogContent>
-    <TextField
-      autoFocus
-      margin="dense"
-      label="Estimated Price"
-      type="text"
-      fullWidth
-      variant="standard"
-      value={estimatedPrice}
-      onChange={(e) => {
-        const val = e.target.value;
-        // Allow only digits and optional decimal
-        if (/^\d*\.?\d*$/.test(val)) {
-          setEstimatedPrice(val);
-        }
-      }}
-      error={!!estimatedPrice && (parseFloat(estimatedPrice) <= 0)}
-      helperText={
-        !!estimatedPrice && parseFloat(estimatedPrice) <= 0
-          ? 'Price must be greater than 0'
-          : ''
-      }
-    />
+   <TextField
+  autoFocus
+  margin="dense"
+  label="Estimated Price"
+  type="text"
+  fullWidth
+  variant="standard"
+  value={estimatedPrice}
+  onChange={(e) => {
+    const val = e.target.value;
+    // Allow only positive numbers with up to 2 decimal places
+    if (/^\d+(\.\d{0,2})?$/.test(val) || val === '') {
+      setEstimatedPrice(val);
+    }
+  }}
+  error={
+    !!estimatedPrice && (!/^\d+(\.\d{1,2})?$/.test(estimatedPrice) || parseFloat(estimatedPrice) <= 0)
+  }
+  helperText={
+    !!estimatedPrice && (!/^\d+(\.\d{1,2})?$/.test(estimatedPrice) || parseFloat(estimatedPrice) <= 0)
+      ? 'Price must be a valid number greater than 0 with up to 2 decimal places'
+      : ''
+  }
+/>
+
   </DialogContent>
   <DialogActions>
     <Button onClick={() => setPriceDialogOpen(false)}>Cancel</Button>

@@ -12,7 +12,6 @@ import SignIn from './pages/SignIn';
 
 import Dashboard from './pages/Dashboard'; // Add this import
 
-import InventoryDash from './pages/InventoryDash';
 import OrdersDash from './pages/OrdersDash';
 
 import UserManagementDash from './pages/UserManagementDash';
@@ -63,7 +62,7 @@ const App: React.FC = () => {
 
       <Route element={<ProtectedRoute allowedRoles={['shopowner']} />}>
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/inventorydash" element={<InventoryDash />} />
+        
         <Route path="/ordersdash" element={<OrdersDash />} />
         
 

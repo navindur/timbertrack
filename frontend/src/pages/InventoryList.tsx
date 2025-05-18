@@ -49,6 +49,16 @@ interface InventoryFormDialogProps {
   handleSelectChange: (e: any) => void;
   handleSubmit: () => void;
   suppliers: any[];
+  errors: InventoryErrors; // Add this line
+}
+
+interface InventoryErrors {
+  name?: string;
+  type?: string;
+  price?: string;
+  quantity?: string;
+  reorder_level?: string;
+  supplier_id?: string;
 }
 
 const InventoryFormDialog: React.FC<InventoryFormDialogProps> = React.memo(({
@@ -58,11 +68,14 @@ const InventoryFormDialog: React.FC<InventoryFormDialogProps> = React.memo(({
   handleInputChange,
   handleSelectChange,
   handleSubmit,
-  suppliers
+  suppliers,
+  errors
 }) => {
   const [isMounted, setIsMounted] = useState(false);
   const activeElementRef = useRef<HTMLElement | null>(null);
   const selectRef = useRef<HTMLDivElement>(null);
+  
+
 
   // Track active element before potential re-renders
   useEffect(() => {
@@ -102,6 +115,8 @@ const InventoryFormDialog: React.FC<InventoryFormDialogProps> = React.memo(({
     }
   }, [openDialog, isMounted]);
 
+  
+
   if (!currentItem) return null;
 
   return (
@@ -118,83 +133,112 @@ const InventoryFormDialog: React.FC<InventoryFormDialogProps> = React.memo(({
         {currentItem.inventory_id ? 'Edit Inventory Item' : 'Add New Inventory Item'}
       </DialogTitle>
       <DialogContent className="space-y-4 pt-4">
-        <TextField
-          fullWidth
-          label="Name"
-          name="name"
-          value={currentItem.name}
-          onChange={handleInputChange}
-          variant="outlined"
-          required
-          margin="normal"
-        />
-        <TextField
-          fullWidth
-          label="Type"
-          name="type"
-          value={currentItem.type}
-          onChange={handleInputChange}
-          variant="outlined"
-          margin="normal"
-        />
-        <TextField
-          fullWidth
-          label="Price"
-          name="price"
-          type="number"
-          value={currentItem.price}
-          onChange={handleInputChange}
-          variant="outlined"
-          margin="normal"
-          InputProps={{
-            startAdornment: <InputAdornment position="start">Rs.</InputAdornment>,
-          }}
-          inputProps={{
-            step: "0.01"
-          }}
-        />
-        <TextField
-          fullWidth
-          label="Quantity"
-          name="quantity"
-          type="number"
-          value={currentItem.quantity}
-          onChange={handleInputChange}
-          variant="outlined"
-          margin="normal"
-        />
-        <TextField
-          fullWidth
-          label="Reorder Level"
-          name="reorder_level"
-          type="number"
-          value={currentItem.reorder_level}
-          onChange={handleInputChange}
-          variant="outlined"
-          margin="normal"
-        />
-        <FormControl fullWidth margin="normal">
-          <InputLabel>Supplier</InputLabel>
-          <Select
-            ref={selectRef}
-            name="supplier_id"
-            value={currentItem.supplier_id}
-            onChange={handleSelectChange}
-            label="Supplier"
-            MenuProps={{
-              disablePortal: true,
-              disableAutoFocus: true,
-              disableEnforceFocus: true,
-            }}
-          >
-            <MenuItem value={0}>Select Supplier</MenuItem>
-            {suppliers.map(supplier => (
-              <MenuItem key={supplier.id} value={supplier.id}>
-                {supplier.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+      
+<TextField
+  fullWidth
+  label="Name"
+  name="name"
+  value={currentItem.name}
+  onChange={handleInputChange}
+  variant="outlined"
+  required
+  margin="normal"
+  error={!!errors.name}
+  helperText={errors.name}
+/>
+
+
+<FormControl fullWidth margin="normal" error={!!errors.type}>
+  <InputLabel>Type *</InputLabel>
+  <Select
+    name="type"
+    value={currentItem.type}
+    onChange={handleSelectChange}
+    label="Type *"
+  >
+    <MenuItem value="">Select Type</MenuItem>
+    <MenuItem value="Dining">Dining</MenuItem>
+    <MenuItem value="Living">Living</MenuItem>
+    <MenuItem value="Bedroom">Bedroom</MenuItem>
+    <MenuItem value="Office">Office</MenuItem>
+  </Select>
+  {errors.type && <Typography color="error" variant="caption">{errors.type}</Typography>}
+</FormControl>
+
+
+<TextField
+  fullWidth
+  label="Price *"
+  name="price"
+  type="number"
+  value={currentItem.price}
+  onChange={handleInputChange}
+  variant="outlined"
+  margin="normal"
+  error={!!errors.price}
+  helperText={errors.price}
+  InputProps={{
+    startAdornment: <InputAdornment position="start">Rs.</InputAdornment>,
+  }}
+  inputProps={{
+    step: "0.01",
+    min: "0.01"
+  }}
+/>
+
+
+<TextField
+  fullWidth
+  label="Quantity *"
+  name="quantity"
+  type="number"
+  value={currentItem.quantity}
+  onChange={handleInputChange}
+  variant="outlined"
+  margin="normal"
+  error={!!errors.quantity}
+  helperText={errors.quantity}
+  inputProps={{
+    min: "0"
+  }}
+/>
+
+
+<TextField
+  fullWidth
+  label="Reorder Level *"
+  name="reorder_level"
+  type="number"
+  value={currentItem.reorder_level}
+  onChange={handleInputChange}
+  variant="outlined"
+  margin="normal"
+  error={!!errors.reorder_level}
+  helperText={errors.reorder_level}
+  inputProps={{
+    min: "0"
+  }}
+/>
+
+
+<FormControl fullWidth margin="normal" error={!!errors.supplier_id}>
+  <InputLabel>Supplier *</InputLabel>
+  <Select
+    ref={selectRef}
+    name="supplier_id"
+    value={currentItem.supplier_id}
+    onChange={handleSelectChange}
+    label="Supplier *"
+  >
+    <MenuItem value={0}>Select Supplier</MenuItem>
+    {suppliers.map(supplier => (
+      <MenuItem key={supplier.id} value={supplier.id}>
+        {supplier.name}
+      </MenuItem>
+    ))}
+  </Select>
+  {errors.supplier_id && <Typography color="error" variant="caption">{errors.supplier_id}</Typography>}
+</FormControl>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleCloseDialog} color="secondary">
@@ -229,6 +273,7 @@ const InventoryPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const nameInputRef = useRef<HTMLInputElement>(null);
+    const [errors, setErrors] = useState<InventoryErrors>({});
 
   useEffect(() => {
     fetchInventory();
@@ -310,6 +355,7 @@ const InventoryPage: React.FC = () => {
   const handleCloseDialog = () => {
     setOpenDialog(false);
     setCurrentItem(null);
+    setErrors({});
   };
 
   const handleCloseDeleteDialog = () => {
@@ -331,54 +377,60 @@ const InventoryPage: React.FC = () => {
     });
   }, []);
 
-  const handleSelectChange = (e: any) => {
-    if (!currentItem) return;
-    setCurrentItem({
-      ...currentItem,
-      [e.target.name]: Number(e.target.value)
-    });
-  };
+const handleSelectChange = (e: any) => {
+  if (!currentItem) return;
+  setCurrentItem({
+    ...currentItem,
+    [e.target.name]: e.target.name === 'supplier_id' 
+      ? Number(e.target.value)
+      : e.target.value
+  });
+};
 
   const handleSubmit = async () => {
-    if (!currentItem) return;
+  if (!currentItem) return;
+  
+  if (!validateForm()) {
+    return;
+  }
 
-    try {
-      const payload = {
-        ...currentItem,
-        is_active: true
-      };
+  try {
+    const payload = {
+      ...currentItem,
+      is_active: true
+    };
 
-      const url = currentItem.inventory_id
-        ? `http://localhost:5000/api/inventory/${currentItem.inventory_id}`
-        : 'http://localhost:5000/api/inventory';
-      const method = currentItem.inventory_id ? 'PUT' : 'POST';
+    const url = currentItem.inventory_id
+      ? `http://localhost:5000/api/inventory/${currentItem.inventory_id}`
+      : 'http://localhost:5000/api/inventory';
+    const method = currentItem.inventory_id ? 'PUT' : 'POST';
 
-      const response = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
+    const response = await fetch(url, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
 
-      if (!response.ok) throw new Error('Operation failed');
+    if (!response.ok) throw new Error('Operation failed');
 
-      setSnackbar({
-        open: true,
-        message: currentItem.inventory_id ? 'Inventory item updated successfully' : 'Inventory item added successfully',
-        severity: 'success'
-      });
-      fetchInventory();
-      handleCloseDialog();
-    } catch (error) {
-      console.error('Error saving inventory item:', error);
-      setSnackbar({
-        open: true,
-        message: 'Failed to save inventory item',
-        severity: 'error'
-      });
-    }
-  };
+    setSnackbar({
+      open: true,
+      message: currentItem.inventory_id ? 'Inventory item updated successfully' : 'Inventory item added successfully',
+      severity: 'success'
+    });
+    fetchInventory();
+    handleCloseDialog();
+  } catch (error) {
+    console.error('Error saving inventory item:', error);
+    setSnackbar({
+      open: true,
+      message: 'Failed to save inventory item',
+      severity: 'error'
+    });
+  }
+};
 
   const handleDelete = async () => {
     if (!currentItem?.inventory_id) return;
@@ -410,6 +462,48 @@ const InventoryPage: React.FC = () => {
   const handleCloseSnackbar = () => {
     setSnackbar({ ...snackbar, open: false });
   };
+
+
+  const validateForm = () => {
+  const newErrors: InventoryErrors = {};
+
+  // Name validation
+  if (!currentItem?.name?.trim()) {
+    newErrors.name = 'Name is required';
+  } else if (!/^[A-Za-z0-9\s,'-.]{5,100}$/.test(currentItem.name)) {
+    newErrors.name = 'Must be 5-100 characters, only letters, numbers, spaces, and basic punctuation';
+  }
+
+  // Type validation
+  if (!currentItem?.type) {
+    newErrors.type = 'Type is required';
+  }
+
+  // Price validation
+  if (!currentItem?.price || currentItem.price <= 0) {
+    newErrors.price = 'Price must be greater than 0';
+  } else if (!/^\d+(\.\d{1,2})?$/.test(currentItem.price.toString())) {
+    newErrors.price = 'Must be a number with up to 2 decimal places';
+  }
+
+  // Quantity validation
+ if (currentItem?.quantity === undefined || currentItem.quantity < 0) {
+  newErrors.quantity = 'Quantity must be 0 or greater';
+}
+
+  // Reorder Level validation
+  if (!currentItem?.reorder_level || currentItem.reorder_level < 0) {
+    newErrors.reorder_level = 'Reorder level must be greater than 0 ';
+  }
+
+  // Supplier validation
+  if (!currentItem?.supplier_id || currentItem.supplier_id <= 0) {
+    newErrors.supplier_id = 'Supplier is required';
+  }
+
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
+};
 
   const InventoryTable = () => (
     <Paper elevation={3} className="rounded-lg overflow-hidden">
@@ -517,7 +611,8 @@ const InventoryPage: React.FC = () => {
           <TextField
             fullWidth
             variant="outlined"
-            placeholder="Search inventory by name or type..."
+            placeholder="Search inventory by name or type"
+             sx={{ width: 425 }}
             value={searchTerm}
             onChange={handleSearchChange}
             InputProps={{
@@ -533,14 +628,15 @@ const InventoryPage: React.FC = () => {
         <InventoryTable />
         
         <InventoryFormDialog
-          openDialog={openDialog}
-          currentItem={currentItem}
-          handleCloseDialog={handleCloseDialog}
-          handleInputChange={handleInputChange}
-          handleSelectChange={handleSelectChange}
-          handleSubmit={handleSubmit}
-          suppliers={suppliers}
-        />
+  openDialog={openDialog}
+  currentItem={currentItem}
+  handleCloseDialog={handleCloseDialog}
+  handleInputChange={handleInputChange}
+  handleSelectChange={handleSelectChange}
+  handleSubmit={handleSubmit}
+  suppliers={suppliers}
+  errors={errors} // Add this line
+/>
   
         <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
           <DialogTitle>Confirm Delete</DialogTitle>
