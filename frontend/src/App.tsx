@@ -14,7 +14,6 @@ import Dashboard from './pages/Dashboard'; // Add this import
 
 import InventoryDash from './pages/InventoryDash';
 import OrdersDash from './pages/OrdersDash';
-import SuppliersDash from './pages/SuppliersDash';
 
 import UserManagementDash from './pages/UserManagementDash';
 import SupplierList from './pages/SupplierList';
@@ -66,7 +65,7 @@ const App: React.FC = () => {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/inventorydash" element={<InventoryDash />} />
         <Route path="/ordersdash" element={<OrdersDash />} />
-        <Route path="/suppliersdash" element={<SuppliersDash />} />
+        
 
         <Route path="/usermanagementdash" element={<UserManagementDash />} />
         <Route path="/supplierlist" element={<SupplierList />} />

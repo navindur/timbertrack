@@ -33,6 +33,13 @@ interface Supplier {
   address?: string;
   created_at?: Date;
 }
+interface SupplierErrors {
+  name?: string;
+  contact_person?: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+}
 
 const SupplierList: React.FC = () => {
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
@@ -47,6 +54,8 @@ const SupplierList: React.FC = () => {
     severity: 'success' as 'success' | 'error'
   });
   const navigate = useNavigate();
+  const [errors, setErrors] = useState<SupplierErrors>({});
+
 
   useEffect(() => {
     fetchSuppliers();
@@ -120,7 +129,7 @@ const SupplierList: React.FC = () => {
 
   const handleSubmit = async () => {
     if (!currentSupplier) return;
-
+ if (validateForm()) {
     try {
       const url = currentSupplier.id
         ? `http://localhost:5000/api/suppliers/${currentSupplier.id}`
@@ -152,6 +161,7 @@ const SupplierList: React.FC = () => {
         severity: 'error'
       });
     }
+  }
   };
 
   const handleDelete = async () => {
@@ -184,6 +194,49 @@ const SupplierList: React.FC = () => {
   const handleCloseSnackbar = () => {
     setSnackbar({ ...snackbar, open: false });
   };
+
+  const validateForm = () => {
+  const newErrors: SupplierErrors = {}; // Use the interface here
+
+  // Supplier Name
+  if (!currentSupplier?.name?.trim()) {
+    newErrors.name = 'Supplier Name is required';
+  } else if (!/^[A-Za-z0-9 ]{2,60}$/.test(currentSupplier.name)) {
+    newErrors.name = 'Must be 2–60 characters, only letters, numbers, spaces';
+  }
+
+  // Contact Person
+  if (!currentSupplier?.contact_person?.trim()) {
+    newErrors.contact_person = 'Contact Person is required';
+  } else if (!/^[A-Za-z ]{2,60}$/.test(currentSupplier.contact_person)) {
+    newErrors.contact_person = 'Must be 2–60 letters only (no numbers/symbols)';
+  }
+
+  // Email (optional)
+  if (currentSupplier?.email?.trim()) {
+    const emailRegex = /^(?!\.)(?!.*\.\.)[A-Z0-9._%+-]+(?<!\.)@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+    if (!emailRegex.test(currentSupplier.email)) {
+      newErrors.email = 'Invalid email format';
+    }
+  }
+
+  // Phone
+  if (!currentSupplier?.phone?.trim()) {
+    newErrors.phone = 'Phone number is required';
+  } else if (!/^0\d{9}$/.test(currentSupplier.phone)) {
+    newErrors.phone = 'Must start with 0 and be exactly 10 digits';
+  }
+
+  // Address
+  if (!currentSupplier?.address?.trim()) {
+    newErrors.address = 'Address is required';
+  } else if (!/^[A-Za-z0-9\s,'-./]{5,100}$/.test(currentSupplier.address)) {
+    newErrors.address = 'Must be 5–100 characters, only valid characters allowed';
+  }
+
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
+};
 
   return (
     <Box sx={{ 
@@ -230,7 +283,8 @@ const SupplierList: React.FC = () => {
           <TextField
             fullWidth
             variant="outlined"
-            placeholder="Search suppliers by name..."
+            placeholder="Search suppliers by name"
+            sx={{ width: 425 }}
             value={searchTerm}
             onChange={handleSearchChange}
             InputProps={{
@@ -302,49 +356,67 @@ const SupplierList: React.FC = () => {
           </DialogTitle>
           <DialogContent className="space-y-4 pt-4">
             <TextField
-              fullWidth
-              label="Supplier Name"
-              name="name"
-              value={currentSupplier?.name || ''}
-              onChange={handleInputChange}
-              variant="outlined"
-              required
-            />
-            <TextField
-              fullWidth
-              label="Contact Person"
-              name="contact_person"
-              value={currentSupplier?.contact_person || ''}
-              onChange={handleInputChange}
-              variant="outlined"
-            />
-            <TextField
-              fullWidth
-              label="Email"
-              name="email"
-              type="email"
-              value={currentSupplier?.email || ''}
-              onChange={handleInputChange}
-              variant="outlined"
-            />
-            <TextField
-              fullWidth
-              label="Phone"
-              name="phone"
-              value={currentSupplier?.phone || ''}
-              onChange={handleInputChange}
-              variant="outlined"
-            />
-            <TextField
-              fullWidth
-              label="Address"
-              name="address"
-              multiline
-              rows={3}
-              value={currentSupplier?.address || ''}
-              onChange={handleInputChange}
-              variant="outlined"
-            />
+  fullWidth
+  label="Supplier Name"
+  name="name"
+  value={currentSupplier?.name || ''}
+  onChange={handleInputChange}
+  variant="outlined"
+  required
+  error={!!errors.name}
+  helperText={errors.name}
+/>
+
+<TextField
+  fullWidth
+  label="Contact Person"
+  name="contact_person"
+  value={currentSupplier?.contact_person || ''}
+  onChange={handleInputChange}
+  variant="outlined"
+  required
+  error={!!errors.contact_person}
+  helperText={errors.contact_person}
+/>
+
+<TextField
+  fullWidth
+  label="Email"
+  name="email"
+  type="email"
+  value={currentSupplier?.email || ''}
+  onChange={handleInputChange}
+  variant="outlined"
+  error={!!errors.email}
+  helperText={errors.email}
+/>
+
+<TextField
+  fullWidth
+  label="Phone"
+  name="phone"
+  value={currentSupplier?.phone || ''}
+  onChange={handleInputChange}
+  variant="outlined"
+  required
+  error={!!errors.phone}
+  helperText={errors.phone}
+/>
+
+<TextField
+  fullWidth
+  label="Address"
+  name="address"
+  multiline
+  rows={3}
+  value={currentSupplier?.address || ''}
+  onChange={handleInputChange}
+  variant="outlined"
+  required
+  error={!!errors.address}
+  helperText={errors.address}
+/>
+
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseDialog} color="secondary">
