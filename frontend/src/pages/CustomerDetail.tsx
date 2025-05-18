@@ -38,6 +38,14 @@ interface CustomerDetail {
     total_price: number;
     payment_method: string;
   }>;
+  custom_orders: Array<{
+    custom_order_id: number;
+    request_date: string;
+    status: string;
+    estimated_price: number;
+    payment_status: string;
+    production_status: string;
+  }>;
 }
 
 const CustomerDetail: React.FC = () => {
@@ -60,16 +68,20 @@ const CustomerDetail: React.FC = () => {
     loadCustomer();
   }, [id]);
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'pending': return 'default';
-      case 'processing': return 'primary';
-      case 'shipped': return 'info';
-      case 'delivered': return 'success';
-      case 'cancelled': return 'error';
-      default: return 'default';
-    }
-  };
+const getStatusColor = (status: string) => {
+  switch (status.toLowerCase()) {
+    case 'pending': return 'warning';
+    case 'processing': 
+    case 'in_progress': return 'primary';
+    case 'shipped': return 'info';
+    case 'delivered': 
+    case 'accepted': return 'success';
+    case 'cancelled': 
+    case 'rejected': return 'error';
+    case 'finished': return 'secondary';
+    default: return 'default';
+  }
+};
 
   if (isLoading) {
     return (
@@ -159,7 +171,7 @@ const CustomerDetail: React.FC = () => {
           <Grid item xs={12} md={6}>
             <Paper sx={{ p: 3 }}>
               <Typography variant="h6" gutterBottom>
-                Recent Orders ({customer.order_count})
+                Recent Normal Orders ({customer.order_count})
               </Typography>
               <Divider sx={{ mb: 2 }} />
               
@@ -210,6 +222,54 @@ const CustomerDetail: React.FC = () => {
               )}
             </Paper>
           </Grid>
+   <Grid item xs={12} md={6}>
+            <Paper sx={{ p: 3, mb: 3 }}>
+      <Typography variant="h6" gutterBottom>
+        Recent Custom Orders ({customer.custom_orders.length})
+      </Typography>
+      <Divider sx={{ mb: 2 }} />
+      
+      {customer.custom_orders.length > 0 ? (
+        <TableContainer>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>Order ID</TableCell>
+                <TableCell>Request Date</TableCell>
+                <TableCell>Est. Price</TableCell>
+                <TableCell>Status</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {customer.custom_orders.map((order) => (
+                <TableRow key={order.custom_order_id}>
+                  <TableCell>#{order.custom_order_id}</TableCell>
+                  <TableCell>
+                    {new Date(order.request_date).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell>
+                    Rs.{order.estimated_price ? Number(order.estimated_price).toFixed(2) : 'N/A'}
+                  </TableCell>
+                  <TableCell>
+                    <Chip 
+                      label={order.status} 
+                      color={
+                        order.status === 'Accepted' ? 'success' : 
+                        order.status === 'Rejected' ? 'error' : 'warning'
+                      }
+                      size="small"
+                    />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      ) : (
+        <Typography>No custom orders</Typography>
+      )}
+    </Paper>
+  </Grid>
         </Grid>
       </Box>
     </Box>

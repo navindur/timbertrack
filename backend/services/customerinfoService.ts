@@ -136,8 +136,26 @@ export const getCustomerById = async (id: number) => {
     [id]
   );
 
+  const [customOrders] = await db.query<RowDataPacket[]>(
+    `
+      SELECT 
+        custom_order_id,
+        request_date,
+        status,
+        estimated_price,
+        payment_status,
+        production_status
+      FROM custom_orders
+      WHERE customer_id = ?
+      ORDER BY request_date DESC
+      LIMIT 5
+    `,
+    [id]
+  );
+
   return {
     ...customerRows[0],
     orders,
+    custom_orders: customOrders
   };
 };

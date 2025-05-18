@@ -213,21 +213,41 @@ export const getTopCustomersService = async (start: string, end: string) => {
   const [results] = await db.execute(
     `
     SELECT 
-      c.customer_id, u.email, c.first_name, c.last_name,
-      SUM(o.total_price) AS total_spent,
-      COUNT(o.id) AS total_orders
+      c.customer_id,
+      u.email,
+      c.first_name,
+      c.last_name,
+      COALESCE(o_stats.total_order_spent, 0) + COALESCE(co_stats.total_custom_spent, 0) AS total_spent,
+      COALESCE(o_stats.order_count, 0) + COALESCE(co_stats.custom_order_count, 0) AS total_orders
     FROM customers c
     JOIN users u ON c.user_id = u.id
-    JOIN orders o ON o.customer_id = c.customer_id
-    WHERE o.created_at BETWEEN ? AND ?
-    GROUP BY c.customer_id
+    LEFT JOIN (
+      SELECT 
+        customer_id, 
+        SUM(total_price) AS total_order_spent, 
+        COUNT(*) AS order_count
+      FROM orders
+      WHERE created_at BETWEEN ? AND ?
+      GROUP BY customer_id
+    ) AS o_stats ON o_stats.customer_id = c.customer_id
+    LEFT JOIN (
+      SELECT 
+        customer_id, 
+        SUM(estimated_price) AS total_custom_spent, 
+        COUNT(*) AS custom_order_count
+      FROM custom_orders
+      WHERE request_date BETWEEN ? AND ? AND payment_status = 'paid'
+      GROUP BY customer_id
+    ) AS co_stats ON co_stats.customer_id = c.customer_id
     ORDER BY total_spent DESC
     LIMIT 10
     `,
-    [start, end]
+    [start, end, start, end]
   );
   return results;
 };
+
+
 
 // Customer Order History
 export const getCustomerOrderHistoryService = async (customerId: string) => {

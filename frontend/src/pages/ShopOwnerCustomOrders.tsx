@@ -387,25 +387,43 @@ const filteredOrders = orders.filter(order => {
 
 
       {/* Price Dialog */}
-      <Dialog open={priceDialogOpen} onClose={() => setPriceDialogOpen(false)}>
-        <DialogTitle>Accept Custom Order</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            label="Estimated Price"
-            type="number"
-            fullWidth
-            variant="standard"
-            value={estimatedPrice}
-            onChange={(e) => setEstimatedPrice(e.target.value)}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setPriceDialogOpen(false)}>Cancel</Button>
-          <Button onClick={submitAccept} disabled={!estimatedPrice}>Accept</Button>
-        </DialogActions>
-      </Dialog>
+     <Dialog open={priceDialogOpen} onClose={() => setPriceDialogOpen(false)}>
+  <DialogTitle>Accept Custom Order</DialogTitle>
+  <DialogContent>
+    <TextField
+      autoFocus
+      margin="dense"
+      label="Estimated Price"
+      type="text"
+      fullWidth
+      variant="standard"
+      value={estimatedPrice}
+      onChange={(e) => {
+        const val = e.target.value;
+        // Allow only digits and optional decimal
+        if (/^\d*\.?\d*$/.test(val)) {
+          setEstimatedPrice(val);
+        }
+      }}
+      error={!!estimatedPrice && (parseFloat(estimatedPrice) <= 0)}
+      helperText={
+        !!estimatedPrice && parseFloat(estimatedPrice) <= 0
+          ? 'Price must be greater than 0'
+          : ''
+      }
+    />
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={() => setPriceDialogOpen(false)}>Cancel</Button>
+    <Button
+      onClick={submitAccept}
+      disabled={!estimatedPrice || parseFloat(estimatedPrice) <= 0}
+    >
+      Accept
+    </Button>
+  </DialogActions>
+</Dialog>
+
 
       {/* Status Update Dialog */}
       <Dialog open={statusUpdateDialogOpen} onClose={() => setStatusUpdateDialogOpen(false)}>

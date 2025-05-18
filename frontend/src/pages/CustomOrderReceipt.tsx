@@ -110,13 +110,20 @@ const CustomOrderReceipt: React.FC = () => {
     <>
       <Navbar />
       <Box sx={{ maxWidth: 800, mx: 'auto', p: 3 }}>
-        <Typography variant="h4" gutterBottom>
-          Custom Order Receipt
-        </Typography>
+      
         
         <Paper elevation={2} sx={{ p: 3, mb: 3 }} className={showPrintDialog ? "print-receipt" : ""}>
+             <Typography variant="body1" sx={{ display: 'none', '@media print': { display: 'block', textAlign: 'center', mb: 1 } }}>
+    Jayarani Furniture
+  </Typography>
+            <Typography variant="body1" sx={{ display: 'none', '@media print': { display: 'block', textAlign: 'center', mb: 1 } }}>
+    Galle Road, Kaluthara North
+  </Typography>
+  <Typography variant="body1" sx={{ display: 'none', '@media print': { display: 'block', textAlign: 'center', mb: 1 } }}>
+    Phone: 034 223 7741
+  </Typography>
           <Typography variant="h5" gutterBottom>
-            Order Receipt
+            Custom Order Receipt
           </Typography>
           <Typography variant="subtitle1" gutterBottom>
             Order ID: {order.custom_order_id}
