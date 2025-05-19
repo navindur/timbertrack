@@ -106,7 +106,7 @@ if (product.quantity <= 0) {
     });
     
     if (!cartResponse.ok) {
-      throw new Error('Failed to fetch cart items');
+      throw new Error('Please login first');
     }
 
     const cartData = await cartResponse.json();

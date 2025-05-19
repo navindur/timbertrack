@@ -89,14 +89,14 @@ const CustomerProfile = () => {
   };
 
   const validateAddressLine = (line: string, fieldName = "Address"): string | null => {
-    
+     if (!line) return null; 
     if (line.length < 5 || line.length > 100) return `${fieldName} must be 5–100 characters long`;
     if (!/^[A-Za-z0-9\s,'-.]+$/.test(line)) return `${fieldName} contains invalid characters`;
     return null;
   };
   
   const validateCity = (city: string): string | null => {
-    
+    if (!city) return null; 
     if (city.length < 2 || city.length > 50) return 'City must be 2–50 characters long';
     if (!/^[A-Za-z\s]+$/.test(city)) return 'City must contain only letters and spaces';
     return null;
