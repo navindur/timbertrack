@@ -152,6 +152,9 @@ const SignIn: React.FC = () => {
                   Sign Up
                 </Link>
               </Typography>
+              <Link href="/forgot-password" sx={{ color: "#B88E2F", textDecoration: "none", "&:hover": { textDecoration: "underline" } }}>
+                  Forget Password ?
+                </Link>
             </Box>
           </Grid>
         </Grid>

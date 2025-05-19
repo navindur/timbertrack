@@ -10,6 +10,7 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
+  
   DialogActions
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
@@ -417,6 +418,13 @@ const CustomerProfile = () => {
                 >
                   Change Password
                 </Button>
+                  <Button 
+                  variant="outlined" 
+                  onClick={() => navigate('/forgot-password')}
+                  sx={{ mr: 2 }}
+                >
+                  Forget Password
+                </Button>
                 <Button 
                   variant="outlined" 
                   color="error" 
@@ -449,6 +457,7 @@ const CustomerProfile = () => {
         {/* Change Password Dialog */}
         <Dialog open={openPasswordDialog} onClose={() => setOpenPasswordDialog(false)}>
           <DialogTitle>Change Password</DialogTitle>
+         
           <DialogContent>
             {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
             {success && <Alert severity="success" sx={{ mb: 2 }}>{success}</Alert>}

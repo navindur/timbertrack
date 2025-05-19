@@ -30,6 +30,7 @@ import Navbar from '../components/Adminnavbar';
 import SalesChart  from '../components/SalesChart';
 import axiosInstance from '../api/axiosInstance';
 import { AxiosError } from 'axios';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 
 interface StatCardProps {
   title: string;
@@ -88,6 +89,7 @@ const DashboardPage = () => {
      confirmPassword: ''
    });
 
+   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -261,6 +263,12 @@ const handlePasswordChange = async () => {
       onClick={handleOpenPasswordDialog}
     >
       Change Password
+    </Button>
+    <Button 
+      variant="outlined" 
+       onClick={() => navigate('/forgot-password')}
+    >
+     Forget Password
     </Button>
   </Box>
 </Box>

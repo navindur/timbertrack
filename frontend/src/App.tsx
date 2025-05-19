@@ -42,6 +42,8 @@ import MyCustomOrdersPage from "./pages/MyCustomOrdersPage"; //new
 import ShopOwnerCustomOrders from "./pages/ShopOwnerCustomOrders"; //new
 import CustomOrderCheckout from "./pages/CustomOrderCheckout"; //new
 import CustomOrderReceipt from './pages/CustomOrderReceipt';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 
 
 
@@ -54,6 +56,8 @@ const App: React.FC = () => {
          <RedirectHandler /> 
       
       <Routes>
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+    <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/unauthorized" element={<Unauthorized />} />
       <Route path="/signup" element={<SignUp />} /> 
       <Route path="/signin" element={<SignIn />} />

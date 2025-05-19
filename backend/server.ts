@@ -19,7 +19,7 @@ import dashboardRoutes from './routes/dashboardroutes';
 import customerinfoRoutes from './routes/customerinfoRoutes';
 import reportRoutes from './routes/reportroutes';
 import customOrderRoutes from "./routes/customOrderRoutes"; //new
-
+import prauthRoutes from './routes/prauthroutes';
 
 dotenv.config();
 
@@ -74,5 +74,6 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/customerinfo', customerinfoRoutes); 
 app.use('/api/reports', reportRoutes); 
 app.use("/api/custom-orders", customOrderRoutes); //new
+app.use('/api/auth', prauthRoutes);
 
 export default app;
