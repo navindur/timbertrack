@@ -12,6 +12,7 @@ import {
   getOrdersByStatusService,
   getOrderDetailsService
 } from '../services/reportservice';
+import { getCustomOrdersByStatusService } from '../services/reportservice';
 import { generateSalesSummaryPDF, generateGenericReportPDF } from '../utils/pdfGenerator';
 
 interface SalesSummary {
@@ -370,6 +371,48 @@ export const getOrdersByStatusPDF = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Error generating PDF' });
   }
 };
+
+export const getCustomOrdersByStatus = async (req: Request, res: Response) => {
+  try {
+    const { start, end } = req.query;
+    if (!start || !end) {
+      return res.status(400).json({ message: 'Start and end dates are required' });
+    }
+
+    const results = await getCustomOrdersByStatusService(start as string, end as string);
+    res.status(200).json(results);
+  } catch (err) {
+    console.error('Error fetching custom orders by status:', err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+export const getCustomOrdersByStatusPDF = async (req: Request, res: Response) => {
+  try {
+    const { start, end } = req.query;
+    if (!start || !end) {
+      return res.status(400).json({ message: 'Start and end dates are required' });
+    }
+
+    const results = await getCustomOrdersByStatusService(start as string, end as string);
+
+    generateGenericReportPDF({
+      title: 'Custom Orders by Status Report',
+      period: `${start} to ${end}`,
+      subtitle: 'Comprehensive Custom Orders Status Overview',
+      columns: ['Status', 'Order Count', 'Total Estimated Price'],
+      data: (results as any[]).map(item => [
+        item.status,
+        item.count,
+        `Rs.${Number(item.total_estimated_price).toFixed(2)}`
+      ])
+    }, res, 'custom_orders_by_status.pdf');
+  } catch (error) {
+    console.error('PDF export error:', error);
+    res.status(500).json({ message: 'Error generating PDF' });
+  }
+};
+
 
 // Order Details
 export const getOrderDetails = async (req: Request, res: Response) => {

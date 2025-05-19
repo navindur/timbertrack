@@ -21,7 +21,9 @@ import {
   getOrdersByStatus,
   getOrdersByStatusPDF,
   getOrderDetails,
-  getOrderDetailsPDF
+  getOrderDetailsPDF,
+  getCustomOrdersByStatusPDF,
+  getCustomOrdersByStatus
 } from '../controllers/reportcontroller';
 
 const router = express.Router();
@@ -53,5 +55,14 @@ router.get('/orders/status', getOrdersByStatus);
 router.get('/orders/status/pdf', getOrdersByStatusPDF);
 router.get('/orders/:orderId', getOrderDetails);
 router.get('/orders/:orderId/pdf', getOrderDetailsPDF);
+
+
+
+// GET /api/reports/custom-orders/status?start=YYYY-MM-DD&end=YYYY-MM-DD
+router.get('/customorders/status', getCustomOrdersByStatus);
+
+// GET /api/reports/custom-orders/status/pdf?start=YYYY-MM-DD&end=YYYY-MM-DD
+router.get('/customorders/status/pdf', getCustomOrdersByStatusPDF);
+
 
 export default router;

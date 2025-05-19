@@ -34,7 +34,8 @@ import {
   fetchInventoryValuation,
   fetchTopCustomers,
   fetchSalesByPaymentMethod,
-  fetchOrdersByStatus
+  fetchOrdersByStatus,
+  fetchCustomOrdersByStatus
 } from '../services/reportServices';
 
 interface ReportData {
@@ -88,6 +89,9 @@ const ReportsDashboard: React.FC = () => {
     case 'orders-status':
       data = await fetchOrdersByStatus(startDate, endDate);
       break;
+  case 'customorders-status':
+    data = await fetchCustomOrdersByStatus(startDate, endDate);
+    break;
           default:
             data = null;
         }
@@ -163,6 +167,9 @@ const ReportsDashboard: React.FC = () => {
     case 'orders-status':
       url = `/api/reports/orders/status/pdf?${params.toString()}`;
       break;
+      case 'customorders-status':
+      url = `/api/reports/customorders/status/pdf?${params.toString()}`;
+      break;
       default:
         return;
     }
@@ -204,6 +211,8 @@ const ReportsDashboard: React.FC = () => {
       return renderSalesByPayment();
     case 'orders-status':
       return renderOrdersByStatus();
+      case 'customorders-status':
+      return rendercustomOrdersByStatus();
       default:
         return null;
     }
@@ -474,6 +483,35 @@ const ReportsDashboard: React.FC = () => {
     );
   };
 
+  const rendercustomOrdersByStatus = () => {
+    const data = reportData as any[];
+    return (
+      <TableContainer component={Paper} sx={{ mt: 3 }}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Status</TableCell>
+              <TableCell align="right">Order Count</TableCell>
+              <TableCell align="right">Revenue</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {data.map((row) => (
+              <TableRow key={row.status}>
+                <TableCell>
+                  {row.status.charAt(0).toUpperCase() + row.status.slice(1)}
+                </TableCell>
+                <TableCell align="right">{row.count}</TableCell>
+                <TableCell align="right">Rs.{Number(row.total_estimated_price).toFixed(2)}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    );
+  };
+
+
   return (
     <Box sx={{ 
       display: 'flex', 
@@ -527,6 +565,7 @@ const ReportsDashboard: React.FC = () => {
     <Tab label="Inventory Valuation" value="inventory-valuation" />
     <Tab label="Top Customers" value="top-customers" />
     <Tab label="Normal Orders by Status" value="orders-status" />
+    <Tab label="Custom Orders by Status" value="customorders-status" />
   </Tabs>
         </Paper>
 

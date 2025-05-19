@@ -67,6 +67,14 @@ export const fetchOrdersByStatus = async (startDate: string, endDate: string) =>
   return response.data;
 };
 
+// Fetch custom orders by status
+export const fetchCustomOrdersByStatus = async (startDate: string, endDate: string) => {
+  const response = await axios.get(`${API_BASE_URL}/customorders/status`, {
+    params: { start: startDate, end: endDate }
+  });
+  return response.data;
+};
+
 // Order Details
 export const fetchOrderDetails = async (orderId: string) => {
   const response = await axios.get(`${API_BASE_URL}/orders/${orderId}`);

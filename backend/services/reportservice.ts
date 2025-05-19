@@ -283,6 +283,24 @@ export const getOrdersByStatusService = async (start: string, end: string) => {
   return results;
 };
 
+
+export const getCustomOrdersByStatusService = async (start: string, end: string) => {
+  const [results] = await db.execute(
+    `
+    SELECT 
+      status,
+      COUNT(*) AS count,
+      SUM(estimated_price) AS total_estimated_price
+    FROM custom_orders
+    WHERE request_date BETWEEN ? AND ?
+    GROUP BY status
+    `,
+    [start, end]
+  );
+  return results;
+};
+
+
 // Order Details
 export const getOrderDetailsService = async (orderId: string) => {
   const [order] = await db.execute(
