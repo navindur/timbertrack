@@ -19,6 +19,12 @@ import { ShoppingCart, Add, Remove } from '@mui/icons-material';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 import { addToCart } from '../services/cartService';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
 
 interface Product {
   id: number;
@@ -42,6 +48,7 @@ const ProductDetailPage = () => {
     message: '',
     severity: 'success' as 'success' | 'error'
   });
+  const [activeTab, setActiveTab] = useState(0);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -157,6 +164,33 @@ const handleAddToCart = async () => {
       </Box>
     );
   }
+const WARRANTY_INFO = `
+All locally manufactured solid wood products will have a warranty of 2 years against poor quality of timber and manufacturing defects.
+
+All locally manufactured PVC and fabric sofa sets will have a warranty for 2 years on the timber frame.
+
+All furniture manufactured in melamine, plywood, veneer, MDF or any other material will have a warranty of 2 year against manufacturing defects other than solid wood.
+
+Granite and quartz worktops will have a warranty of 2 year.
+
+Payment receipt also serves as your warranty card. Warranty period will start from the date of purchase. Please retain the paymenet receipt and present it to claim warranty services if needed.
+`;
+
+const FURNITURE_CARE_INFO = `
+Wood furniture is best maintained at temperatures between 22°C and 30°C. Relative humidity should be at 50% – 60%. 
+
+Avoid prolonged exposure to heating and cooling outlets, as exposure to extreme temperature variations can damage any fine wood piece.
+
+Do not expose furniture to continuous direct sunlight. With extended exposure, ultraviolet rays can create hairline cracks in the finish or cause fading, yellowing, or darkening. 
+
+Wood is porous. It responds to extremely dry air by losing moisture and shrinking. It responds to humid air by absorbing moisture and expanding. In dry environments, the halves of an extension table may part slightly, especially at the edges. This will correct itself as the relative humidity rises and the wood absorbs enough moisture to expand. 
+
+During humid weather, wood drawer fronts may swell and become difficult to open and close. These natural changes do not affect the furniture’s overall quality or durability. 
+`;
+
+const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+  setActiveTab(newValue);
+};
 
   return (
     <Box sx={{ 
@@ -263,11 +297,49 @@ const handleAddToCart = async () => {
                 >
                   {product.quantity === 0 ? 'Out of Stock' : `Add to Cart (${quantity})`}
                 </Button>
+                {/* Add this right after the Add to Cart button */}
+
               </CardContent>
             </Box>
           </Card>
+          
         )}
       </Container>
+      <Box sx={{ mt: 4, maxWidth: "lg", mx: 'auto',backgroundColor: 'background.paper' }}>
+  <Tabs 
+    value={activeTab} 
+    onChange={handleTabChange}
+    sx={{
+      '& .MuiTabs-flexContainer': {
+        justifyContent: 'center',
+      }
+    }}
+  >
+    <Tab label="Warranty" />
+    <Tab label="Care Instructions" />
+  </Tabs>
+  
+  <Box sx={{ 
+    p: 3,
+    border: 1,
+    borderColor: 'divider',
+    borderTop: 0,
+    borderRadius: '0 0 4px 4px',
+    minHeight: 200
+  }}>
+    {activeTab === 0 && (
+      <Typography whiteSpace="pre-line" sx={{ fontSize: '1.1rem' }}>
+        {WARRANTY_INFO}
+      </Typography>
+    )}
+    {activeTab === 1 && (
+      <Typography whiteSpace="pre-line" sx={{ fontSize: '1.1rem' }}>
+        {FURNITURE_CARE_INFO}
+      </Typography>
+    )}
+  </Box>
+</Box>
+
 
       <Footer />
 
