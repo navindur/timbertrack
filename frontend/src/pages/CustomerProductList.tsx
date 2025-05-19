@@ -48,36 +48,57 @@ const CustomerProductList: React.FC = () => {
       message: '',
       severity: 'success' as 'success' | 'error'
     });
+    const [hideOutOfStock, setHideOutOfStock] = useState(false);
 
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        const data = await getCustomerProducts({
-          page: 1,
-          limit: 100, // Adjust based on your needs
-          search: searchTerm,
-          category: categoryFilter
-        });
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      const data = await getCustomerProducts({
+        page: 1,
+        limit: 100,
+        search: searchTerm,
+        category: categoryFilter,
         
-        setProducts(data);
-        setFilteredProducts(data);
-        
-        // Extract unique categories
-        const uniqueCategories = Array.from(
-          new Set(data.map(product => product.category))
-        ).filter(Boolean) as string[];
-        setCategories(uniqueCategories);
-      } catch (error) {
-        console.error('Error fetching products:', error);
-      } finally {
-        setLoading(false);
+      });
+      
+      setProducts(data);
+      
+      // Apply all filters including out-of-stock
+      let filtered = [...data];
+      if (hideOutOfStock) {
+  filtered = filtered.filter(product => 
+    product.quantity !== undefined && product.quantity > 0
+  );
+}
+      if (searchTerm) {
+        filtered = filtered.filter(product => 
+          product.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
       }
-    };
+      if (categoryFilter) {
+        filtered = filtered.filter(product => 
+          product.category === categoryFilter
+        );
+      }
+      
+      setFilteredProducts(filtered);
+      
+      // Extract unique categories
+      const uniqueCategories = Array.from(
+        new Set(data.map(product => product.category))
+      ).filter(Boolean) as string[];
+      setCategories(uniqueCategories);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchProducts();
-  }, [searchTerm, categoryFilter]);
+  fetchProducts();
+}, [searchTerm, categoryFilter, hideOutOfStock]); // Add hideOutOfStock to dependencies
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -205,7 +226,7 @@ if (product.quantity <= 0) {
           {/* Search and Filter */}
           <Box sx={{ display: 'flex', gap: 2,  width: '100%',  justifyContent: 'flex-start' }}>
             <TextField
-              placeholder="Search products..."
+              placeholder="Search products"
               variant="outlined"
               size="small"
               value={searchTerm}
@@ -234,6 +255,14 @@ if (product.quantity <= 0) {
                 ))}
               </Select>
             </FormControl>
+            <Button
+    variant={hideOutOfStock ? "contained" : "outlined"}
+    onClick={() => setHideOutOfStock(!hideOutOfStock)}
+    size="small"
+    sx={{ ml: 'auto' }}
+  >
+    {hideOutOfStock ? 'Showing In Stock Only' : 'Click to remove out of Stock'}
+  </Button>
           </Box>
         </Box>
 
@@ -292,21 +321,28 @@ if (product.quantity <= 0) {
                   </CardContent>
                   <CardActions>
                   <Button 
-  size="small" 
-  startIcon={<ShoppingCart />}
-  onClick={(e) => {
-    e.stopPropagation(); // Prevent card click
-    product.id && handleAddToCart(product.id);
-  }}
-  fullWidth
-  variant="contained"
-  sx={{
-    bgcolor: '#3b82f6',
-    '&:hover': { bgcolor: '#2563eb' }
-  }}
->
-  Add to Cart
-</Button>
+    size="small" 
+    startIcon={<ShoppingCart />}
+    onClick={(e) => {
+      e.stopPropagation();
+      product.id && handleAddToCart(product.id);
+    }}
+    fullWidth
+    variant="contained"
+    disabled={product.quantity !== undefined && product.quantity <= 0}
+    sx={{
+      bgcolor: '#3b82f6',
+      '&:hover': { bgcolor: '#2563eb' },
+      '&:disabled': {
+        bgcolor: 'grey.300',
+        color: 'grey.600'
+      }
+    }}
+  >
+    {product.quantity !== undefined && product.quantity <= 0 
+      ? 'Out of Stock' 
+      : 'Add to Cart'}
+  </Button>
 
                   </CardActions>
                 </Card>
@@ -317,29 +353,34 @@ if (product.quantity <= 0) {
         )}
 
         {/* Empty State */}
-        {!loading && filteredProducts.length === 0 && (
-          <Box sx={{ 
-            display: 'flex', 
-            flexDirection: 'column', 
-            alignItems: 'center',
-            mt: 4,
-            p: 4,
-            textAlign: 'center'
-          }}>
-            <Typography variant="h6" sx={{ mb: 2 }}>
-              {searchTerm ? 'No products match your search' : 'No products available'}
-            </Typography>
-            <Button 
-              variant="outlined" 
-              onClick={() => {
-                setSearchTerm('');
-                setCategoryFilter('');
-              }}
-            >
-              Clear filters
-            </Button>
-          </Box>
-        )}
+       {!loading && filteredProducts.length === 0 && (
+  <Box sx={{ 
+    display: 'flex', 
+    flexDirection: 'column', 
+    alignItems: 'center',
+    mt: 4,
+    p: 4,
+    textAlign: 'center'
+  }}>
+    <Typography variant="h6" sx={{ mb: 2 }}>
+      {hideOutOfStock 
+        ? 'No in-stock products match your criteria' 
+        : searchTerm 
+          ? 'No products match your search' 
+          : 'No products available'}
+    </Typography>
+    <Button 
+      variant="outlined" 
+      onClick={() => {
+        setSearchTerm('');
+        setCategoryFilter('');
+        setHideOutOfStock(false);
+      }}
+    >
+      Clear all filters
+    </Button>
+  </Box>
+)}
       </Box>
 
       <Footer />

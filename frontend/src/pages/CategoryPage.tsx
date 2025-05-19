@@ -40,9 +40,10 @@ const CategoryPage = () => {
         message: '',
         severity: 'success' as 'success' | 'error'
       });
-  
+      const [hideOutOfStock, setHideOutOfStock] = useState(false);
 
-  useEffect(() => {
+
+useEffect(() => {
     const loadProducts = async () => {
       try {
         setLoading(true);
@@ -58,21 +59,26 @@ const CategoryPage = () => {
     };
     
     loadProducts();
-  }, [category, page]);
+  }, [category, page]);      
 
-  // Filter products based on search term
-  useEffect(() => {
-    if (searchTerm.trim() === '') {
-      setFilteredProducts(allProducts);
-      setPage(1); // Reset to first page when clearing search
-    } else {
-      const filtered = allProducts.filter(product =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setFilteredProducts(filtered);
-      setPage(1); // Reset to first page when searching
-    }
-  }, [searchTerm, allProducts]);
+      
+
+ useEffect(() => {
+  const filtered = allProducts.filter(product => {
+    // Search term condition
+    const matchesSearch = searchTerm.trim() === '' || 
+      product.name.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    // Stock condition
+    const inStock = !hideOutOfStock || 
+      (product.quantity !== undefined && product.quantity > 0);
+    
+    return matchesSearch && inStock;
+  });
+  
+  setFilteredProducts(filtered);
+  setPage(1);
+}, [searchTerm, allProducts, hideOutOfStock]);
 
   const handleAddToCart = async (productId: number) => {
   try {
@@ -233,6 +239,14 @@ if (product.quantity <= 0) {
               bgcolor: 'background.paper'
             }}
           />
+           <Button
+      variant={hideOutOfStock ? "contained" : "outlined"}
+      onClick={() => setHideOutOfStock(!hideOutOfStock)}
+      size="small"
+      sx={{ whiteSpace: 'nowrap' }}
+    >
+      {hideOutOfStock ? 'Showing In Stock only' : 'Click to remove out of Stock'}
+    </Button>
         </Box>
 
         {/* Product Grid */}
@@ -286,17 +300,24 @@ if (product.quantity <= 0) {
   size="small" 
   startIcon={<ShoppingCart />}
   onClick={(e) => {
-    e.stopPropagation(); // Prevent card click
+    e.stopPropagation();
     product.id && handleAddToCart(product.id);
   }}
   fullWidth
   variant="contained"
+  disabled={product.quantity !== undefined && product.quantity <= 0}
   sx={{
     bgcolor: '#3b82f6',
-    '&:hover': { bgcolor: '#2563eb' }
+    '&:hover': { bgcolor: '#2563eb' },
+    '&:disabled': {
+      bgcolor: 'grey.300',
+      color: 'grey.600'
+    }
   }}
 >
-  Add to Cart
+  {product.quantity !== undefined && product.quantity <= 0 
+    ? 'Out of Stock' 
+    : 'Add to Cart'}
 </Button>
 
                 </CardActions>

@@ -27,6 +27,7 @@ export interface Product {
     limit: number;
     search?: string;
     category?: string;
+   
   }
 
   export interface CategoryResponse {
