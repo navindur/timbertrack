@@ -16,7 +16,9 @@ export const getProductDetails = async (id: number) => {
       inventory_id: product.inventory_id,
       is_active: Boolean(product.is_active),
       created_at: product.created_at,
-      updated_at: product.updated_at
+      updated_at: product.updated_at,
+      has_discount: Boolean(product.has_discount), // Add this
+      dummy_price: product.dummy_price || null    // Add this
     };
   } catch (error) {
     console.error('Service error fetching product details:', error);

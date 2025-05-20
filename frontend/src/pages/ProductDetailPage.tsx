@@ -34,6 +34,8 @@ interface Product {
   category: string;
   image_url: string;
   quantity: number; // Available inventory
+  has_discount?: boolean | null; // Make it explicitly nullable
+  dummy_price?: number | null; 
 }
 
 const ProductDetailPage = () => {
@@ -87,7 +89,7 @@ const handleAddToCart = async () => {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to fetch cart items');
+      throw new Error('Please login first');
     }
 
     const cartData = await response.json();
@@ -235,8 +237,34 @@ const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
                   sx={{ mb: 2 }}
                 />
                 
-                <Typography variant="h5" color="primary" sx={{ mb: 3 }}>
-  Rs. {Number(product.price).toFixed(2)}
+          <Typography variant="h5" color="primary" sx={{ mb: 3 }}>
+   {product.has_discount && product.dummy_price !== null && product.dummy_price !== undefined ? (
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+      <Typography 
+        variant="h5" 
+        sx={{ 
+          textDecoration: 'line-through',
+          color: 'text.secondary'
+        }}
+      >
+         Rs.{Number(product.dummy_price ?? 0).toFixed(2)}
+      </Typography>
+      <Typography 
+        variant="h4" 
+        color="error.main"
+        sx={{ fontWeight: 'bold' }}
+      >
+         Rs.{Number(product.price ?? 0).toFixed(2)}
+      </Typography>
+      <Chip 
+        label={`${Math.round((1 - product.price/product.dummy_price) * 100)}% OFF`} 
+        color="error" 
+        size="medium"
+      />
+    </Box>
+  ) : (
+    `Rs.${Number(product.price ?? 0).toFixed(2)}`
+  )}
 </Typography>
 
 

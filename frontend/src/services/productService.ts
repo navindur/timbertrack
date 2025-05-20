@@ -118,7 +118,6 @@ export const updateProduct = async (id: number, formData: FormData) => {
     },
   });
 };
-
 // Delete product (matches deleteProduct import)
 export const deleteProduct = async (id: number): Promise<void> => {
   const response = await fetch(`${API_URL}/${id}`, {

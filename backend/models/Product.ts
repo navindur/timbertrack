@@ -10,22 +10,33 @@ export interface Product {
   is_active?: boolean;
   created_at?: Date;
   updated_at?: Date;
-  price?: number;//new p view
-  quantity?: number;//new
-  category?: string;//new
+  price?: number;
+  quantity?: number;
+  category?: string;
+  has_discount?: boolean;
+  dummy_price?: number | null;
 }
 
 // ✅ Create new product
 export const createProduct = async (product: Product) => {
   const [result] = await db.query<OkPacket>(
-    `INSERT INTO products (name, description, inventory_id, image_url, is_active)
-     VALUES (?, ?, ?, ?, ?)`,
+    `INSERT INTO products (
+      name, 
+      description, 
+      inventory_id, 
+      image_url, 
+      is_active,
+      has_discount,
+      dummy_price
+     ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
     [
       product.name,
       product.description || null,
       product.inventory_id,
       product.image_url || null,
       product.is_active ?? 1,
+      product.has_discount ?? false, // Default to false if not provided
+      product.has_discount ? product.dummy_price : null // Only set dummy_price if has_discount is true
     ]
   );
   return result;
@@ -56,7 +67,12 @@ export const softDeleteProduct = async (id: number) => {
 // ✅ Edit product (description and image)
 export const updateProduct = async (
   id: number,
-  updates: { description?: string; image_url?: string }
+  updates: { 
+    description?: string; 
+    image_url?: string;
+    has_discount?: boolean;
+    dummy_price?: number | null;
+  }
 ) => {
   const fields = [];
   const values = [];
@@ -71,7 +87,19 @@ export const updateProduct = async (
     values.push(updates.image_url);
   }
 
-  if (fields.length === 0) return;
+  if (updates.has_discount !== undefined) {
+    fields.push('has_discount = ?');
+    values.push(updates.has_discount);
+  }
+
+  if (updates.dummy_price !== undefined) {
+    fields.push('dummy_price = ?');
+    values.push(updates.dummy_price);
+  }
+
+  if (fields.length === 0) {
+    throw new Error('No fields to update');
+  }
 
   values.push(id);
 
@@ -79,7 +107,6 @@ export const updateProduct = async (
   const [result] = await db.query<OkPacket>(query, values);
   return result;
 };
-
 export const getProductById = async (id: number): Promise<RowDataPacket | null> => {
     const [rows] = await db.query<RowDataPacket[]>(
       'SELECT * FROM products WHERE id = ? AND is_active = TRUE',
@@ -165,18 +192,19 @@ export const getCustomerProducts = async (
   const { page, limit, search, category } = filters;
   const offset = (page - 1) * limit;
 
-  let query = `SELECT 
+ let query = `SELECT 
     p.id,
     p.name,
     p.description,
     p.image_url,
     i.price,
     i.quantity,
-    i.type AS category
+    i.type AS category,
+    p.has_discount,
+    p.dummy_price
   FROM products p
   JOIN inventory i ON p.inventory_id = i.inventory_id
   WHERE p.is_active = TRUE AND i.is_active = TRUE`;
-
   const values: any[] = [];
 
   if (search) {
@@ -216,15 +244,13 @@ export const getCustomerProductById = async (id: number): Promise<RowDataPacket 
 // Add these to your existing Product model
 
 // Get products by category (which is actually inventory.type)
+// In models/Product.ts
 export const getProductsByCategory = async (
   category: string,
   page: number = 1,
   limit: number = 10
 ): Promise<RowDataPacket[]> => {
   const offset = (page - 1) * limit;
-  
-  // Debug: Log the received category
-  console.log(`[DEBUG] Searching for category: "${category}"`);
 
   const query = `
     SELECT 
@@ -234,7 +260,9 @@ export const getProductsByCategory = async (
       p.image_url,
       i.price,
       i.quantity,
-      i.type AS category
+      i.type AS category,
+      p.has_discount,
+      p.dummy_price
     FROM products p
     JOIN inventory i ON p.inventory_id = i.inventory_id
     WHERE p.is_active = 1 
@@ -243,19 +271,14 @@ export const getProductsByCategory = async (
     LIMIT ? OFFSET ?
   `;
   
-  // Add wildcards for partial matching
   const categoryParam = `%${category}%`;
   
-  console.log(`[DEBUG] Executing query: ${query}`);
-  console.log(`[DEBUG] Params:`, [categoryParam, limit, offset]);
-
   const [rows] = await db.query<RowDataPacket[]>(query, [
     categoryParam,
     limit, 
     offset
   ]);
   
-  console.log(`[DEBUG] Found ${rows.length} products`);
   return rows;
 };
 
@@ -293,13 +316,15 @@ export const getProductDetails = async (id: number): Promise<RowDataPacket | nul
   try {
     const [rows] = await db.query<RowDataPacket[]>(
       `SELECT 
-        p.*,
-        i.price,
-        i.quantity,
-        i.type AS category
-      FROM products p
-      JOIN inventory i ON p.inventory_id = i.inventory_id
-      WHERE p.id = ? AND p.is_active = 1 AND i.is_active = 1`,
+  p.*,
+  i.price,
+  i.quantity,
+  i.type AS category,
+  p.has_discount,
+  p.dummy_price
+FROM products p
+JOIN inventory i ON p.inventory_id = i.inventory_id
+WHERE p.id = ? AND p.is_active = 1 AND i.is_active = 1`,
       [id]
     );
     return rows.length > 0 ? rows[0] : null;

@@ -44,7 +44,11 @@ export const softDeleteProduct = async (productId: number) => {
 
 export const updateProduct = async (
   id: number,
-  body: any,
+  body: {
+    description?: string;
+    has_discount?: boolean;
+    dummy_price?: number | null;
+  },
   imageFile?: Express.Multer.File
 ) => {
   const existingProduct = await ProductModel.getProductById(id);
@@ -52,14 +56,27 @@ export const updateProduct = async (
     throw new Error('Product not found.');
   }
 
+  // Handle image upload if file exists
   const imageUrl = imageFile
     ? await uploadImageToFirebase(imageFile)
     : existingProduct.image_url;
 
+  // Prepare the updated product data
   const updatedProduct = {
     description: body.description || existingProduct.description,
     image_url: imageUrl || existingProduct.image_url,
+    has_discount: body.has_discount ?? existingProduct.has_discount ?? false,
+    dummy_price: body.has_discount 
+      ? (body.dummy_price ?? existingProduct.dummy_price)
+      : null
   };
+
+  // Additional validation
+  if (updatedProduct.has_discount && updatedProduct.dummy_price) {
+    if (updatedProduct.dummy_price <= existingProduct.price) {
+      throw new Error('Original price must be higher than current price');
+    }
+  }
 
   return await ProductModel.updateProduct(id, updatedProduct);
 };

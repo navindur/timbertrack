@@ -299,26 +299,56 @@ if (product.quantity <= 0) {
                     alt={product.name}
                     sx={{ objectFit: 'contain', p: 1 }}
                   />
-                  <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography gutterBottom variant="h6" component="div">
-                      {product.name}
-                    </Typography>
-                   
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <Chip 
-                        label={product.category || 'Uncategorized'} 
-                        color="primary" 
-                        size="small" 
-                      />
-                      <Typography variant="h6">
-                      Rs.{
-    product.price !== undefined && !isNaN(Number(product.price))
-      ? Number(product.price).toFixed(2)
-      : '0.00'
-  }
-                      </Typography>
-                    </Box>
-                  </CardContent>
+   <CardContent sx={{ flexGrow: 1 }}>
+  <Typography gutterBottom variant="h6" component="div">
+    {product.name}
+  </Typography>
+  
+  <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+    <Chip 
+      label={product.category || 'Uncategorized'} 
+      color="primary" 
+      size="small" 
+    />
+    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+      {product.has_discount && product.dummy_price ? (
+        <>
+          <Typography 
+            variant="body1" 
+            sx={{ 
+              textDecoration: 'line-through',
+              color: 'text.secondary',
+              fontSize: '0.875rem'
+            }}
+          >
+            
+            Rs.{Number(product.dummy_price ?? 0).toFixed(2)}
+          </Typography>
+          <Typography 
+            variant="h6" 
+            sx={{ 
+              color: 'error.main',
+              fontWeight: 'bold'
+            }}
+          >
+            Rs.{Number(product.price ?? 0).toFixed(2)}
+          </Typography>
+          <Chip 
+            label={`${Math.round((1 - product.price/product.dummy_price) * 100)}% OFF`} 
+            color="error" 
+            size="small"
+            sx={{ mt: 0.5 }}
+          />
+        </>
+      ) : (
+        <Typography variant="h6">
+         Rs.{Number(product.price ?? 0).toFixed(2)}
+        </Typography>
+      )}
+    </Box>
+  </Box>
+</CardContent>
+               
                   <CardActions>
                   <Button 
     size="small" 

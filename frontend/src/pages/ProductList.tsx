@@ -24,7 +24,9 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
-  CircularProgress
+  CircularProgress,
+  SelectChangeEvent,
+  Chip
 } from '@mui/material';
 import { Edit, Delete, Add, Search, Image as ImageIcon } from '@mui/icons-material';
 import Navbar from '../components/Adminnavbar';
@@ -37,6 +39,8 @@ import {
     updateProduct
 } from '../services/productService';
 import { Product, InventoryOption } from '../types/product';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 
 const ProductList: React.FC = () => {
@@ -92,14 +96,17 @@ const ProductList: React.FC = () => {
   };
 
   const handleOpenAddDialog = () => {
-    setCurrentProduct({
-      name: '',
-      description: '',
-      inventory_id: 0,
-      image_url: ''
-    });
-    setOpenDialog(true);
-  };
+  setCurrentProduct({
+    name: '',
+    description: '',
+    inventory_id: 0,
+    image_url: '',
+    price: 0, // Add default price
+    has_discount: false, // Add default discount status
+    dummy_price: null // Add default original price
+  });
+  setOpenDialog(true);
+};
 
   const handleOpenEditDialog = (product: Product) => {
     setCurrentProduct(product);
@@ -130,22 +137,24 @@ const ProductList: React.FC = () => {
     });
   };
 
-  const handleSelectChange = (e: any) => {
-    if (!currentProduct) return;
-    const inventoryId = e.target.value;
-    const selectedInventory = inventoryOptions.find(opt => opt.inventory_id === inventoryId);
-    
-    if (selectedInventory) {
-      setCurrentProduct({
-        ...currentProduct,
-        inventory_id: inventoryId,
-        name: selectedInventory.name,
-        price: selectedInventory.price,
-        quantity: selectedInventory.quantity,
-        category: selectedInventory.type
-      });
-    }
-  };
+  const handleSelectChange = (e: SelectChangeEvent<number>) => {
+  if (!currentProduct) return;
+  const inventoryId = Number(e.target.value);
+  const selectedInventory = inventoryOptions.find(opt => opt.inventory_id === inventoryId);
+  
+  if (selectedInventory) {
+    setCurrentProduct({
+      ...currentProduct,
+      inventory_id: inventoryId,
+      name: selectedInventory.name,
+      price: selectedInventory.price || 0, // Ensure price is always a number
+      quantity: selectedInventory.quantity,
+      category: selectedInventory.type,
+      has_discount: currentProduct.has_discount || false, // Maintain discount status
+      dummy_price: currentProduct.dummy_price || null // Maintain original price
+    });
+  }
+};
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -170,6 +179,10 @@ const ProductList: React.FC = () => {
     const formData = new FormData();
     formData.append('description', currentProduct.description || '');
     formData.append('inventory_id', String(currentProduct.inventory_id));
+    formData.append('has_discount', String(currentProduct.has_discount));
+    if (currentProduct.has_discount && currentProduct.dummy_price) {
+      formData.append('dummy_price', String(currentProduct.dummy_price));
+    }
   
     if (imageFile) {
       formData.append('image', imageFile);
@@ -348,6 +361,7 @@ const ProductList: React.FC = () => {
             <TableCell>Name</TableCell>
             <TableCell>Description</TableCell>
             <TableCell>Price</TableCell>
+            <TableCell>Discount</TableCell>
             <TableCell>Quantity</TableCell>
             <TableCell>Category</TableCell>
             <TableCell>Actions</TableCell>
@@ -374,6 +388,13 @@ const ProductList: React.FC = () => {
     ? product.price.toFixed(2)
     : Number(product.price || 0).toFixed(2)}
 </TableCell>
+              <TableCell>
+  {product.has_discount ? (
+    <Chip label="Active" color="success" size="small" />
+  ) : (
+    <Chip label="None" size="small" />
+  )}
+</TableCell>
               <TableCell>{product.quantity}</TableCell>
               <TableCell>{product.category}</TableCell>
               <TableCell>
@@ -397,55 +418,108 @@ const ProductList: React.FC = () => {
       {currentProduct?.id ? 'Edit Product' : 'Add New Product'}
     </DialogTitle>
     <DialogContent>
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
-        <FormControl fullWidth>
-  <InputLabel>Inventory Item</InputLabel>
-  <Select
-    value={currentProduct?.inventory_id || ''}
-    onChange={handleSelectChange}
-    label="Inventory Item"
-    disabled={!!currentProduct?.id} // Disable changing inventory item when editing
-  >
-    {getAvailableInventoryOptions().map((option) => (
-      <MenuItem key={option.inventory_id} value={option.inventory_id}>
-        {option.name} (Rs.{option.price})
-      </MenuItem>
-    ))}
-    {getAvailableInventoryOptions().length === 0 && (
-      <MenuItem disabled>No available inventory items</MenuItem>
-    )}
-  </Select>
-</FormControl>
-        
-        <TextField
-          name="description"
-          label="Description"
-          value={currentProduct?.description || ''}
-          onChange={handleInputChange}
-          multiline
-          rows={3}
-        />
-        
-        <Button
-          variant="outlined"
-          component="label"
-          startIcon={<ImageIcon />}
-        >
-          Upload Image
-          <input
-            type="file"
-            hidden
-            accept="image/*"
-            onChange={handleImageChange}
-          />
-        </Button>
-        {imageFile && (
-          <Typography variant="caption">
-            {imageFile.name}
-          </Typography>
+  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
+    <FormControl fullWidth>
+      <InputLabel>Inventory Item</InputLabel>
+      <Select
+        value={currentProduct?.inventory_id || ''}
+        onChange={handleSelectChange}
+        label="Inventory Item"
+        disabled={!!currentProduct?.id}
+      >
+        {getAvailableInventoryOptions().map((option) => (
+          <MenuItem key={option.inventory_id} value={option.inventory_id}>
+            {option.name} (Rs.{option.price})
+          </MenuItem>
+        ))}
+        {getAvailableInventoryOptions().length === 0 && (
+          <MenuItem disabled>No available inventory items</MenuItem>
         )}
-      </Box>
-    </DialogContent>
+      </Select>
+    </FormControl>
+    
+    <TextField
+      name="description"
+      label="Description"
+      value={currentProduct?.description || ''}
+      onChange={handleInputChange}
+      multiline
+      rows={3}
+    />
+    
+    <TextField
+      name="price"
+      label="Final Price"
+      value={currentProduct?.price || ''}
+      disabled
+    />
+
+    <FormControlLabel
+  control={
+    <Checkbox
+      checked={currentProduct?.has_discount || false}
+      onChange={(e) => {
+        if (!currentProduct) return;
+        setCurrentProduct({
+          ...currentProduct,
+          has_discount: e.target.checked,
+         dummy_price: e.target.checked 
+            ? (currentProduct.dummy_price || (currentProduct.price || 0) * 1.2) // Safely handle price
+            : null
+        });
+      }}
+    />
+  }
+  label="Has Discount"
+/>
+{currentProduct?.has_discount && (
+  <TextField
+    name="dummy_price"
+    label="Original Price (Strikethrough)"
+    type="number"
+    value={currentProduct?.dummy_price || ''}
+    onChange={(e) => {
+      if (!currentProduct) return;
+      const newDummyPrice = parseFloat(e.target.value);
+      setCurrentProduct({
+        ...currentProduct,
+        dummy_price: newDummyPrice
+      });
+    }}
+    error={currentProduct.has_discount && 
+           (currentProduct.dummy_price || 0) <= currentProduct.price}
+    helperText={
+      currentProduct.has_discount && 
+      (currentProduct.dummy_price || 0) <= currentProduct.price
+        ? 'Original price must be higher than actual price'
+        : ''
+    }
+    InputProps={{
+      startAdornment: <InputAdornment position="start">Rs.</InputAdornment>,
+    }}
+  />
+)}
+    
+    <Button
+      variant="outlined"
+      component="label"
+      startIcon={<ImageIcon />}
+    >
+      Upload Image
+      <input
+        type="file"
+        hidden
+        accept="image/*"
+        onChange={handleImageChange}
+      />
+    </Button>
+    {imageFile && (
+      <Typography variant="caption">
+        {imageFile.name}
+      </Typography>
+    )}
+  </Box>
+</DialogContent>
     <DialogActions>
       <Button onClick={handleCloseDialog}>Cancel</Button>
       <Button onClick={handleSubmit} variant="contained">
