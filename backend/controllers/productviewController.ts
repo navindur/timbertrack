@@ -1,3 +1,4 @@
+//controller for customer side product view 
 import { Request, Response } from 'express';
 import * as ProductService from '../services/productviewService';
 

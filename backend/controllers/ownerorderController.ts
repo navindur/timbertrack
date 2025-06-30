@@ -1,7 +1,8 @@
+//owner side order contoll methods 
 import { Request, Response } from 'express';
 import * as orderService from '../services/ownerorderService';
 
-
+//fetch all orders 
 export const getAllOrders = async (req: Request, res: Response) => {
     try {
       const { page = 1, limit = 10, status, search } = req.query;
@@ -20,6 +21,7 @@ export const getAllOrders = async (req: Request, res: Response) => {
     }
   };
 
+  //fetch order detials by id
 export const getOrderDetails = async (req: Request, res: Response) => {
   try {
     const orderId = parseInt(req.params.id);
@@ -36,6 +38,7 @@ export const getOrderDetails = async (req: Request, res: Response) => {
   }
 };
 
+//update order status from owner side
 export const updateOrderStatus = async (req: Request, res: Response) => {
   try {
     const orderId = parseInt(req.params.id);

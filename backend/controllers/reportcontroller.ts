@@ -20,7 +20,7 @@ interface SalesSummary {
     total_revenue: number;
     total_items_sold: number;
   }
-
+// Gets basic sales summary (totals and counts)
 export const getSalesSummary = async (req: Request, res: Response) => {
   try {
     const { start, end } = req.query;
@@ -37,7 +37,7 @@ export const getSalesSummary = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
-
+// Gets basic sales summary (totals and counts) pdf
 export const getSalesSummaryPDF = async (req: Request, res: Response) => {
   try {
     const { start, end } = req.query;
@@ -48,7 +48,7 @@ export const getSalesSummaryPDF = async (req: Request, res: Response) => {
     const summary = await getSalesSummaryService(start as string, end as string);
 
     
-    generateSalesSummaryPDF({
+    generateSalesSummaryPDF({ //this is specific to sales summary pdf creation
       ...summary,
       start_date: start as string,
       end_date: end as string,
@@ -59,7 +59,7 @@ export const getSalesSummaryPDF = async (req: Request, res: Response) => {
   }
 };
 
-
+// get sales by products 
 export const getSalesByProduct = async (req: Request, res: Response) => {
   try {
     const { start, end } = req.query;
@@ -74,6 +74,7 @@ export const getSalesByProduct = async (req: Request, res: Response) => {
   }
 };
 
+//get sales by product in pdf
 export const getSalesByProductPDF = async (req: Request, res: Response) => {
   try {
     const { start, end } = req.query;
@@ -82,7 +83,7 @@ export const getSalesByProductPDF = async (req: Request, res: Response) => {
     }
     const results = await getSalesByProductService(start as string, end as string);
     
-    generateGenericReportPDF({
+    generateGenericReportPDF({ //normal pdf creation
       title: 'Sales by Product Report',
       period: `${start} to ${end}`,
       subtitle: 'Comprehensive Sales by Product overview',
@@ -327,7 +328,7 @@ export const getCustomerOrderHistoryPDF = async (req: Request, res: Response) =>
   }
 };
 
-
+//get orders by its current status ( delivered,pending etc)
 export const getOrdersByStatus = async (req: Request, res: Response) => {
   try {
     const { start, end } = req.query;
@@ -367,6 +368,7 @@ export const getOrdersByStatusPDF = async (req: Request, res: Response) => {
   }
 };
 
+//custom order statuses 
 export const getCustomOrdersByStatus = async (req: Request, res: Response) => {
   try {
     const { start, end } = req.query;

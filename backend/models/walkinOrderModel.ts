@@ -1,3 +1,4 @@
+//walkin order db operations
 import db from '../db';
 import { RowDataPacket, OkPacket } from 'mysql2';
 
@@ -40,7 +41,7 @@ export const createWalkinOrder = async (
     try {
       const [userResult] = await db.query<OkPacket>(
         'INSERT INTO users (email, password, role) VALUES (?, ?, ?)',
-        [`walkin-${Date.now()}@example.com`, 'temp-password', 'customer']
+        [`walkin-${Date.now()}@example.com`, 'temp-password', 'customer'] // Temporary email and password for walk-in customers
       );
   
       const userId = userResult.insertId;

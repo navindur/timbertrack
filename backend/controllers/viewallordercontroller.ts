@@ -1,3 +1,4 @@
+//owner side order viewing 
 import { Request, Response } from 'express';
 import { OrderModel } from '../models/viewallordermodel';
 import { CustomerModel } from '../models/customerModel';
@@ -11,6 +12,7 @@ interface AuthenticatedRequest extends Request {
 }
 
 export const OrderController = {
+  //owner side order managemnt 
   async getCustomerOrders(req: AuthenticatedRequest, res: Response) {
     try {
       const customerId = req.user?.customerId;

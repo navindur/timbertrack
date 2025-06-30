@@ -1,3 +1,4 @@
+//route for customer side product details view 
 import express from 'express';
 import { getProductDetails } from '../controllers/productviewController';
 

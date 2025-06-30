@@ -1,3 +1,4 @@
+//owner side supplier controller methods 
 import { Request, Response } from 'express';
 import * as supplierService from '../services/supplierService';
 

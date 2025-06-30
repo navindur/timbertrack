@@ -1,3 +1,4 @@
+//routes handling operations in costomer profile in customer sidee
 import express from 'express';
 import { 
   getCustomerProfile, 

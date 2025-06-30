@@ -1,5 +1,7 @@
+//db operations shop owner for dashboard data retrieval
 import db from '../db';
 
+//rturns SQL condition based on selected date range
 const getDateCondition = (range: string): string => {
   switch (range) {
     case 'day':
@@ -13,6 +15,7 @@ const getDateCondition = (range: string): string => {
   }
 };
 
+// total standard + custom orders count
 export const getTotalOrders = async (range: string): Promise<number> => {
   const dateCondition = getDateCondition(range);
 
@@ -30,6 +33,7 @@ export const getTotalOrders = async (range: string): Promise<number> => {
   return (rows as any)[0].total;
 };
 
+//Count total active products
 export const getTotalProducts = async (): Promise<number> => {
   const [rows] = await db.query(
     'SELECT COUNT(*) AS total FROM products WHERE is_active = TRUE'
@@ -37,6 +41,7 @@ export const getTotalProducts = async (): Promise<number> => {
   return (rows as any)[0].total;
 };
 
+//Count customers registered
 export const getTotalCustomers = async (range: string): Promise<number> => {
   const [rows] = await db.query(
     `SELECT COUNT(*) AS total FROM customers WHERE ${getDateCondition(range)}`
@@ -44,6 +49,7 @@ export const getTotalCustomers = async (range: string): Promise<number> => {
   return (rows as any)[0].total;
 };
 
+//inventory items that are low or below reorder level
 export const getLowInventory = async (): Promise<any[]> => {
   const [rows] = await db.query(
     'SELECT * FROM inventory WHERE is_active = TRUE AND quantity <= reorder_level'
@@ -51,6 +57,7 @@ export const getLowInventory = async (): Promise<any[]> => {
   return rows as any[];
 };
 
+//normal orders + custom orders paid
 export const getSalesRevenue = async (range: string): Promise<number> => {
   const dateCondition = getDateCondition(range);
 
@@ -73,7 +80,7 @@ export const getSalesRevenue = async (range: string): Promise<number> => {
   return (rows as any)[0].total_revenue || 0;
 };
 
-
+//latest 5 normal orders 
 export const getRecentOrders = async (): Promise<any[]> => {
     const [rows] = await db.query(
       `SELECT 
@@ -91,6 +98,7 @@ export const getRecentOrders = async (): Promise<any[]> => {
     return rows as any[];
   };
 
+//latest 5 custom orders
 export const getRecentCustomOrders = async (): Promise<any[]> => {
   const [rows] = await db.query(
     `SELECT 
@@ -109,6 +117,7 @@ export const getRecentCustomOrders = async (): Promise<any[]> => {
   return rows as any[];
 };
 
+//sales trend data (count and sum) for normal orders 
 export const getSalesTrend = async (range: string): Promise<any[]> => {
     let groupBy, dateFormat, orderBy;
   
@@ -149,7 +158,7 @@ export const getSalesTrend = async (range: string): Promise<any[]> => {
     return rows as any[];
   };
 
-
+//get sales trend data for paid custom orders
   export const getCustomSalesTrend = async (range: string): Promise<any[]> => {
   let groupBy, dateFormat, orderBy;
 

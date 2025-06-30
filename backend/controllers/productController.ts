@@ -1,3 +1,4 @@
+//owner side product management controller
 import { Request, Response } from 'express';
 import * as productService from '../services/productService';
 import * as ProductModel from '../models/Product';
@@ -11,6 +12,7 @@ export const addProduct = async (req: Request, res: Response) => {
   }
 };
 
+//fetch invenroty types for product creation 
 export const getInventoryOptions = async (req: Request, res: Response) => {
   try {
     const inventory = await productService.fetchInventoryOptions();
@@ -24,7 +26,7 @@ export const getInventoryOptions = async (req: Request, res: Response) => {
   }
 };
 
-
+//deleting a product by setting is_active to false
 export const softDeleteProduct = async (req: Request, res: Response) => {
   try {
     const productId = parseInt(req.params.id);

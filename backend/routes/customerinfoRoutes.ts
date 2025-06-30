@@ -1,3 +1,4 @@
+//owner side customer info getting routes 
 import { Router } from 'express';
 import { 
   getAllCustomers, 

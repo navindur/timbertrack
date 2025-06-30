@@ -8,7 +8,8 @@ export const getCategoryProducts = async (
     console.log(`[SERVICE] Fetching ${category} products (page ${page}, limit ${limit})`);
     
     const [products, total] = await Promise.all([
-      ProductModel.getProductsByCategory(category, page, limit),
+      //db operations in product model
+      ProductModel.getProductsByCategory(category, page, limit), 
       ProductModel.getCategoryProductCount(category)
     ]);
     

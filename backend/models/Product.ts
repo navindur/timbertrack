@@ -1,3 +1,4 @@
+//db operations for owner side product managemnt 
 import db from '../db';
 import { RowDataPacket, OkPacket } from 'mysql2';
 
@@ -41,7 +42,7 @@ export const createProduct = async (product: Product) => {
   return result;
 };
 
-
+//get inventory options for product creation 
 export const getActiveInventoryItems = async (): Promise<RowDataPacket[]> => {
   try {
     const [rows] = await db.query<RowDataPacket[]>(
@@ -104,6 +105,7 @@ export const updateProduct = async (
   const [result] = await db.query<OkPacket>(query, values);
   return result;
 };
+
 export const getProductById = async (id: number): Promise<RowDataPacket | null> => {
     const [rows] = await db.query<RowDataPacket[]>(
       'SELECT * FROM products WHERE id = ? AND is_active = TRUE',
@@ -131,7 +133,7 @@ export const getAllActiveProducts = async (
                WHERE p.is_active = 1`;
 
   const values: any[] = [];
-
+//search products 
   if (search) {
     query += ' AND p.name LIKE ?';
     values.push(`%${search}%`);
@@ -154,6 +156,7 @@ export const getAllActiveProducts = async (
   }
 };
 
+//product count
 export const getTotalActiveProducts = async (
   search?: string,
   category?: string
@@ -177,6 +180,7 @@ export const getTotalActiveProducts = async (
   return db.query<RowDataPacket[]>(query, values);
 };
 
+//show product details to customers 
 export const getCustomerProducts = async (
   filters: ProductFilters
 ): Promise<RowDataPacket[]> => {
@@ -198,6 +202,7 @@ export const getCustomerProducts = async (
   WHERE p.is_active = TRUE AND i.is_active = TRUE`;
   const values: any[] = [];
 
+  //search products
   if (search) {
     query += ' AND (p.name LIKE ? OR p.description LIKE ?)';
     values.push(`%${search}%`, `%${search}%`);
@@ -215,6 +220,7 @@ export const getCustomerProducts = async (
   return rows;
 };
 
+//get total active products for customers 
 export const getCustomerProductById = async (id: number): Promise<RowDataPacket | null> => {
   const [rows] = await db.query<RowDataPacket[]>(
     `SELECT 
@@ -230,6 +236,7 @@ export const getCustomerProductById = async (id: number): Promise<RowDataPacket 
   return rows[0] || null;
 };
 
+//for category routes
 export const getProductsByCategory = async (
   category: string,
   page: number = 1,
@@ -267,6 +274,7 @@ export const getProductsByCategory = async (
   return rows;
 };
 
+//for category routes
 export const getCategoryProductCount = async (category: string): Promise<number> => {
   const query = `
     SELECT COUNT(*) as count 
@@ -293,6 +301,7 @@ export const getAvailableCategories = async (): Promise<RowDataPacket[]> => {
   return rows;
 };
 
+//fetch product details for customer view 
 export const getProductDetails = async (id: number): Promise<RowDataPacket | null> => {
   try {
     const [rows] = await db.query<RowDataPacket[]>(

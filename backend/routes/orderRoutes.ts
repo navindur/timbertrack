@@ -1,3 +1,4 @@
+//routes for order managemnet 
 import express from 'express';
 import OrderController from '../controllers/orderController';
 import { authenticate } from '../middleware/authMiddleware';

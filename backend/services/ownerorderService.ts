@@ -1,3 +1,4 @@
+//owner side order service methods
 import * as orderModel from '../models/ownerorderModel';
 
 export const fetchAllOrders = async (

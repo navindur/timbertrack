@@ -1,3 +1,4 @@
+//handle db operations for custom orders 
 import db from '../db';
 import { RowDataPacket } from "mysql2";
 import { ResultSetHeader } from 'mysql2';
@@ -17,6 +18,7 @@ export interface CustomOrder extends RowDataPacket {
 }
 
 export const CustomOrderModel = {
+  
   create: async (order: {
     customer_id: number;
     details: string;
@@ -51,7 +53,7 @@ export const CustomOrderModel = {
     return rows;
   },
 
-  
+  //find custom order by custom order id
   findById: async (id: number): Promise<CustomOrder | null> => {
     const [rows] = await db.query<CustomOrder[]>(
       `SELECT 

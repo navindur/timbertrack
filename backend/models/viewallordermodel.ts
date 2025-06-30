@@ -1,3 +1,4 @@
+//owner side order handling db operations 
 import db from '../db';
 import { RowDataPacket } from 'mysql2';
 

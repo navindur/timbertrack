@@ -1,3 +1,4 @@
+//password reset routes 
 import { Router } from 'express';
 import { forgotPassword, resetPassword } from '../controllers/prauthcontroller';
 

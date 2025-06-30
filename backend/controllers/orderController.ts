@@ -3,6 +3,7 @@ import { OrderModel } from '../models/Order';
 import { CustomerModel } from '../models/customerModel';
 import db from '../db';
 
+//extend default Express Request to include user data from JWT
 interface AuthenticatedRequest extends Request {
   user: {
     userId: number;
@@ -17,7 +18,7 @@ export const OrderController = {
       const { customerId } = req.user;
       const { payment_method, shipping_address } = req.body;
 
-      
+      // Validate required payment method
       if (!payment_method) {
         return res.status(400).json({
           success: false,
@@ -25,7 +26,7 @@ export const OrderController = {
         });
       }
 
-      
+ //verify that the customer exists     
       const existingCustomer = await CustomerModel.getCustomerById(customerId);
       if (!existingCustomer) {
         return res.status(400).json({
@@ -34,7 +35,7 @@ export const OrderController = {
         });
       }
 
-      
+      //update shipping address details optional 
       if (shipping_address) {
         await connection.query(
           `UPDATE customers 
@@ -80,7 +81,7 @@ export const OrderController = {
         message: error.message || 'Failed to create order'
       });
     } finally {
-      connection.release();
+      connection.release(); //ensure db connection  always release
     }
   },
 
@@ -89,13 +90,14 @@ export const OrderController = {
       const { order_id } = req.params;
       const { customerId } = req.user;
 
+      //Validate order ID
       if (!order_id || isNaN(parseInt(order_id))) {
         return res.status(400).json({
           success: false,
           message: 'Invalid order ID'
         });
       }
-
+ //fetch the order belonging to the customer
       const order = await OrderModel.getOrderById(
         parseInt(order_id), 
         customerId
@@ -122,12 +124,13 @@ export const OrderController = {
     }
   },
 
+  // Get all orders for the logged customer
   async getCustomerOrders(req: AuthenticatedRequest, res: Response) {
     try {
       const { customerId } = req.user;
       const orders = await OrderModel.getOrdersByCustomer(customerId);
 
-      res.status(200).json({
+      res.status(200).json({ //return list of orders
         success: true,
         orders
       });

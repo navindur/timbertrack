@@ -1,3 +1,4 @@
+//mail sender for passowrd reset
 import nodemailer from 'nodemailer';
 
 const transporter = nodemailer.createTransport({

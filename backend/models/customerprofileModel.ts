@@ -1,5 +1,6 @@
 import db from '../db';
 
+//hnadle db operations related to customer profile in customer side
 interface Customer {
   user_id: number;
   first_name: string;

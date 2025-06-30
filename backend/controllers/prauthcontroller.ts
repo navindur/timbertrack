@@ -1,3 +1,5 @@
+//controller for passoword reset function
+//db operations also here
 import { Request, Response } from 'express';
 import pool from '../db';
 import crypto from 'crypto';
@@ -14,7 +16,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
     if (users.length === 0) return res.status(404).json({ message: 'User not found' });
 
     const token = crypto.randomBytes(32).toString('hex');
-    const expiresAt = new Date(Date.now() + 3600 * 1000); // 1 hour
+    const expiresAt = new Date(Date.now() + 3600 * 1000); //token expire in 1 hour
 
     await pool.query(
       'INSERT INTO password_resets (user_id, token, expires_at) VALUES (?, ?, ?)',

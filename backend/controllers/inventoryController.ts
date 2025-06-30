@@ -1,3 +1,5 @@
+//inventory controller 
+//some db operations for inventory management also here
 import { Request, Response } from 'express';
 import { RowDataPacket } from 'mysql2/promise';
 import db from '../db';

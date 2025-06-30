@@ -1,3 +1,4 @@
+//db operations for owner side order management 
 import db from '../db';
 import { RowDataPacket, OkPacket } from 'mysql2';
 
@@ -60,7 +61,7 @@ export const getAllOrders = async (
       queryParams.push(status);
       countParams.push(status);
     }
-  
+  //search functionality 
     if (searchTerm && searchTerm.trim() !== '') {
       const searchConditions: string[] = [];
       const searchParams: any[] = [];

@@ -1,3 +1,4 @@
+//custom order contoller for customer side and owner side custom order handling 
 import { Request, Response } from "express";
 import { CustomOrderModel } from "../models/CustomOrder";
 import { uploadCustomOrderImageToFirebase } from '../utils/firebase';
@@ -9,14 +10,16 @@ export const CustomOrderController = {
       const { customer_id, details } = req.body;
       let imageUrl = null;
 
+      // If theres an image file, upload it to firebase storage firs
       if (req.file) {
         imageUrl = await uploadCustomOrderImageToFirebase(req.file);
       }
 
+      // Create the order in our database
       const orderId = await CustomOrderModel.create({
         customer_id: parseInt(customer_id),
         details,
-        image_url: imageUrl ?? undefined,
+        image_url: imageUrl ?? undefined,//only add image if we have one
       });
 
       res.status(201).json({ 
@@ -33,7 +36,7 @@ export const CustomOrderController = {
     }
   },
 
-  
+  //shopowner dashboard
   getAllOrders: async (req: Request, res: Response) => {
     try {
       const orders = await CustomOrderModel.findAll();
@@ -50,13 +53,13 @@ export const CustomOrderController = {
     }
   },
 
-  
+  //get order for customer
   getMyOrders: async (req: Request, res: Response) => {
     try {
       const customerId = parseInt(req.params.customerId);
       const requestingCustomerId = (req as any).user.customerId; 
   
-     
+     // Make sure user can only see their own orders
       if (customerId !== requestingCustomerId) {
         return res.status(403).json({ 
           success: false, 
@@ -78,7 +81,7 @@ export const CustomOrderController = {
     }
   },
 
-  
+  //shopowner accepts an order and sets estimated price
   acceptOrder: async (req: Request, res: Response) => {
     try {
       const orderId = parseInt(req.params.id);
@@ -105,7 +108,7 @@ export const CustomOrderController = {
     }
   },
 
-  
+ ///shopowner rejects an order 
   rejectOrder: async (req: Request, res: Response) => {
     try {
       const orderId = parseInt(req.params.id);
@@ -130,7 +133,7 @@ export const CustomOrderController = {
     }
   },
 
-  
+  //after payment from customer mark as paid
   markAsPaid: async (req: Request, res: Response) => {
     try {
       const orderId = parseInt(req.params.id);
@@ -155,7 +158,7 @@ export const CustomOrderController = {
     }
   },
 
- 
+ //shopowner can update prodcution status
   updateProductionStatus: async (req: Request, res: Response) => {
     try {
       const orderId = parseInt(req.params.id);
@@ -182,6 +185,7 @@ export const CustomOrderController = {
     }
   },
 
+   // Gets order receipt with all details for custom order
 getOrderReceipt: async (req: Request, res: Response) => {
   try {
     const orderId = parseInt(req.params.id);
@@ -194,7 +198,7 @@ getOrderReceipt: async (req: Request, res: Response) => {
       });
     }
 
-    
+    // Find the order first
     const order = await CustomOrderModel.findById(orderId);
     
     if (!order) {
@@ -204,7 +208,7 @@ getOrderReceipt: async (req: Request, res: Response) => {
       });
     }
 
-    
+    // Check if requestor is shopowner
     const isOwner = order.customer_id === (req as any).user.customerId;
     const isAdmin = (req as any).user.role === 'shopowner' || (req as any).user.role === 'admin';
     
@@ -250,7 +254,7 @@ getOrderReceipt: async (req: Request, res: Response) => {
 },
 
 
-
+//give single order by order id 
 getOrderById: async (req: Request, res: Response) => {
   try {
     const orderId = parseInt(req.params.id);

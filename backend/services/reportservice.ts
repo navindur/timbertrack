@@ -1,3 +1,4 @@
+//db operations to fetch data from db to create reports 
 import db from '../db';
 import { RowDataPacket } from 'mysql2/promise';
 

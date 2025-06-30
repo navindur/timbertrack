@@ -1,3 +1,4 @@
+//owner side walk in customer order controller methods 
 import { Request, Response } from 'express';
 import * as walkinOrderModel from '../models/walkinOrderModel';
 
@@ -27,6 +28,7 @@ export const createWalkinOrder = async (req: Request, res: Response) => {
   }
 };
 
+//get receipt for walk in orders 
 export const getReceiptData = async (req: Request, res: Response) => {
   try {
     const orderId = parseInt(req.params.id);

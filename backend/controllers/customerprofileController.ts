@@ -31,19 +31,19 @@ export const updateCustomerProfile = async (req: Request, res: Response) => {
       email
     } = req.body;
     
-   
+   // Validate email format
     if (email && !CustomerModel.isValidEmail(email)) {
       return res.status(400).json({ message: 'Invalid email format' });
     }
     
-    
+//if email is provided, check if it needs to be updated    
     if (email) {
       const currentUser = await CustomerModel.getUserById(userId);
       if (!currentUser) {
         return res.status(404).json({ message: 'User not found' });
       }
       
-      
+       //if new email is different, ensure it's not already used
       if (email !== currentUser.email) {
         const emailExists = await CustomerModel.checkEmailExists(email);
         if (emailExists) {
@@ -108,7 +108,7 @@ export const createCustomerProfile = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'User not found' });
     }
     
-    
+    // eensure email matches the user's existing record
     if (email && email !== existingUser.email) {
       return res.status(400).json({ message: 'Email does not match user record' });
     }

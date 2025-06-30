@@ -1,3 +1,4 @@
+//db operations for owner side supplier management 
 import db from '../db'; 
 import { Supplier } from '../models/supplierModel';
 
@@ -20,7 +21,7 @@ export const addSupplier = async (supplier: Supplier): Promise<void> => {
 };
 
 export const deleteSupplier = async (id: number): Promise<void> => {
-  await db.query('UPDATE suppliers SET is_active = false WHERE id = ?', [id]);
+  await db.query('UPDATE suppliers SET is_active = false WHERE id = ?', [id]); //soft delete
 };
 
 export const updateSupplier = async (id: number, supplier: Supplier): Promise<void> => {

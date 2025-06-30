@@ -1,3 +1,5 @@
+//service layer for owner side product management
+//handles business logic between product controller and modle
 import * as ProductModel from '../models/Product';
 import { uploadImageToFirebase } from '../utils/firebase';
 import { RowDataPacket } from 'mysql2';

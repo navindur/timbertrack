@@ -1,10 +1,11 @@
+//Controller Methods for dahsboard operations 
 import { Request, Response } from 'express';
 import * as DashboardService from '../services/dashboardservice';
 
 export const getTotalOrders = async (req: Request, res: Response) => {
   const range = req.query.range as string;
-  const total = await DashboardService.getTotalOrders(range);
-  res.json({ total });
+  const total = await DashboardService.getTotalOrders(range); 
+  res.json({ total }); 
 };
 
 export const getTotalProducts = async (_: Request, res: Response) => {

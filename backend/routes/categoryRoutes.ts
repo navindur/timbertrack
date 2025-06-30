@@ -1,3 +1,4 @@
+//routes for divide products by their category 
 import express from 'express';
 import {
   getDiningProducts,

@@ -1,3 +1,4 @@
+//order image upload handling via firebase
 import { initializeApp } from 'firebase/app';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { firebaseConfig } from '../config/firebase';

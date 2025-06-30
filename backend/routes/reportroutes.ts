@@ -1,3 +1,4 @@
+//report generation routes 
 import express from 'express';
 import {
   getSalesSummary,

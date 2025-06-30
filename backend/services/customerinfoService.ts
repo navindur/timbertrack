@@ -1,6 +1,7 @@
 import db from '../db';
 import { RowDataPacket } from 'mysql2';
 
+//customer and Order interfaces for query results
 interface Customer extends RowDataPacket {
   customer_id: number;
   first_name: string;
@@ -29,6 +30,7 @@ export const getCustomers = async (
 ) => {
   const offset = (page - 1) * limit;
 
+  //selecting customer info and number of orders
   let query = `
     SELECT 
       c.customer_id,
@@ -46,6 +48,7 @@ export const getCustomers = async (
     LEFT JOIN orders o ON c.customer_id = o.customer_id
   `;
 
+  // Optional filtering logic if search keyword is provided
   const whereClauses = [];
   const params: (string | number)[] = [];
 
@@ -74,6 +77,7 @@ export const getCustomers = async (
 
   const [customers] = await db.query<Customer[]>(query, params);
 
+  // Separate query to count total customers
   const [totalRows] = await db.query<RowDataPacket[]>(
     `
       SELECT COUNT(*) as total 
@@ -95,6 +99,7 @@ export const getCustomers = async (
 };
 
 export const getCustomerById = async (id: number) => {
+   // Fetch basic customer info + total order count
   const [customerRows] = await db.query<Customer[]>(
     `
       SELECT 
@@ -119,7 +124,7 @@ export const getCustomerById = async (id: number) => {
   );
 
   if (customerRows.length === 0) return null;
-
+// Fetch latest 5 regular orders
   const [orders] = await db.query<Order[]>(
     `
       SELECT 
@@ -135,7 +140,7 @@ export const getCustomerById = async (id: number) => {
     `,
     [id]
   );
-
+///etch latest 5 custom orders
   const [customOrders] = await db.query<RowDataPacket[]>(
     `
       SELECT 

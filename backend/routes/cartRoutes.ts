@@ -1,3 +1,4 @@
+//routes for add to cart function
 import { Router } from 'express';
 import { CartController } from '../controllers/cartController';
 import { authenticate } from '../middleware/authMiddleware'; 

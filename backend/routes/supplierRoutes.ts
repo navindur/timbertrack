@@ -1,3 +1,4 @@
+//owner side supplier management routes
 import express from 'express';
 import {
   getSuppliers,

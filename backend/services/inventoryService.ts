@@ -1,11 +1,10 @@
+//db operations for inventory management
 import db from '../db'; 
 
 export const getAllInventory = async (): Promise<any[]> => {
   const [rows] = await db.query('SELECT * FROM inventory WHERE is_active = TRUE ORDER BY created_at DESC');
   return rows as any[];  
 };
-
-
 
 export const addInventory = async (inventoryData: any): Promise<void> => {
   const { name, type, price, quantity, reorder_level, supplier_id } = inventoryData;

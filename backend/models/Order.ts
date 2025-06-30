@@ -1,3 +1,4 @@
+//db operation for orders
 import db from '../db';
 import { CustomerModel } from './customerModel';
 

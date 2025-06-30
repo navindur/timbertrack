@@ -1,6 +1,8 @@
+//pdf generation utility
 import PDFDocument from 'pdfkit';
 import { Response } from 'express';
 
+//special sales summary pdf generation function
 export const generateSalesSummaryPDF = (
   data: {
     total_orders: number;
@@ -213,6 +215,7 @@ interface ReportOptions {
   columnWidths?: number[];
 }
 
+//function for generate other generic reports 
 export const generateGenericReportPDF = (
   options: ReportOptions,
   res: Response,

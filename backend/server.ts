@@ -1,9 +1,9 @@
 import express from "express";
 const cors = require("cors");
 import * as dotenv from "dotenv";
-import promisePool from "./db"; // Database connection pool
+import promisePool from "./db"; 
 
-// Import route modules
+
 import authRoutes from "./routes/authRoutes";
 import supplierRoutes from './routes/supplierRoutes';
 import inventoryRoutes from './routes/inventoryRoutes';
@@ -42,29 +42,29 @@ app.get("/", (req, res) => {
 app.use("/api", authRoutes);
 app.use('/api/auth', prauthRoutes);
 
-// Product management routes
-app.use('/api/products', productsRoutes);                    // Admin product CRUD
-app.use('/api/customer/products', customerProductRoutes);    // Customer product browsing
-app.use('/api/categories', categoryRoutes);                  // Product categories
-app.use('/api/productview', productviewRoutes);              // Product detail views
+//product management routes
+app.use('/api/products', productsRoutes); // shop owner product CRUD
+app.use('/api/customer/products', customerProductRoutes);// Customer product browsing
+app.use('/api/categories', categoryRoutes); ///product categories
+app.use('/api/productview', productviewRoutes);// Product detail view
 
-// Customer management routes
-app.use('/api/customers', customerprofileRoutes);            // Customer profiles
-app.use('/api/customerinfo', customerinfoRoutes);            // Customer information for admin
+//customer management routes
+app.use('/api/customers', customerprofileRoutes); // Customer profile
+app.use('/api/customerinfo', customerinfoRoutes); // Customer info for owner
 
-// Shopping and order management routes
-app.use('/api/cart', cartRoutes);                           // Shopping cart operations
-app.use('/api/orders', orderRoutes);                        // Order processing
-app.use('/api/allorderview', viewallorderroutes);           // Order viewing for customers
-app.use('/api/ownerorders', ownerorderRoutes);              // Order management for shop owners
-app.use('/api/walkin-orders', walkinOrderRoutes);           // Walk-in order processing
-app.use("/api/custom-orders", customOrderRoutes);           // Custom furniture orders
+// order management routes
+app.use('/api/cart', cartRoutes); //cart operations
+app.use('/api/orders', orderRoutes); // Order processing
+app.use('/api/allorderview', viewallorderroutes);  // Order viewing for customers
+app.use('/api/ownerorders', ownerorderRoutes);   // Order management for shop owner
+app.use('/api/walkin-orders', walkinOrderRoutes); // Walk-in orders
+app.use("/api/custom-orders", customOrderRoutes); // Custom orders
 
-// Business management routes
-app.use('/api/suppliers', supplierRoutes);                  // Supplier management
-app.use('/api', inventoryRoutes);                          // Inventory management
-app.use('/api/dashboard', dashboardRoutes);                 // Dashboard analytics
-app.use('/api/reports', reportRoutes);                      // Business reports
+
+app.use('/api/suppliers', supplierRoutes); // Supplier detilas
+app.use('/api', inventoryRoutes); // Inventory 
+app.use('/api/dashboard', dashboardRoutes); // Dashboard
+app.use('/api/reports', reportRoutes);//reports
 
 
 app.listen(PORT, () => {
