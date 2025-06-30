@@ -103,7 +103,7 @@ const getStatusColor = (status: string) => {
       overflow: 'hidden',
       bgcolor: '#efdecd'
     }}>
-      {/* Navbar - Fixed width */}
+      
       <Box sx={{ 
         width: 240, 
         flexShrink: 0,
@@ -113,7 +113,6 @@ const getStatusColor = (status: string) => {
         <Navbar />
       </Box>
   
-      {/* Main Content */}
       <Box sx={{ 
         flexGrow: 1,
         p: 3,
@@ -198,12 +197,12 @@ const getStatusColor = (status: string) => {
                           </TableCell>
                           <TableCell>
                             {
-  order.payment_method === 'cash'
-    ? 'Cash'
-    : order.payment_method === 'cash_on_delivery'
-    ? 'Cash on Delivery'
-    : 'Card Payment'
-}
+                       order.payment_method === 'cash'
+                              ? 'Cash'
+                              : order.payment_method === 'cash_on_delivery'
+                              ? 'Cash on Delivery'
+                              : 'Card Payment'
+                                              }
                           </TableCell>
                           <TableCell>
                             <Chip 

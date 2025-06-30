@@ -11,8 +11,6 @@ export const uploadImageToFirebase = async (file: Express.Multer.File): Promise<
   return await getDownloadURL(fileRef);
 };
 
-//new
-
 export const uploadCustomOrderImageToFirebase = async (file: Express.Multer.File): Promise<string> => {
   const fileRef = ref(storage, `custom-order-images/${Date.now()}-${file.originalname}`);
   await uploadBytes(fileRef, file.buffer);

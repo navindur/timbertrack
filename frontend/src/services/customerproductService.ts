@@ -1,4 +1,3 @@
-// src/services/productService.ts (customer functions)
 import { Product, ProductFilters } from '../types/product';
 
 const API_URL = 'http://localhost:5000/api/customer/products';

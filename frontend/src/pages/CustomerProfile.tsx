@@ -59,8 +59,6 @@ const CustomerProfile = () => {
   });
   const [originalData, setOriginalData] = useState<CustomerData | null>(null);
   
-
-  // Validation functions
   const validateName = (name: string, fieldName: string): string | null => {
     if (!name) return `${fieldName} is required`;
     if (name.length < 2 || name.length > 30) {
@@ -81,7 +79,7 @@ const CustomerProfile = () => {
   };
 
   const validatePhone = (phone: string): string | null => {
-    if (!phone) return null; // allow empty (optional field)
+    if (!phone) return null; 
     if (!/^0\d{9}$/.test(phone)) {
       return 'Phone number must start with 0 and be exactly 10 digits.';
     }
@@ -124,7 +122,7 @@ const CustomerProfile = () => {
         const user = JSON.parse(localStorage.getItem('user') || '{}');
         const response = await axiosInstance.get(`/customers/${user.id}`);
         setCustomerData(response.data);
-        setOriginalData(response.data); // Store the original data
+        setOriginalData(response.data); 
       } catch (err) {
         setError('Failed to fetch customer data');
       }
@@ -136,7 +134,6 @@ const CustomerProfile = () => {
     const { name, value } = e.target;
     let processedValue = value;
 
-    // Auto-capitalize first letter for names
     if (name === 'first_name' || name === 'last_name') {
       if (value.length === 1) {
         processedValue = value.toUpperCase();
@@ -144,7 +141,7 @@ const CustomerProfile = () => {
         processedValue = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
       }
     }
-    // Force lowercase for email
+   
     else if (name === 'email') {
       processedValue = value.toLowerCase();
     }
@@ -153,11 +150,9 @@ const CustomerProfile = () => {
   };
 
   const handleSave = async () => {
-    // Clear previous messages
     setError('');
     setSuccess('');
-  
-    // Validate names
+ 
     const nameErrors = {
       first: validateName(customerData.first_name, 'First name'),
       last: validateName(customerData.last_name, 'Last name')
@@ -173,21 +168,18 @@ const CustomerProfile = () => {
       return;
     }
   
-    // Validate email
     const emailError = validateEmail(customerData.email);
     if (emailError) {
       setError(emailError);
       return;
     }
   
-    // Validate phone
     const phoneError = validatePhone(customerData.phone_num);
     if (phoneError) {
       setError(phoneError);
       return;
     }
   
-    // Validate postal code
     const postalError = validatePostalCode(customerData.postal_code || '');
     if (postalError) {
       setError(postalError);
@@ -203,7 +195,6 @@ const CustomerProfile = () => {
       setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
       if (err instanceof AxiosError) {
-        // Check for email conflict error
         if (err.response?.data?.message === 'Email already in use by another account' || 
             err.response?.data?.errorType === 'EMAIL_CONFLICT') {
           setError('Email already in use by another account');
@@ -220,7 +211,7 @@ const CustomerProfile = () => {
 
   const handleCancel = () => {
     if (originalData) {
-      setCustomerData(originalData); // Reset to original data
+      setCustomerData(originalData); 
     }
     setIsEditing(false);
     setError('');
@@ -238,13 +229,11 @@ const CustomerProfile = () => {
   };
 
   const handlePasswordChange = async () => {
-    // Validate password match
     if (passwordData.newPassword !== passwordData.confirmPassword) {
       setError('New passwords do not match');
       return;
     }
 
-    // Validate password strength
     const passwordError = validatePassword(passwordData.newPassword);
     if (passwordError) {
       setError(passwordError);
@@ -323,17 +312,17 @@ const CustomerProfile = () => {
             />
             
             <TextField
-  label="Email"
-  name="email"
-  value={customerData.email}
-  onChange={handleInputChange}
-  error={!!validateEmail(customerData.email)}
-  helperText={validateEmail(customerData.email)}
-  fullWidth
-  margin="normal"
-  disabled={!isEditing}
-  inputProps={{ style: { textTransform: 'lowercase' } }}
-/>
+              label="Email"
+              name="email"
+              value={customerData.email}
+              onChange={handleInputChange}
+              error={!!validateEmail(customerData.email)}
+              helperText={validateEmail(customerData.email)}
+              fullWidth
+              margin="normal"
+              disabled={!isEditing}
+              inputProps={{ style: { textTransform: 'lowercase' } }}
+              />
             
             <TextField
               label="Phone Number"
@@ -454,7 +443,7 @@ const CustomerProfile = () => {
           </Box>
         </Paper>
 
-        {/* Change Password Dialog */}
+        
         <Dialog open={openPasswordDialog} onClose={() => setOpenPasswordDialog(false)}>
           <DialogTitle>Change Password</DialogTitle>
          

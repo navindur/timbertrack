@@ -1,4 +1,3 @@
-// src/features/inventory/types/inventoryTypes.ts
 export interface InventoryItem {
     inventory_id: number;
     name: string;

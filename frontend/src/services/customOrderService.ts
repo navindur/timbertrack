@@ -9,7 +9,6 @@ const getAuthHeaders = () => {
   };
 };
 
-// Create a new custom order
 export const createCustomOrder = async (
   customerId: number,
   details: string,
@@ -31,7 +30,6 @@ export const createCustomOrder = async (
   return response.data;
 };
 
-// Get all custom orders (for shop owner)
 export const getAllCustomOrders = async () => {
   const response = await axios.get(API_URL, {
     headers: getAuthHeaders(),
@@ -39,18 +37,14 @@ export const getAllCustomOrders = async () => {
   return response.data;
 };
 
-
-// Get custom orders for a specific customer
 export const getMyCustomOrders = async (customerId: number) => {
   const response = await axios.get(`${API_URL}/my/${customerId}`, {
     headers: getAuthHeaders(),
-    params: { _: new Date().getTime() } // Cache buster
+    params: { _: new Date().getTime() } 
   });
   return response.data;
 };
 
-
-// Accept a custom order
 export const acceptCustomOrder = async (orderId: number, estimatedPrice: number) => {
   const response = await axios.put(
     `${API_URL}/${orderId}/accept`,
@@ -61,7 +55,6 @@ export const acceptCustomOrder = async (orderId: number, estimatedPrice: number)
   return response.data;
 };
 
-// Reject a custom order
 export const rejectCustomOrder = async (orderId: number) => {
   const response = await axios.put(
     `${API_URL}/${orderId}/reject`,
@@ -72,7 +65,6 @@ export const rejectCustomOrder = async (orderId: number) => {
   return response.data;
 };
 
-// Mark order as paid
 export const markCustomOrderAsPaid = async (orderId: number) => {
   const response = await axios.put(
     `${API_URL}/${orderId}/mark-paid`,
@@ -82,7 +74,6 @@ export const markCustomOrderAsPaid = async (orderId: number) => {
   return response.data;
 };
 
-// Update production status
 export const updateProductionStatus = async (
   orderId: number,
   status: 'not_started' | 'in_progress' | 'finished' | 'shipped' | 'delivered'

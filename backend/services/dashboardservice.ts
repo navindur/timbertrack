@@ -1,6 +1,5 @@
 import db from '../db';
 
-// Utility function to get date filter condition
 const getDateCondition = (range: string): string => {
   switch (range) {
     case 'day':
@@ -10,11 +9,10 @@ const getDateCondition = (range: string): string => {
     case 'year':
       return 'YEAR(created_at) = YEAR(CURDATE())';
     default:
-      return '1'; // No filter (all time)
+      return '1'; 
   }
 };
 
-// 1. Total Orders
 export const getTotalOrders = async (range: string): Promise<number> => {
   const dateCondition = getDateCondition(range);
 
@@ -32,8 +30,6 @@ export const getTotalOrders = async (range: string): Promise<number> => {
   return (rows as any)[0].total;
 };
 
-
-// 2. Total Active Products
 export const getTotalProducts = async (): Promise<number> => {
   const [rows] = await db.query(
     'SELECT COUNT(*) AS total FROM products WHERE is_active = TRUE'
@@ -41,7 +37,6 @@ export const getTotalProducts = async (): Promise<number> => {
   return (rows as any)[0].total;
 };
 
-// 3. Total Customers
 export const getTotalCustomers = async (range: string): Promise<number> => {
   const [rows] = await db.query(
     `SELECT COUNT(*) AS total FROM customers WHERE ${getDateCondition(range)}`
@@ -49,7 +44,6 @@ export const getTotalCustomers = async (range: string): Promise<number> => {
   return (rows as any)[0].total;
 };
 
-// 4. Inventory nearing reorder level
 export const getLowInventory = async (): Promise<any[]> => {
   const [rows] = await db.query(
     'SELECT * FROM inventory WHERE is_active = TRUE AND quantity <= reorder_level'
@@ -57,7 +51,6 @@ export const getLowInventory = async (): Promise<any[]> => {
   return rows as any[];
 };
 
-// 5. Sales Revenue
 export const getSalesRevenue = async (range: string): Promise<number> => {
   const dateCondition = getDateCondition(range);
 
@@ -116,12 +109,6 @@ export const getRecentCustomOrders = async (): Promise<any[]> => {
   return rows as any[];
 };
 
-
-
-
-
-  //new
-// Get sales trend data
 export const getSalesTrend = async (range: string): Promise<any[]> => {
     let groupBy, dateFormat, orderBy;
   

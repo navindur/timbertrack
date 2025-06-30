@@ -1,4 +1,3 @@
-// frontend/context/AuthContext.tsx
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import axios from 'axios';
 
@@ -19,7 +18,6 @@ interface Customer {
   address_line2?: string;
   city: string;
   postal_code: string;
-  // Add other customer fields as needed
 }
 
 interface AuthContextType {
@@ -41,10 +39,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   useEffect(() => {
     const initializeAuth = async () => {
       try {
-        // Check if user is already authenticated (e.g., via stored token)
         const token = localStorage.getItem('authToken');
         if (token) {
-          // Verify token with backend and get user data
           const response = await axios.get('/api/auth/me', {
             headers: {
               Authorization: `Bearer ${token}`,

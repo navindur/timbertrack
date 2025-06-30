@@ -17,7 +17,7 @@ export const OrderController = {
       const { customerId } = req.user;
       const { payment_method, shipping_address } = req.body;
 
-      // Validate required fields
+      
       if (!payment_method) {
         return res.status(400).json({
           success: false,
@@ -25,7 +25,7 @@ export const OrderController = {
         });
       }
 
-      // Get existing customer details
+      
       const existingCustomer = await CustomerModel.getCustomerById(customerId);
       if (!existingCustomer) {
         return res.status(400).json({
@@ -34,7 +34,7 @@ export const OrderController = {
         });
       }
 
-      // Update customer details if provided
+      
       if (shipping_address) {
         await connection.query(
           `UPDATE customers 
@@ -60,7 +60,7 @@ export const OrderController = {
         );
       }
 
-      // Create the order
+     
       const order = await OrderModel.createOrder(
         customerId, 
         payment_method, 

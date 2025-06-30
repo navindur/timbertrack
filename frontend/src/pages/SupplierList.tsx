@@ -196,23 +196,19 @@ const SupplierList: React.FC = () => {
   };
 
   const validateForm = () => {
-  const newErrors: SupplierErrors = {}; // Use the interface here
+  const newErrors: SupplierErrors = {};
 
-  // Supplier Name
   if (!currentSupplier?.name?.trim()) {
     newErrors.name = 'Supplier Name is required';
   } else if (!/^[A-Za-z0-9 ]{2,60}$/.test(currentSupplier.name)) {
     newErrors.name = 'Must be 2–60 characters, only letters, numbers, spaces';
   }
-
-  // Contact Person
   if (!currentSupplier?.contact_person?.trim()) {
     newErrors.contact_person = 'Contact Person is required';
   } else if (!/^[A-Za-z ]{2,60}$/.test(currentSupplier.contact_person)) {
     newErrors.contact_person = 'Must be 2–60 letters only (no numbers/symbols)';
   }
 
-  // Email (optional)
   if (currentSupplier?.email?.trim()) {
     const emailRegex = /^(?!\.)(?!.*\.\.)[A-Z0-9._%+-]+(?<!\.)@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
     if (!emailRegex.test(currentSupplier.email)) {
@@ -220,14 +216,12 @@ const SupplierList: React.FC = () => {
     }
   }
 
-  // Phone
   if (!currentSupplier?.phone?.trim()) {
     newErrors.phone = 'Phone number is required';
   } else if (!/^0\d{9}$/.test(currentSupplier.phone)) {
     newErrors.phone = 'Must start with 0 and be exactly 10 digits';
   }
 
-  // Address
   if (!currentSupplier?.address?.trim()) {
     newErrors.address = 'Address is required';
   } else if (!/^[A-Za-z0-9\s,'-./]{5,100}$/.test(currentSupplier.address)) {
@@ -246,7 +240,7 @@ const SupplierList: React.FC = () => {
       overflow: 'hidden',
       bgcolor: '#efdecd'
     }}>
-      {/* Navbar - Fixed width */}
+      
       <Box sx={{ 
         width: 240, 
         flexShrink: 0,
@@ -256,7 +250,6 @@ const SupplierList: React.FC = () => {
         <Navbar />
       </Box>
   
-      {/* Main Content */}
       <Box sx={{ 
         flexGrow: 1,
         p: 3,
@@ -278,7 +271,6 @@ const SupplierList: React.FC = () => {
           </Button>
         </Box>
 
-        {/* Search Bar */}
         <Box sx={{ mb: 3 }}>
           <TextField
             fullWidth
@@ -349,7 +341,6 @@ const SupplierList: React.FC = () => {
           </TableContainer>
         </Paper>
   
-        {/* Add/Edit Dialog */}
         <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth maxWidth="md" disableEnforceFocus disableAutoFocus>
           <DialogTitle>
             {currentSupplier?.id ? 'Edit Supplier' : 'Add New Supplier'}
@@ -428,7 +419,6 @@ const SupplierList: React.FC = () => {
           </DialogActions>
         </Dialog>
   
-        {/* Delete Confirmation Dialog */}
         <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
           <DialogTitle>Confirm Delete</DialogTitle>
           <DialogContent>
@@ -444,7 +434,6 @@ const SupplierList: React.FC = () => {
           </DialogActions>
         </Dialog>
   
-        {/* Snackbar Notification */}
         <Snackbar
           open={snackbar.open}
           autoHideDuration={6000}

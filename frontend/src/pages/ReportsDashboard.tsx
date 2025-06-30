@@ -1,4 +1,3 @@
-// src/pages/ReportsDashboard.tsx
 import React, { useState, useEffect } from 'react';
 import {
   Box,
@@ -421,7 +420,6 @@ const ReportsDashboard: React.FC = () => {
     );
   };
 
-  // Add new render functions:
   const renderSalesByPayment = () => {
     const data = reportData as any[];
     return (
@@ -440,10 +438,10 @@ const ReportsDashboard: React.FC = () => {
                 <TableCell>
                   
                                 {row.payment_method === 'cash'
-  ? 'Cash (walk-in)'
-  : row.payment_method === 'cash_on_delivery'
-  ? 'Cash on Delivery'
-  : 'Card Payment'}
+                    ? 'Cash (walk-in)'
+                    : row.payment_method === 'cash_on_delivery'
+                    ? 'Cash on Delivery'
+                    : 'Card Payment'}
                 </TableCell>
                 <TableCell align="right">{row.order_count}</TableCell>
                 <TableCell align="right">Rs.{Number(row.revenue).toFixed(2)}</TableCell>
@@ -520,7 +518,7 @@ const ReportsDashboard: React.FC = () => {
       overflow: 'hidden',
       bgcolor: '#efdecd'
     }}>
-      {/* Navbar - Fixed width */}
+      
       <Box sx={{ 
         width: 240, 
         flexShrink: 0,
@@ -530,7 +528,7 @@ const ReportsDashboard: React.FC = () => {
         <Navbar />
       </Box>
   
-      {/* Main Content */}
+     
       <Box sx={{ 
         flexGrow: 1,
         p: 3,
@@ -549,7 +547,7 @@ const ReportsDashboard: React.FC = () => {
           </Button>
         </Box>
 
-        {/* Tabs */}
+        
         <Paper sx={{ mb: 3 }}>
         <Tabs
     value={activeTab}
@@ -569,7 +567,7 @@ const ReportsDashboard: React.FC = () => {
   </Tabs>
         </Paper>
 
-        {/* Date Range Picker */}
+       
         {(activeTab !== 'low-stock' && activeTab !== 'inventory-valuation') && (
           <Paper sx={{ p: 3, mb: 3 }}>
             <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
@@ -596,10 +594,10 @@ const ReportsDashboard: React.FC = () => {
           </Paper>
         )}
 
-        {/* Report Content */}
+       
         {renderReportContent()}
 
-        {/* Snackbar for notifications */}
+        
         <Snackbar
           open={snackbar.open}
           autoHideDuration={6000}

@@ -49,7 +49,7 @@ interface InventoryFormDialogProps {
   handleSelectChange: (e: any) => void;
   handleSubmit: () => void;
   suppliers: any[];
-  errors: InventoryErrors; // Add this line
+  errors: InventoryErrors; 
 }
 
 interface InventoryErrors {
@@ -76,8 +76,6 @@ const InventoryFormDialog: React.FC<InventoryFormDialogProps> = React.memo(({
   const selectRef = useRef<HTMLDivElement>(null);
   
 
-
-  // Track active element before potential re-renders
   useEffect(() => {
     const handleFocusIn = (e: FocusEvent) => {
       activeElementRef.current = e.target as HTMLElement;
@@ -86,7 +84,6 @@ const InventoryFormDialog: React.FC<InventoryFormDialogProps> = React.memo(({
     return () => document.removeEventListener('focusin', handleFocusIn);
   }, []);
 
-  // Restore focus after re-renders
   useEffect(() => {
     if (isMounted && activeElementRef.current) {
       if (activeElementRef.current.classList.contains('MuiSelect-nativeInput')) {
@@ -100,7 +97,6 @@ const InventoryFormDialog: React.FC<InventoryFormDialogProps> = React.memo(({
     }
   });
 
-  // Initial focus when dialog opens
   useEffect(() => {
     if (openDialog && !isMounted) {
       setIsMounted(true);
@@ -467,36 +463,30 @@ const handleSelectChange = (e: any) => {
   const validateForm = () => {
   const newErrors: InventoryErrors = {};
 
-  // Name validation
   if (!currentItem?.name?.trim()) {
     newErrors.name = 'Name is required';
   } else if (!/^[A-Za-z0-9\s,'-.]{5,100}$/.test(currentItem.name)) {
     newErrors.name = 'Must be 5-100 characters, only letters, numbers, spaces, and basic punctuation';
   }
 
-  // Type validation
   if (!currentItem?.type) {
     newErrors.type = 'Type is required';
   }
 
-  // Price validation
   if (!currentItem?.price || currentItem.price <= 0) {
     newErrors.price = 'Price must be greater than 0';
   } else if (!/^\d+(\.\d{1,2})?$/.test(currentItem.price.toString())) {
     newErrors.price = 'Must be a number with up to 2 decimal places';
   }
 
-  // Quantity validation
  if (currentItem?.quantity === undefined || currentItem.quantity < 0) {
   newErrors.quantity = 'Quantity must be 0 or greater';
 }
 
-  // Reorder Level validation
   if (!currentItem?.reorder_level || currentItem.reorder_level < 0) {
     newErrors.reorder_level = 'Reorder level must be greater than 0 ';
   }
 
-  // Supplier validation
   if (!currentItem?.supplier_id || currentItem.supplier_id <= 0) {
     newErrors.supplier_id = 'Supplier is required';
   }
@@ -635,7 +625,7 @@ const handleSelectChange = (e: any) => {
   handleSelectChange={handleSelectChange}
   handleSubmit={handleSubmit}
   suppliers={suppliers}
-  errors={errors} // Add this line
+  errors={errors} 
 />
   
         <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>

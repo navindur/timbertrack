@@ -1,4 +1,3 @@
-// src/components/RedirectHandler.tsx
 import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -18,7 +17,7 @@ const RedirectHandler: React.FC = () => {
     }
   }, [location.pathname, navigate]);
 
-  return null; // this component doesn't render anything visible
+  return null; 
 };
 
 export default RedirectHandler;

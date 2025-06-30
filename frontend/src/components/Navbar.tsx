@@ -7,10 +7,11 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
-  
-  // Check if user is logged in by checking localStorage
-  const isLoggedIn = Boolean(localStorage.getItem('authToken'));
+ 
+  // check if user is logged in by checking authToken in localStorage
+  const isLoggedIn = Boolean(localStorage.getItem('authToken')); 
 
+  //handle profile icon click navigate to profile if logged in else to signin
   const handleProfileClick = () => {
     if (isLoggedIn) {
       navigate('/customerprofile');
@@ -26,7 +27,6 @@ const Navbar: React.FC = () => {
       className="text-white"
     >
       <Toolbar>
-        {/* Logo */}
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           <Link to="/" className="text-white no-underline font-bold">
             <span style={{ color: '#C24507' }}>Timber</span>
@@ -34,7 +34,6 @@ const Navbar: React.FC = () => {
           </Link>
         </Typography>
 
-        {/* Navigation Links */}
         <Button
           component={Link}
           to="/"
@@ -73,7 +72,6 @@ const Navbar: React.FC = () => {
           CUSTOM ORDERS
         </Button>
 
-        {/* Cart Icon */}
         <IconButton
           component={Link}
           to="/cart"
@@ -87,7 +85,6 @@ const Navbar: React.FC = () => {
           <ShoppingCartIcon />
         </IconButton>
         
-        {/* Profile Icon - Updated to use onClick handler */}
         <IconButton
           onClick={handleProfileClick}
           sx={{

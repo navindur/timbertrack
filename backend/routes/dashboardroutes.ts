@@ -6,7 +6,7 @@ import {
   getLowInventory,
   getSalesRevenue,
   getRecentOrders,
-  getSalesTrend, //new
+  getSalesTrend, 
   getRecentCustomOrders,
   getCustomSalesTrend
 } from '../controllers/dashboardcontroller';
@@ -20,7 +20,7 @@ router.get('/low-inventory', getLowInventory);
 router.get('/sales-revenue', getSalesRevenue);
 router.get('/recent-orders', getRecentOrders);
 router.get('/recent-customorders', getRecentCustomOrders);
-router.get('/sales-trend', getSalesTrend); //new
+router.get('/sales-trend', getSalesTrend); 
 router.get('/custom-sales-trend', getCustomSalesTrend);
 
 export default router;

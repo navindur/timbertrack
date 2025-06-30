@@ -57,7 +57,6 @@ const OrderDetail: React.FC = () => {
     setIsUpdating(true);
     try {
       await updateOrderStatus(parseInt(id), status);
-      // Refresh order data
       const updatedOrder = await fetchOrderDetails(parseInt(id));
       setOrder(updatedOrder);
     } catch (error) {
@@ -104,7 +103,7 @@ const OrderDetail: React.FC = () => {
       overflow: 'hidden',
       bgcolor: '#efdecd'
     }}>
-      {/* Navbar - Fixed width */}
+      
       <Box sx={{ 
         width: 240, 
         flexShrink: 0,
@@ -114,7 +113,6 @@ const OrderDetail: React.FC = () => {
         <Navbar />
       </Box>
   
-      {/* Main Content */}
       <Box sx={{ 
         flexGrow: 1,
         p: 3,
@@ -133,7 +131,7 @@ const OrderDetail: React.FC = () => {
           </Button>
         </Box>
 
-        {/* Order Summary */}
+        
         <Paper sx={{ p: 3, mb: 3 }}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6}>
@@ -162,10 +160,10 @@ const OrderDetail: React.FC = () => {
               <Typography>
                 <strong>Payment Method:</strong> 
                 {order.payment_method === 'cash'
-  ? 'Cash (walk-in)'
-  : order.payment_method === 'cash_on_delivery'
-  ? 'Cash on Delivery'
-  : 'Card Payment'}
+                          ? 'Cash (walk-in)'
+                          : order.payment_method === 'cash_on_delivery'
+                          ? 'Cash on Delivery'
+                          : 'Card Payment'}
               </Typography>
               <Typography>
                 <strong>Total:</strong> Rs.{Number(order.total_price).toFixed(2)}
@@ -190,7 +188,7 @@ const OrderDetail: React.FC = () => {
           </Grid>
         </Paper>
 
-        {/* Order Items */}
+       
         <Paper sx={{ p: 3, mb: 3 }}>
           <Typography variant="h6" gutterBottom>
             Order Items
@@ -229,7 +227,7 @@ const OrderDetail: React.FC = () => {
           </TableContainer>
         </Paper>
 
-        {/* Update Status */}
+        
         <Paper sx={{ p: 3 }}>
           <Typography variant="h6" gutterBottom>
             Update Order Status

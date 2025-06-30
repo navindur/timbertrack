@@ -28,7 +28,6 @@ export const ProtectedRoute = ({ allowedRoles, children }: ProtectedRouteProps) 
           return;
         }
 
-        // Decode token to check expiration
         const decoded = jwtDecode<JwtPayload>(token);
         const isExpired = decoded.exp * 1000 < Date.now();
         
@@ -41,12 +40,11 @@ export const ProtectedRoute = ({ allowedRoles, children }: ProtectedRouteProps) 
 
         setIsTokenValid(true);
         
-        // Check roles if specified
         if (allowedRoles) {
           const userRole = decoded.role;
           setIsAuthorized(allowedRoles.includes(userRole));
         } else {
-          // If no roles specified, just require authentication
+          
           setIsAuthorized(true);
         }
       } catch (error) {
@@ -59,20 +57,16 @@ export const ProtectedRoute = ({ allowedRoles, children }: ProtectedRouteProps) 
   }, [location, allowedRoles]);
 
   if (isAuthorized === null) {
-    // Show loading indicator while checking auth
     return <div>Loading authentication...</div>;
   }
 
   if (!isTokenValid) {
-    // Redirect to login if not authenticated or token expired
     return <Navigate to="/signin" state={{ from: location }} replace />;
   }
 
   if (!isAuthorized) {
-    // Redirect to unauthorized page if role doesn't match
     return <Navigate to="/unauthorized" state={{ from: location }} replace />;
   }
 
-  // Render children or outlet if authorized
   return children ? children : <Outlet />;
 };

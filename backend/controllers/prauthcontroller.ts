@@ -4,7 +4,7 @@ import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 import { sendResetEmail } from '../services/emailservice';
 
-// POST /auth/forgot-password
+
 export const forgotPassword = async (req: Request, res: Response) => {
   const { email } = req.body;
   if (!email) return res.status(400).json({ message: 'Email is required' });
@@ -29,7 +29,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
   }
 };
 
-// POST /auth/reset-password
+
 export const resetPassword = async (req: Request, res: Response) => {
   const { token, password } = req.body;
   if (!token || !password) return res.status(400).json({ message: 'Token and new password required' });

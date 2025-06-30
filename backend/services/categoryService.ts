@@ -1,4 +1,3 @@
-// services/categoryService.ts
 import * as ProductModel from '../models/Product';
 
 export const getCategoryProducts = async (

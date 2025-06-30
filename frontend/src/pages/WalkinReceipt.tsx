@@ -127,12 +127,12 @@ const WalkinReceipt: React.FC = () => {
                 <TableCell align="right">
                   
                  {
-  receiptData.payment_method === 'cash'
-    ? 'Cash'
-    : receiptData.payment_method === 'cash_on_delivery'
-    ? 'Cash on Delivery'
-    : 'Card Payment'
-}
+                      receiptData.payment_method === 'cash'
+                      ? 'Cash'
+                      : receiptData.payment_method === 'cash_on_delivery'
+                      ? 'Cash on Delivery'
+                      : 'Card Payment'
+                          }
                 </TableCell>
               </TableRow>
             </TableBody>
@@ -156,7 +156,6 @@ const WalkinReceipt: React.FC = () => {
         </Button>
       </Box>
 
-      {/* Print-specific styles */}
       <style>{`
         @media print {
           body * {

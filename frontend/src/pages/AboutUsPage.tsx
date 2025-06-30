@@ -24,8 +24,8 @@ const AboutUsPage = () => {
                 src="/logo.png" 
                 alt="Furniture Showroom" 
                 style={{ 
-                    maxWidth: '100%',   // Limits the image size to fit its container
-                    maxHeight: '240px', // Sets the maximum height of the image
+                    maxWidth: '100%',  
+                    maxHeight: '240px', 
                     borderRadius: '8px',
                     marginLeft: '100px' 
                   }} 

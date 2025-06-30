@@ -71,11 +71,11 @@ export const OrderController = {
 
       await connection.query('START TRANSACTION');
 
-      // Get current customer details
+      
       const customer = await CustomerModel.getCustomerById(customerId);
       if (!customer) throw new Error('Customer not found');
 
-      // Update customer address if shipping address is provided
+      
       if (shipping_address) {
         await CustomerModel.updateCustomer(customer.user_id, {
           first_name: shipping_address.first_name || customer.first_name,
@@ -88,7 +88,7 @@ export const OrderController = {
         });
       }
 
-      // TODO: Replace with actual cart retrieval logic
+      
       const [cartRows] = await connection.query(
         `SELECT ci.product_id, ci.quantity, p.price, p.inventory_id
          FROM cart_items ci

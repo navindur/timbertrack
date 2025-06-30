@@ -1,26 +1,25 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import  db  from '../db'; // Assuming you have a database connection instance
+import  db  from '../db'; 
 
 const JWT_SECRET = process.env.JWT_SECRET || 'yoursecretkey';
 
 export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    //const authHeader = req.header('Authorization');
-    //console.log("Authorization header:", authHeader);
+    
     const token = req.header('Authorization')?.replace('Bearer ', '');
     
     if (!token) {
       throw new Error('Authentication required');
     }
-
+// Verify the token using the secret key
     const decoded = jwt.verify(token, JWT_SECRET) as { 
       userId: number;
-      customerId?: number; // Make optional
-      role: 'customer' | 'shopowner'; // Add role
+      customerId?: number; 
+      role: 'customer' | 'shopowner'; 
     };
 
-    // For customers, verify customer record exists
+    // If user is a customer, confirm that the customer exists in db
     if (decoded.role === 'customer' && decoded.customerId) {
       const [rows]: any = await db.query(
         'SELECT customer_id FROM customers WHERE customer_id = ?', 
@@ -31,21 +30,21 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
       }
     }
 
-    // Attach complete user to request
+     // attach decoded user info to request for further use
     (req as any).user = {
       userId: decoded.userId,
       customerId: decoded.customerId,
-      role: decoded.role // Include role
+      role: decoded.role 
     };
 
-    next();
+    next();// Proceed to the next middleware or route handler
   } catch (error) {
     console.error('Auth error:', error);
     res.status(401).json({ error: 'Please authenticate' });
   }
 };
 
-//new
+//restrict access based on user roles
 export const authorize = (allowedRoles: string[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
     const user = (req as any).user;

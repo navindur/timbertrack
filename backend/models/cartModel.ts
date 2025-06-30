@@ -8,13 +8,13 @@ export const CartModel = {
     );
 
     if ((existing as any[]).length > 0) {
-      // If already in cart, update quantity
+      
       await db.execute(
         'UPDATE cart_items SET quantity = quantity + ? WHERE customer_id = ? AND product_id = ?',
         [quantity, customerId, productId]
       );
     } else {
-      // If not in cart, insert new
+      
       await db.execute(
         'INSERT INTO cart_items (customer_id, product_id, quantity) VALUES (?, ?, ?)',
         [customerId, productId, quantity]

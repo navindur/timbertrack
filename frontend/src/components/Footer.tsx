@@ -4,17 +4,18 @@ import { Facebook, Twitter, Instagram, LinkedIn } from '@mui/icons-material';
 
 const Footer: React.FC = () => {
   return (
+     //outer box with background color, padding, and top margin
     <Box
       sx={{
-        backgroundColor: '#2C2C2C', // Dark background
-        color: '#FFFFFF', // White text
+        backgroundColor: '#2C2C2C', 
+        color: '#FFFFFF',
         padding: '4rem 0',
         marginTop: '4rem',
       }}
     >
       <Container maxWidth="lg">
         <Grid container spacing={4}>
-          {/* Quick Links */}
+          
           <Grid item xs={12} sm={6} md={3}>
             <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
               Quick Links
@@ -31,7 +32,6 @@ const Footer: React.FC = () => {
            
           </Grid>
 
-          {/* Customer Service */}
           <Grid item xs={12} sm={6} md={3}>
             <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
               Services
@@ -48,7 +48,6 @@ const Footer: React.FC = () => {
             
           </Grid>
 
-          {/* Contact Information */}
           <Grid item xs={12} sm={6} md={3}>
             <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
               Contact Us
@@ -67,7 +66,6 @@ const Footer: React.FC = () => {
             </Typography>
           </Grid>
 
-          {/* Social Media Links */}
           <Grid item xs={12} sm={6} md={3}>
             <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
               Follow Us
@@ -85,7 +83,6 @@ const Footer: React.FC = () => {
           </Grid>
         </Grid>
 
-        {/* Copyright */}
         <Box
           sx={{
             borderTop: '1px solid #444',

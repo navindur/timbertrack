@@ -1,4 +1,3 @@
-// src/features/inventory/services/inventoryService.ts
 import { InventoryItem } from '../types/inventoryTypes';
 import { useState } from 'react';
 
@@ -22,10 +21,8 @@ export const useInventory = () => {
   };
 
   const addInventory = async (item: Omit<InventoryItem, 'inventory_id'>) => {
-    // API call implementation
+   
   };
-
-  // Other CRUD operations...
 
   return {
     inventory,
@@ -33,14 +30,12 @@ export const useInventory = () => {
     error,
     fetchInventory,
     addInventory,
-    // ... other methods
   };
 };
 
-// In your inventoryService.ts
 export const getAvailableInventory = async (): Promise<InventoryItem[]> => {
   try {
-    const response = await fetch('/api/inventory'); // Or your actual endpoint
+    const response = await fetch('/api/inventory'); 
     if (!response.ok) {
       throw new Error('Failed to fetch available inventory');
     }

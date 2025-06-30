@@ -1,10 +1,5 @@
-// src/services/reportservice.ts
-
 import db from '../db';
 import { RowDataPacket } from 'mysql2/promise';
-
-
-// src/services/reportservice.ts
 
 interface RegularOrderSummary {
   total_regular_orders: number;
@@ -41,7 +36,6 @@ interface CustomSummaryRow extends RowDataPacket {
 }
 
 export const getSalesSummaryService = async (start: string, end: string): Promise<SalesSummaryResult> => {
-  // Regular orders summary
   const [regularRows] = await db.query<RegularSummaryRow[]>(
     `
     SELECT 
@@ -59,7 +53,6 @@ export const getSalesSummaryService = async (start: string, end: string): Promis
     [start, end, start, end]
   );
 
-  // Custom orders summary
   const [customRows] = await db.query<CustomSummaryRow[]>(
     `
     SELECT 
@@ -110,7 +103,6 @@ return {
 };
 };
 
-// Sales by Product
 export const getSalesByProductService = async (start: string, end: string) => {
   const [results] = await db.execute(
     `
@@ -129,7 +121,6 @@ export const getSalesByProductService = async (start: string, end: string) => {
   return results;
 };
 
-// Sales by Category
 export const getSalesByCategoryService = async (start: string, end: string) => {
   const [results] = await db.execute(
     `
@@ -149,7 +140,6 @@ export const getSalesByCategoryService = async (start: string, end: string) => {
   return results;
 };
 
-// Sales by Payment Method
 export const getSalesByPaymentMethodService = async (start: string, end: string) => {
   const [results] = await db.execute(
     `
@@ -180,8 +170,6 @@ export const getSalesByPaymentMethodService = async (start: string, end: string)
   return results;
 };
 
-
-// Low Stock Alerts
 export const getLowStockService = async () => {
   const [results] = await db.execute(
     `
@@ -194,7 +182,6 @@ export const getLowStockService = async () => {
   return results;
 };
 
-// Inventory Valuation
 export const getInventoryValuationService = async () => {
   const [results] = await db.execute(
     `
@@ -208,7 +195,6 @@ export const getInventoryValuationService = async () => {
   return results;
 };
 
-// Top Customers
 export const getTopCustomersService = async (start: string, end: string) => {
   const [results] = await db.execute(
     `
@@ -247,9 +233,6 @@ export const getTopCustomersService = async (start: string, end: string) => {
   return results;
 };
 
-
-
-// Customer Order History
 export const getCustomerOrderHistoryService = async (customerId: string) => {
   const [results] = await db.execute(
     `
@@ -266,7 +249,6 @@ export const getCustomerOrderHistoryService = async (customerId: string) => {
   return results;
 };
 
-// Orders by Status
 export const getOrdersByStatusService = async (start: string, end: string) => {
   const [results] = await db.execute(
     `
@@ -300,8 +282,6 @@ export const getCustomOrdersByStatusService = async (start: string, end: string)
   return results;
 };
 
-
-// Order Details
 export const getOrderDetailsService = async (orderId: string) => {
   const [order] = await db.execute(
     `

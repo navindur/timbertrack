@@ -13,7 +13,7 @@ export interface WalkinOrderRequest {
       postal_code?: string;
     };
     items: Array<{
-      product_id: number;  // Changed from inventory_id to product_id
+      product_id: number; 
       quantity: number;
       price: number;
     }>;

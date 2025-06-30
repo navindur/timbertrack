@@ -56,12 +56,10 @@ export const updateProduct = async (
     throw new Error('Product not found.');
   }
 
-  // Handle image upload if file exists
   const imageUrl = imageFile
     ? await uploadImageToFirebase(imageFile)
     : existingProduct.image_url;
 
-  // Prepare the updated product data
   const updatedProduct = {
     description: body.description || existingProduct.description,
     image_url: imageUrl || existingProduct.image_url,
@@ -71,7 +69,6 @@ export const updateProduct = async (
       : null
   };
 
-  // Additional validation
   if (updatedProduct.has_discount && updatedProduct.dummy_price) {
     if (updatedProduct.dummy_price <= existingProduct.price) {
       throw new Error('Original price must be higher than current price');
@@ -81,7 +78,6 @@ export const updateProduct = async (
   return await ProductModel.updateProduct(id, updatedProduct);
 };
 
-// productService.ts
 export const getAllActiveProducts = async (
   page: number,
   limit: number,
@@ -89,7 +85,7 @@ export const getAllActiveProducts = async (
   category?: string
 ) => {
   try {
-    // Input validation
+    
     if (page < 1 || limit < 1) {
       throw new Error('Invalid pagination parameters');
     }
@@ -101,7 +97,6 @@ export const getAllActiveProducts = async (
       category: category || ''
     });
 
-    // Get total count for pagination metadata
     const [total] = await ProductModel.getTotalActiveProducts(search, category);
 
     return {
@@ -119,7 +114,6 @@ export const getAllActiveProducts = async (
   }
 };
 
-// Add to your existing productService.ts
 export const getCustomerProducts = async (
   page: number,
   limit: number,

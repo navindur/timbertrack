@@ -1,4 +1,3 @@
-// src/types/product.ts
 export interface Product {
   id?: number;
   name: string;
@@ -11,8 +10,8 @@ export interface Product {
   price: number;
   quantity?: number;
   category?: string;
-  dummy_price?: number | null; // For showing original price
-  has_discount?: boolean;     // Flag for discount status
+  dummy_price?: number | null; 
+  has_discount?: boolean;    
 }
   
   export interface InventoryOption {

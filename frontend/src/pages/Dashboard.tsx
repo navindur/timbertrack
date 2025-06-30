@@ -168,13 +168,11 @@ const validatePassword = (password: string): string | null => {
   };
 
 const handlePasswordChange = async () => {
-    // Validate password match
     if (passwordData.newPassword !== passwordData.confirmPassword) {
       setError('New passwords do not match');
       return;
     }
 
-    // Validate password strength
     const passwordError = validatePassword(passwordData.newPassword);
     if (passwordError) {
       setError(passwordError);
@@ -212,7 +210,7 @@ const handlePasswordChange = async () => {
         bgcolor: '#efdecd'
       }}
     >
-      {/* Sidebar */}
+      
       <Box
         sx={{
           width: 240,
@@ -224,7 +222,7 @@ const handlePasswordChange = async () => {
         <Navbar />
       </Box>
 
-      {/* Main Dashboard Content */}
+     
       <Box
         sx={{
           flexGrow: 1,
@@ -438,13 +436,6 @@ const handlePasswordChange = async () => {
   </Paper>
 </Grid>
 
-
-
-
-
-
-
-
               <Grid item xs={12} md={6}>
               <Paper sx={{ p: 2, height: '400px' }}>
   <Typography variant="h6" gutterBottom>
@@ -477,8 +468,6 @@ const handlePasswordChange = async () => {
     )}
   </Paper>
 </Grid>
-
-
 
             </Grid>
           </>

@@ -5,6 +5,6 @@ export interface Supplier {
     email: string;
     phone: string;
     address: string;
-    created_at?: string;  // Optional fields from your database
+    created_at?: string;
     updated_at?: string;
   }

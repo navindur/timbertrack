@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { CartController } from '../controllers/cartController';
-import { authenticate } from '../middleware/authMiddleware'; // Use your auth middleware
+import { authenticate } from '../middleware/authMiddleware'; 
 
 const router = Router();
 

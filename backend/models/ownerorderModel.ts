@@ -55,26 +55,22 @@ export const getAllOrders = async (
     const queryParams: any[] = [];
     const countParams: any[] = [];
   
-    // Status filter
     if (status) {
       whereClauses.push('o.status = ?');
       queryParams.push(status);
       countParams.push(status);
     }
   
-    // Search filter
     if (searchTerm && searchTerm.trim() !== '') {
       const searchConditions: string[] = [];
       const searchParams: any[] = [];
-      
-      // Search by order ID (only if searchTerm is a number)
+  
       const orderId = parseInt(searchTerm);
       if (!isNaN(orderId)) {
         searchConditions.push('o.id = ?');
         searchParams.push(orderId);
       }
-      
-      // Search by customer name (split into first and last name)
+     
       const nameParts = searchTerm.trim().split(/\s+/);
       if (nameParts.length > 0) {
         searchConditions.push('(c.first_name LIKE ? OR c.last_name LIKE ?)');
@@ -85,17 +81,14 @@ export const getAllOrders = async (
           searchParams.push(`%${nameParts[1]}%`, `%${nameParts[1]}%`);
         }
       }
-      
-      // Search by date (only if searchTerm matches date format)
+    
       if (/^\d{4}-\d{2}-\d{2}$/.test(searchTerm)) {
         searchConditions.push('DATE(o.created_at) = ?');
         searchParams.push(searchTerm);
       } else if (/^\d{4}-\d{2}$/.test(searchTerm)) {
-        // Search by month if format is YYYY-MM
         searchConditions.push('DATE_FORMAT(o.created_at, "%Y-%m") = ?');
         searchParams.push(searchTerm);
       } else if (/^\d{4}$/.test(searchTerm)) {
-        // Search by year if format is YYYY
         searchConditions.push('YEAR(o.created_at) = ?');
         searchParams.push(searchTerm);
       }
@@ -107,22 +100,18 @@ export const getAllOrders = async (
       }
     }
   
-    // Combine WHERE clauses if any exist
     if (whereClauses.length > 0) {
       const whereClause = ' WHERE ' + whereClauses.join(' AND ');
       baseQuery += whereClause;
       countQuery += whereClause;
     }
-  
-    // Add sorting and pagination
+
     baseQuery += ' ORDER BY o.created_at DESC LIMIT ? OFFSET ?';
     queryParams.push(limit, offset);
   
-    // Debug logging (remove in production)
     console.log('Executing query:', baseQuery);
     console.log('With parameters:', queryParams);
   
-    // Execute both queries
     const [orders] = await db.query<RowDataPacket[]>(baseQuery, queryParams);
     const [totalRows] = await db.query<RowDataPacket[]>(countQuery, countParams);
   
@@ -133,7 +122,7 @@ export const getAllOrders = async (
   };
 
 export const getOrderById = async (orderId: number): Promise<OrderWithDetails | null> => {
-  // Get order basic info
+  
   const [orderRows] = await db.query<RowDataPacket[]>(`
     SELECT o.*, 
            CONCAT(c.first_name, ' ', c.last_name) AS customer_name,
@@ -151,8 +140,7 @@ export const getOrderById = async (orderId: number): Promise<OrderWithDetails | 
   if (orderRows.length === 0) {
     return null;
   }
-
-  // Get order items
+  
   const [itemRows] = await db.query<RowDataPacket[]>(`
     SELECT oi.*, p.name AS product_name, p.image_url AS product_image
     FROM order_items oi

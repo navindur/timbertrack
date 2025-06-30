@@ -47,7 +47,7 @@ export const getSalesSummaryPDF = async (req: Request, res: Response) => {
 
     const summary = await getSalesSummaryService(start as string, end as string);
 
-    // Define the PDF data structure inline
+    
     generateSalesSummaryPDF({
       ...summary,
       start_date: start as string,
@@ -60,11 +60,6 @@ export const getSalesSummaryPDF = async (req: Request, res: Response) => {
 };
 
 
-
-
-
-
-// Sales by Product
 export const getSalesByProduct = async (req: Request, res: Response) => {
   try {
     const { start, end } = req.query;
@@ -105,7 +100,7 @@ export const getSalesByProductPDF = async (req: Request, res: Response) => {
   }
 };
 
-// Sales by Category
+
 export const getSalesByCategory = async (req: Request, res: Response) => {
   try {
     const { start, end } = req.query;
@@ -145,7 +140,7 @@ export const getSalesByCategoryPDF = async (req: Request, res: Response) => {
   }
 };
 
-// Sales by Payment Method
+
 export const getSalesByPaymentMethod = async (req: Request, res: Response) => {
   try {
     const { start, end } = req.query;
@@ -185,7 +180,7 @@ export const getSalesByPaymentMethodPDF = async (req: Request, res: Response) =>
   }
 };
 
-// Low Stock Alerts
+
 export const getLowStock = async (req: Request, res: Response) => {
   try {
     const results = await getLowStockService();
@@ -218,7 +213,7 @@ export const getLowStockPDF = async (req: Request, res: Response) => {
   }
 };
 
-// Inventory Valuation
+
 export const getInventoryValuation = async (req: Request, res: Response) => {
   try {
     const results = await getInventoryValuationService();
@@ -253,7 +248,7 @@ export const getInventoryValuationPDF = async (req: Request, res: Response) => {
   }
 };
 
-// Top Customers
+
 export const getTopCustomers = async (req: Request, res: Response) => {
   try {
     const { start, end } = req.query;
@@ -295,7 +290,7 @@ export const getTopCustomersPDF = async (req: Request, res: Response) => {
   }
 };
 
-// Customer Order History
+
 export const getCustomerOrderHistory = async (req: Request, res: Response) => {
   try {
     const { customerId } = req.params;
@@ -332,7 +327,7 @@ export const getCustomerOrderHistoryPDF = async (req: Request, res: Response) =>
   }
 };
 
-// Orders by Status
+
 export const getOrdersByStatus = async (req: Request, res: Response) => {
   try {
     const { start, end } = req.query;
@@ -413,8 +408,6 @@ export const getCustomOrdersByStatusPDF = async (req: Request, res: Response) =>
   }
 };
 
-
-// Order Details
 export const getOrderDetails = async (req: Request, res: Response) => {
   try {
     const { orderId } = req.params;
@@ -437,11 +430,11 @@ export const getOrderDetailsPDF = async (req: Request, res: Response) => {
     res.setHeader('Content-Disposition', `attachment; filename=order_${orderId}_details.pdf`);
     doc.pipe(res);
 
-    // Title
+    
     doc.fontSize(20).text(`Order #${orderId} Details`, { align: 'center' });
     doc.moveDown();
 
-    // Order Summary
+    
     doc.fontSize(14).text('Order Summary', { underline: true });
     doc.fontSize(12);
     doc.text(`Date: ${new Date(order.created_at).toLocaleString()}`);
@@ -450,11 +443,11 @@ export const getOrderDetailsPDF = async (req: Request, res: Response) => {
     doc.text(`Total Price: $${Number(order.total_price).toFixed(2)}`);
     doc.moveDown(2);
 
-    // Items
+    
     doc.fontSize(14).text('Order Items', { underline: true });
     doc.moveDown(0.5);
     
-    // Table header
+    
     doc.font('Helvetica-Bold');
     doc.text('Product', 50, doc.y);
     doc.text('Quantity', 300, doc.y);
@@ -462,7 +455,7 @@ export const getOrderDetailsPDF = async (req: Request, res: Response) => {
     doc.moveDown(0.5);
     doc.font('Helvetica');
     
-    // Items rows
+    
     items.forEach((item: any) => {
       doc.text(item.product_name, 50, doc.y);
       doc.text(item.quantity.toString(), 300, doc.y);

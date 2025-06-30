@@ -45,8 +45,6 @@ export const getRecentCustomOrders = async (_: Request, res: Response) => {
   }
 };
 
-
-//new
 export const getSalesTrend = async (req: Request, res: Response) => {
   const range = req.query.range as string;
   const trendData = await DashboardService.getSalesTrend(range);

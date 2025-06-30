@@ -17,7 +17,6 @@ export interface CustomOrder extends RowDataPacket {
 }
 
 export const CustomOrderModel = {
-  // Create a new custom order
   create: async (order: {
     customer_id: number;
     details: string;
@@ -30,7 +29,7 @@ export const CustomOrderModel = {
     return result.insertId;
   },
 
-  // Get all custom orders (for shop owner)
+  
   findAll: async (): Promise<CustomOrder[]> => {
     const [rows] = await db.query<CustomOrder[]>(
       `SELECT co.*, c.first_name, c.last_name 
@@ -41,7 +40,7 @@ export const CustomOrderModel = {
     return rows;
   },
 
-  // Get custom orders by customer ID
+  
   findByCustomerId: async (customerId: number): Promise<CustomOrder[]> => {
     const [rows] = await db.query<CustomOrder[]>(
       `SELECT * FROM custom_orders 
@@ -52,7 +51,7 @@ export const CustomOrderModel = {
     return rows;
   },
 
-  // Find by ID
+  
   findById: async (id: number): Promise<CustomOrder | null> => {
     const [rows] = await db.query<CustomOrder[]>(
       `SELECT 
@@ -72,7 +71,6 @@ export const CustomOrderModel = {
     return rows[0] || null;
   },
 
-  // Accept a custom order
   acceptOrder: async (id: number, estimatedPrice: number): Promise<boolean> => {
     const [result] = await db.query(
       `UPDATE custom_orders 
@@ -83,7 +81,7 @@ export const CustomOrderModel = {
     return (result as any).affectedRows > 0;
   },
 
-  // Reject a custom order
+  
   rejectOrder: async (id: number): Promise<boolean> => {
     const [result] = await db.query(
       `UPDATE custom_orders 
@@ -94,7 +92,7 @@ export const CustomOrderModel = {
     return (result as any).affectedRows > 0;
   },
 
-  // Mark as paid
+ 
   markAsPaid: async (id: number): Promise<boolean> => {
     const [result] = await db.query(
       `UPDATE custom_orders 
@@ -105,7 +103,7 @@ export const CustomOrderModel = {
     return (result as any).affectedRows > 0;
   },
 
-  // Update production status
+  
   updateProductionStatus: async (
     id: number,
     status: 'not_started' | 'in_progress' | 'finished' | 'shipped' | 'delivered'

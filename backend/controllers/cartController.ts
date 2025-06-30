@@ -4,7 +4,7 @@ import { CartModel } from '../models/cartModel';
 export const CartController = {
   async addToCart(req: Request, res: Response) {
     try {
-      const customerId = (req as any).user.customerId; // from auth middleware
+      const customerId = (req as any).user.customerId; 
       const { productId, quantity } = req.body;
 
       if (!productId || !quantity) {

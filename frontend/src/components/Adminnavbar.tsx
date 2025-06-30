@@ -25,14 +25,9 @@ const Navbar: React.FC = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // Clear authentication data
     localStorage.removeItem('authToken');
     localStorage.removeItem('user');
-    
-    // Redirect to login page
     navigate('/signin');
-    
-    // Optional: Force a full page reload to reset application state
     window.location.reload();
   };
 
@@ -49,7 +44,7 @@ const Navbar: React.FC = () => {
     { 
       name: 'Log out', 
       icon: <LogoutIcon />, 
-      onClick: handleLogout // Changed from path to onClick handler
+      onClick: handleLogout 
     }
   ];
 

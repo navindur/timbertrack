@@ -144,7 +144,6 @@ const CustomOrderCheckout: React.FC = () => {
   const validateCustomerDetails = () => {
     const errors: { [key: string]: string } = {};
 
-    // Validate first name
     if (!customerDetails.first_name.trim()) {
       errors.first_name = 'First name is required';
     } else if (customerDetails.first_name.length < 2 || customerDetails.first_name.length > 30) {
@@ -153,7 +152,6 @@ const CustomOrderCheckout: React.FC = () => {
       errors.first_name = 'First name must contain only letters';
     }
 
-    // Validate last name
     if (!customerDetails.last_name.trim()) {
       errors.last_name = 'Last name is required';
     } else if (customerDetails.last_name.length < 2 || customerDetails.last_name.length > 30) {
@@ -162,7 +160,6 @@ const CustomOrderCheckout: React.FC = () => {
       errors.last_name = 'Last name must contain only letters';
     }
 
-    // Check if first name and last name are the same
     if (
       customerDetails.first_name.trim().toLowerCase() ===
       customerDetails.last_name.trim().toLowerCase()
@@ -357,7 +354,6 @@ const CustomOrderCheckout: React.FC = () => {
     }, 100);
   };
 
-  // Print-specific styles
   const printStyles = `
     @media print {
       body * {
@@ -506,7 +502,6 @@ const CustomOrderCheckout: React.FC = () => {
                 Order Total: Rs.{Number(order.estimated_price)?.toFixed(2) || '0.00'}
               </Typography>
             
-            {/* Mock payment form */}
             <Box sx={{ mt: 3, p: 3, border: '1px solid #eee', borderRadius: 1 }}>
               <Typography variant="subtitle1" gutterBottom>
                 Credit/Debit Card Details
@@ -695,8 +690,7 @@ const CustomOrderCheckout: React.FC = () => {
           </Box>
         </Paper>
       </Box>
-      
-      {/* Print styles */}
+    
       <style>{printStyles}</style>
       
       <Footer />

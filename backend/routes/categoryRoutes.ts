@@ -1,4 +1,3 @@
-// routes/categoryRoutes.ts
 import express from 'express';
 import {
   getDiningProducts,

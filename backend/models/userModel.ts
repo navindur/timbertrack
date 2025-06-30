@@ -1,6 +1,6 @@
-// models/userModel.ts
-import db from '../db'; // your MySQL connection
+import db from '../db'; 
 
+//shape of a User object
 interface User {
   id?: number;
   email: string;
@@ -8,10 +8,11 @@ interface User {
   role?: 'customer' | 'shopowner';
 }
 
+//handles database operations related to users
 export const UserModel = {
   async findByEmail(email: string): Promise<User | null> {
     const [rows] = await db.execute('SELECT * FROM users WHERE email = ?', [email]);
-    const result = (rows as any[])[0];
+    const result = (rows as any[])[0]; //get the first result
     return result || null;
   },
 
@@ -22,6 +23,6 @@ export const UserModel = {
       [email, password, role]
     );
     const insertedId = (result as any).insertId;
-    return { id: insertedId, email, password, role };
+    return { id: insertedId, email, password, role }; ///return user object including the generated ID
   }
 };

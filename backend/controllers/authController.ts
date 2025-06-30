@@ -4,10 +4,11 @@ import { Request, Response } from 'express';
 import { UserModel } from '../models/userModel';
 import { CustomerModel } from '../models/customerModel';
 import { authService as AuthService } from '../services/authService';
- //new
 
-const JWT_SECRET = process.env.JWT_SECRET || 'yoursecretkey';
 
+const JWT_SECRET = process.env.JWT_SECRET || 'yoursecretkey'; // fallback in case env is missing
+
+//Handles user signup (for customers)
 export const signup = async (req: Request, res: Response) => {
   try {
     const {
@@ -20,19 +21,21 @@ export const signup = async (req: Request, res: Response) => {
       return res.status(400).json({ message: 'Missing required fields' });
     }
 
-    const existingUser = await UserModel.findByEmail(email);
+    const existingUser = await UserModel.findByEmail(email); // Check for existing user with the same email
     if (existingUser) {
       return res.status(400).json({ message: 'Email already registered' });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // create user record in the User table
     const newUser = await UserModel.createUser({
       email,
       password: hashedPassword,
       role: 'customer'
     });
 
+    //create customer profile with personal details
     await CustomerModel.createCustomer({
       user_id: newUser.id as number,
       
@@ -45,16 +48,18 @@ export const signup = async (req: Request, res: Response) => {
       postal_code
     });
 
+    //fetch the newly created customer details
     const customer = await CustomerModel.getCustomerByUserId(newUser.id!);
 
     if (!customer) {
       return res.status(500).json({ message: 'Customer creation failed' });
     }
 
+     //generate JWT token with user and customer info
     const token = jwt.sign(
       {
         userId: newUser.id,
-        customerId: customer.customer_id, // Ensure customerId is always available
+        customerId: customer.customer_id, 
         role: newUser.role
       },
       JWT_SECRET,
@@ -76,7 +81,7 @@ export const signup = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Signup failed' });
   }
 };
-
+ //user login handler
 export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
@@ -103,6 +108,7 @@ export const login = async (req: Request, res: Response) => {
       }
     }
 
+      // Create JWT payload
     const tokenPayload: any = {
       userId: user.id,
       role: user.role
@@ -129,14 +135,11 @@ export const login = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Login failed' });
   }
 };
-
-
-
-//new
-
+ //chnage password handler
 export const changePassword = async (req: Request, res: Response) => {
     try {
-      const userId = (req as any).user.userId; // From auth middleware
+       // Extract userId from authenticated request
+      const userId = (req as any).user.userId; 
       const { currentPassword, newPassword } = req.body;
       
       await AuthService.changePassword(userId, currentPassword, newPassword);

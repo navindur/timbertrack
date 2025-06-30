@@ -86,8 +86,6 @@ const CheckoutPage = () => {
   const validateCustomerDetails = () => {
     const errors: { [key: string]: string } = {};
 
-    
-// Validate first name
 if (!customerDetails.first_name.trim()) {
   errors.first_name = 'First name is required';
 } else if (customerDetails.first_name.length < 2 || customerDetails.first_name.length > 30) {
@@ -96,7 +94,6 @@ if (!customerDetails.first_name.trim()) {
   errors.first_name = 'First name must contain only letters.';
 }
 
-// Validate last name
 if (!customerDetails.last_name.trim()) {
   errors.last_name = 'Last name is required';
 } else if (customerDetails.last_name.length < 2 || customerDetails.last_name.length > 30) {
@@ -105,7 +102,6 @@ if (!customerDetails.last_name.trim()) {
   errors.last_name = 'Last name must contain only letters.';
 }
 
-// Check if first name and last name are the same
 if (
   customerDetails.first_name.trim().toLowerCase() ===
   customerDetails.last_name.trim().toLowerCase()
@@ -173,10 +169,10 @@ if (
 } else {
   const [monthStr, yearStr] = creditCardDetails.expiryDate.split('/');
   const inputMonth = parseInt(monthStr, 10);
-  const inputYear = parseInt('20' + yearStr, 10); // Convert YY to 20YY format
+  const inputYear = parseInt('20' + yearStr, 10); 
 
   const now = new Date();
-  const currentMonth = now.getMonth() + 1; // getMonth is zero-based
+  const currentMonth = now.getMonth() + 1; 
   const currentYear = now.getFullYear();
 
   if (inputYear < currentYear || (inputYear === currentYear && inputMonth < currentMonth)) {
@@ -201,7 +197,6 @@ if (
   let formattedValue = value;
 
   if (name === 'expiryDate') {
-    // Remove non-digit and non-slash characters
     formattedValue = value.replace(/[^\d]/g, '');
 
     if (formattedValue.length > 2) {

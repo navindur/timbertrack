@@ -6,11 +6,10 @@ import multer from "multer";
 const upload = multer({ storage: multer.memoryStorage() });
 const router = express.Router();
 
-// Customer routes
 router.post(
   "/",
   authenticate,
-  authorize(['customer']), // Add this
+  authorize(['customer']), 
   upload.single('image'),
   CustomOrderController.createOrder
 );
@@ -27,11 +26,10 @@ router.put(
   CustomOrderController.markAsPaid
 );
 
-// Shop owner routes
 router.get(
   "/",
   authenticate,
-  authorize(['shopowner']), // Add this
+  authorize(['shopowner']), 
   CustomOrderController.getAllOrders
 );
 
@@ -59,7 +57,7 @@ router.put(
 router.get(
   '/:id',
   authenticate,
-  authorize(['customer']), // Or appropriate roles
+  authorize(['customer']), 
   CustomOrderController.getOrderById
 );
 

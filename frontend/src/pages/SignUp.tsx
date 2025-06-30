@@ -26,7 +26,6 @@ const SignUp: React.FC = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value;
   
-    // Auto-capitalize first letter for name fields
     if (e.target.name === 'first_name' || e.target.name === 'last_name') {
       if (value.length === 1) {
         value = value.toUpperCase();
@@ -34,7 +33,6 @@ const SignUp: React.FC = () => {
         value = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
       }
     }
-    // Convert email to lowercase as user types
     else if (e.target.name === 'email') {
       value = value.toLowerCase();
     }
@@ -46,28 +44,19 @@ const SignUp: React.FC = () => {
     if (!formData.first_name || !formData.last_name || !formData.email || !formData.password) {
       return 'All fields are required.';
     }
-    // First name validation
   if (!/^[A-Z][a-z]*$/.test(formData.first_name)) {
     return 'First name must contain only letters.';
   }
 
-  // First name length: 2 to 30 characters
 if (formData.first_name.length < 2 || formData.first_name.length > 30) {
   return 'First name must be between 2 and 30 characters.';
 }
-
-  // Last name validation
   if (!/^[A-Z][a-z]*$/.test(formData.last_name)) {
     return 'Last name must contain only letters.';
   }
-
-  // Last name length: 2 to 30 characters
 if (formData.last_name.length < 2 || formData.last_name.length > 30) {
   return 'Last name must be between 2 and 30 characters.';
 }
-
-
-  // First and last name cannot be same
   if (formData.first_name.toLowerCase() === formData.last_name.toLowerCase()) {
     return 'First name and last name cannot be the same.';
   }

@@ -35,7 +35,7 @@ const CartPage = () => {
               Authorization: `Bearer ${token}`,
             },
           });
-          const items = res.data.cartItems ?? [];  // <<< safe fallback to empty array
+          const items = res.data.cartItems ?? [];  
           setCartItems(items);
         } catch (error) {
           console.error('Error fetching cart:', error);
@@ -66,13 +66,11 @@ const CartPage = () => {
     
     if (!item) return;
   
-    // Check against inventory stock
     if (newQuantity > item.inventory_quantity) {
       alert(`Only ${item.inventory_quantity} items available in stock`);
       return;
     }
   
-    // Prevent going below 1
     if (newQuantity < 1) {
       newQuantity = 1;
     }

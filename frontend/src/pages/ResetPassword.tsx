@@ -45,7 +45,7 @@ const ResetPassword = () => {
       const res = await axios.post('/api/auth/reset-password', { token, password });
       setSuccessMsg(res.data.message);
       setTimeout(() => {
-  localStorage.removeItem('authToken'); // or whatever key you use
+  localStorage.removeItem('authToken'); 
   navigate('/signin');
 }, 3000);
     } catch (err: any) {

@@ -52,7 +52,6 @@ export const CustomerModel = {
     );
   },
 
-  // Email-related methods
   async checkEmailExists(email: string): Promise<boolean> {
     const [rows] = await db.execute(
       `SELECT COUNT(*) as count FROM users WHERE email = ?`,

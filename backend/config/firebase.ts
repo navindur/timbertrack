@@ -1,8 +1,9 @@
+//firebase configuration and initialization
 import { initializeApp } from "firebase/app";
 import { getStorage } from "firebase/storage";
 
 export const firebaseConfig = {
-    apiKey: "AIzaSyCQ79QjJewISdZVHdbdu9KeBfnux9CW7EA",
+  apiKey: "AIzaSyCQ79QjJewISdZVHdbdu9KeBfnux9CW7EA",
   authDomain: "timbertrack-b8097.firebaseapp.com",
   projectId: "timbertrack-b8097",
   storageBucket: "timbertrack-b8097.firebasestorage.app",

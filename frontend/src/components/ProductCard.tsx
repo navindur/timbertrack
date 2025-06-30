@@ -1,11 +1,10 @@
-// src/components/ProductCard.tsx
 import { Button, Card, CardContent, Typography } from '@mui/material';
 
 type ProductProps = {
   product: any;
   onDelete?: (id: number) => void;
   onEdit?: (product: any) => void;
-  showActions?: boolean; // 👈 optional flag
+  showActions?: boolean; 
 };
 
 export default function ProductCard({

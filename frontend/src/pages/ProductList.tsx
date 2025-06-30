@@ -101,9 +101,9 @@ const ProductList: React.FC = () => {
     description: '',
     inventory_id: 0,
     image_url: '',
-    price: 0, // Add default price
-    has_discount: false, // Add default discount status
-    dummy_price: null // Add default original price
+    price: 0, 
+    has_discount: false, 
+    dummy_price: null 
   });
   setOpenDialog(true);
 };
@@ -147,11 +147,11 @@ const ProductList: React.FC = () => {
       ...currentProduct,
       inventory_id: inventoryId,
       name: selectedInventory.name,
-      price: selectedInventory.price || 0, // Ensure price is always a number
+      price: selectedInventory.price || 0, 
       quantity: selectedInventory.quantity,
       category: selectedInventory.type,
-      has_discount: currentProduct.has_discount || false, // Maintain discount status
-      dummy_price: currentProduct.dummy_price || null // Maintain original price
+      has_discount: currentProduct.has_discount || false,
+      dummy_price: currentProduct.dummy_price || null 
     });
   }
 };
@@ -165,7 +165,7 @@ const ProductList: React.FC = () => {
   const handleSubmit = async () => {
   if (!currentProduct) return;
   
-  // Check if inventory item is selected
+
   if (!currentProduct.inventory_id) {
     setSnackbar({
       open: true,
@@ -204,7 +204,6 @@ const ProductList: React.FC = () => {
       });
     }
     
-    // Refresh data
     const productsData = await getAllProducts({ page, limit, search: searchTerm, category: categoryFilter });
     setProducts(productsData);
     setFilteredProducts(productsData);
@@ -231,7 +230,6 @@ const ProductList: React.FC = () => {
         severity: 'success'
       });
       
-      // Refresh data
       const productsData = await getAllProducts({ page, limit, search: searchTerm, category: categoryFilter });
       setProducts(productsData);
       setFilteredProducts(productsData);
@@ -267,7 +265,7 @@ const ProductList: React.FC = () => {
       overflow: 'hidden',
       bgcolor: '#efdecd'
     }}>
-      {/* Navbar - Fixed width */}
+      
       <Box sx={{ 
         width: 240, 
         flexShrink: 0,
@@ -277,7 +275,7 @@ const ProductList: React.FC = () => {
         <Navbar />
       </Box>
   
-      {/* Main Content */}
+     
       
 <Box sx={{ 
   flexGrow: 1,
@@ -288,30 +286,27 @@ const ProductList: React.FC = () => {
 
 <Box sx={{ 
   display: 'flex', 
-  justifyContent: 'space-between', // Aligns the items to the left and space between
-  alignItems: 'center', // Vertically aligns the items
-  mb: 3, // Adds space below
-  width: '100%' // Ensures the full width is used
+  justifyContent: 'space-between', 
+  alignItems: 'center', 
+  mb: 3, 
+  width: '100%' 
 }}>
   <Typography variant="h4">
     Product Management
   </Typography>
 
-  {/* Add Product Button */}
+  
   <Button 
     variant="contained" 
     startIcon={<Add />}
     onClick={handleOpenAddDialog}
-    sx={{ marginLeft: 'auto' }} // Ensures the button is pushed to the right side
+    sx={{ marginLeft: 'auto' }} 
   >
     Add Product
   </Button>
 </Box>
 
 
-  
-  
-  {/* Search and Filter Controls */}
   <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
     <TextField
       placeholder="Search products"
@@ -347,7 +342,6 @@ const ProductList: React.FC = () => {
     
   </Box>
 
-  {/* Product Table */}
   {isLoading ? (
     <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
       <CircularProgress />
@@ -412,7 +406,7 @@ const ProductList: React.FC = () => {
     </TableContainer>
   )}
 
-  {/* Add/Edit Dialog */}
+ 
   <Dialog open={openDialog} onClose={handleCloseDialog}>
     <DialogTitle>
       {currentProduct?.id ? 'Edit Product' : 'Add New Product'}
@@ -464,7 +458,7 @@ const ProductList: React.FC = () => {
           ...currentProduct,
           has_discount: e.target.checked,
          dummy_price: e.target.checked 
-            ? (currentProduct.dummy_price || (currentProduct.price || 0) * 1.2) // Safely handle price
+            ? (currentProduct.dummy_price || (currentProduct.price || 0) * 1.2) 
             : null
         });
       }}
@@ -528,7 +522,6 @@ const ProductList: React.FC = () => {
     </DialogActions>
   </Dialog>
 
-  {/* Delete Confirmation Dialog */}
   <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
     <DialogTitle>Confirm Delete</DialogTitle>
     <DialogContent>
@@ -542,7 +535,7 @@ const ProductList: React.FC = () => {
     </DialogActions>
   </Dialog>
 
-  {/* Snackbar for notifications */}
+  
   <Snackbar
     open={snackbar.open}
     autoHideDuration={6000}

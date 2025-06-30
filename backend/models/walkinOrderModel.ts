@@ -38,7 +38,6 @@ export const createWalkinOrder = async (
     await db.query('START TRANSACTION');
   
     try {
-      // 1. Create customer record
       const [userResult] = await db.query<OkPacket>(
         'INSERT INTO users (email, password, role) VALUES (?, ?, ?)',
         [`walkin-${Date.now()}@example.com`, 'temp-password', 'customer']
@@ -64,7 +63,6 @@ export const createWalkinOrder = async (
   
       const customerId = customerResult.insertId;
   
-      // 2. Create order record
       const [orderResult] = await db.query<OkPacket>(
         `INSERT INTO orders 
          (customer_id, status, total_price, payment_method)
@@ -79,9 +77,7 @@ export const createWalkinOrder = async (
   
       const orderId = orderResult.insertId;
   
-      // 3. Create order items and update inventory
       for (const item of items) {
-        // Verify product exists and get inventory_id
         const [productRows] = await db.query<RowDataPacket[]>(
           'SELECT inventory_id FROM products WHERE id = ?',
           [item.product_id]
@@ -93,13 +89,11 @@ export const createWalkinOrder = async (
   
         const inventoryId = productRows[0].inventory_id;
   
-        // Add order item
         await db.query(
           'INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)',
           [orderId, item.product_id, item.quantity, item.price]
         );
   
-        // Update inventory quantity
         await db.query(
           'UPDATE inventory SET quantity = quantity - ? WHERE inventory_id = ? AND quantity >= ?',
           [item.quantity, inventoryId, item.quantity]

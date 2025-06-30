@@ -1,6 +1,5 @@
 import * as orderModel from '../models/ownerorderModel';
 
-// Update the fetchAllOrders function
 export const fetchAllOrders = async (
     page: number = 1,
     limit: number = 10,

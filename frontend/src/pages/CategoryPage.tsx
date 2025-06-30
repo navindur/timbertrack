@@ -22,19 +22,19 @@ import { fetchCategoryProducts } from '../services/categoryServices';
 import { Product } from '../types/product';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
-import { useNavigate } from 'react-router-dom'; //new
+import { useNavigate } from 'react-router-dom'; 
 import { addToCart } from '../services/cartService'; 
 const CategoryPage = () => {
   const { category } = useParams();
-  const [allProducts, setAllProducts] = useState<Product[]>([]); // Store all products
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]); // Store filtered products
+  const [allProducts, setAllProducts] = useState<Product[]>([]); 
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]); 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const limit = 12;
-  const navigate = useNavigate(); //new
+  const navigate = useNavigate(); 
    const [snackbar, setSnackbar] = useState({
         open: false,
         message: '',
@@ -49,7 +49,7 @@ useEffect(() => {
         setLoading(true);
         const result = await fetchCategoryProducts(category!, page, limit);
         setAllProducts(result.products);
-        setFilteredProducts(result.products); // Initialize filtered products
+        setFilteredProducts(result.products); 
         setTotalPages(result.totalPages);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load products');
@@ -65,11 +65,9 @@ useEffect(() => {
 
  useEffect(() => {
   const filtered = allProducts.filter(product => {
-    // Search term condition
     const matchesSearch = searchTerm.trim() === '' || 
       product.name.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    // Stock condition
+   
     const inStock = !hideOutOfStock || 
       (product.quantity !== undefined && product.quantity > 0);
     
@@ -82,14 +80,12 @@ useEffect(() => {
 
   const handleAddToCart = async (productId: number) => {
   try {
-    // Find the product in our local state
     const product = allProducts.find(p => p.id === productId);
     
     if (!product) {
       throw new Error('Product not found');
     }
 
-       // Check if product is out of stock
     if (product.quantity === undefined) {
   throw new Error('Product quantity not available');
 }
@@ -103,8 +99,6 @@ if (product.quantity <= 0) {
   return;
 }
 
-
-    // Fetch current cart items
     const cartResponse = await fetch('/api/cart', {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('authToken')}`
@@ -117,7 +111,6 @@ if (product.quantity <= 0) {
 
     const cartData = await cartResponse.json();
     
-    // Handle different possible cart response formats
     let cartItems = [];
     if (Array.isArray(cartData)) {
       cartItems = cartData;
@@ -127,23 +120,19 @@ if (product.quantity <= 0) {
       cartItems = cartData.items;
     }
 
-    // Find existing item in cart
     const existingCartItem = cartItems.find((item: any) => 
       item.product_id === productId || item.id === productId
     );
 
-    // Calculate total quantity that would be in cart after adding
     const currentQty = existingCartItem?.quantity || 0;
-    const requestedQty = 1; // We're adding 1 item
+    const requestedQty = 1; 
     const totalQty = currentQty + requestedQty;
 
-    // Validate against available inventory
     if (totalQty > product.quantity) {
       alert(`Cannot add to cart. You already have ${currentQty} in your cart, and only ${product.quantity} available.`);
       return;
     }
 
-    // If validation passes, add to cart
     await addToCart(productId, requestedQty);
     setSnackbar({
       open: true,
@@ -194,7 +183,6 @@ if (product.quantity <= 0) {
     }}>
       <Navbar />
       
-      {/* Main Content */}
       <Box sx={{ 
         flexGrow: 1,
         p: 3,
@@ -202,7 +190,7 @@ if (product.quantity <= 0) {
         margin: '0 auto',
         width: '100%'
       }}>
-        {/* Category Header and Search */}
+       
         <Box sx={{ 
           display: 'flex', 
           flexDirection: { xs: 'column', sm: 'row' },
@@ -249,7 +237,6 @@ if (product.quantity <= 0) {
     </Button>
         </Box>
 
-        {/* Product Grid */}
         <Grid container spacing={3}>
           {filteredProducts.map((product) => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
@@ -257,7 +244,7 @@ if (product.quantity <= 0) {
                 onClick={() => navigate(`/productsview/${product.id}`)} 
                 sx={{ 
                   cursor: 'pointer',
-                  height: '100%' // Ensure the Box takes full height
+                  height: '100%' 
                 }}
               >
                 <Card sx={{ 
@@ -358,7 +345,6 @@ if (product.quantity <= 0) {
           ))}
         </Grid>
 
-        {/* Empty State */}
         {!loading && filteredProducts.length === 0 && (
           <Box sx={{ 
             display: 'flex', 
@@ -384,7 +370,6 @@ if (product.quantity <= 0) {
           </Box>
         )}
 
-        {/* Pagination - Only show if not searching */}
         {!searchTerm && totalPages > 1 && (
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
             <Pagination

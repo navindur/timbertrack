@@ -1,12 +1,11 @@
-// controllers/categoryController.ts
 import { Request, Response } from 'express';
 import * as CategoryService from '../services/categoryService';
 
 export const handleCategory = async (req: Request, res: Response) => {
     const { page = 1, limit = 10 } = req.query;
-    const category = req.params.category.toLowerCase().trim(); // Normalize input
+    const category = req.params.category.toLowerCase().trim(); 
     
-    console.log(`[CONTROLLER] Processing category: "${category}"`); // Debug log
+    console.log(`[CONTROLLER] Processing category: "${category}"`); 
   
     try {
       const result = await CategoryService.getCategoryProducts(
@@ -18,7 +17,7 @@ export const handleCategory = async (req: Request, res: Response) => {
       console.log(`[CONTROLLER] Result:`, { 
         productsCount: result.products.length,
         total: result.total 
-      }); // Debug log
+      }); 
       
       res.json(result);
     } catch (error) {

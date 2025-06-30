@@ -22,9 +22,6 @@ const statusColors: Record<'Pending' | 'Accepted' | 'Rejected', "default" | "inf
   delivered: "success",
 };
 
-
-
-
 const MyCustomOrdersPage: React.FC = () => {
   const { customer } = useAuth();
   const [orders, setOrders] = useState<any[]>([]);
@@ -35,7 +32,7 @@ const MyCustomOrdersPage: React.FC = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       if (!customer) {
-        setOrders([]); // Clear orders if no customer
+        setOrders([]); 
         return;
       }
       
@@ -57,20 +54,6 @@ const MyCustomOrdersPage: React.FC = () => {
   const handlePayNow = (orderId: number) => {
     navigate(`/custom-order-checkout/${orderId}`);
   };
-
-/*if (!customer) {
-  return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h6" gutterBottom>
-        Unable to load your profile
-      </Typography>
-      <Typography variant="body1" color="textSecondary">
-        You must be logged in as a customer to view this page. If you are already logged in, please try refreshing the page or logging in again.
-      </Typography>
-    </Box>
-  );
-}*/
-
 
   return (
     <>
@@ -154,14 +137,14 @@ const MyCustomOrdersPage: React.FC = () => {
                     )}
                   </TableCell>
                    <TableCell>
-                                                            <Button
-                                                              variant="outlined"
-                                                              size="small"
-                                                              onClick={() => navigate(`/custom-orders/${order.custom_order_id}/receipt`)}
-                                                            >
-                                                              View
-                                                            </Button>
-                                                          </TableCell>
+                    <Button
+                              variant="outlined"
+                              size="small"
+                              onClick={() => navigate(`/custom-orders/${order.custom_order_id}/receipt`)}
+                              >
+                              View
+                      </Button>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

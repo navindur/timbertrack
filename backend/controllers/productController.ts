@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import * as productService from '../services/productService';
-
 import * as ProductModel from '../models/Product';
 
 export const addProduct = async (req: Request, res: Response) => {
@@ -25,7 +24,7 @@ export const getInventoryOptions = async (req: Request, res: Response) => {
   }
 };
 
-// ✅ Soft Delete Product
+
 export const softDeleteProduct = async (req: Request, res: Response) => {
   try {
     const productId = parseInt(req.params.id);
@@ -36,19 +35,19 @@ export const softDeleteProduct = async (req: Request, res: Response) => {
   }
 };
 
-// ✅ Edit Product (description & image)
+
 export const updateProduct = async (req: Request, res: Response) => {
   try {
     const productId = parseInt(req.params.id);
     const { description, has_discount, dummy_price } = req.body;
 
-    // Convert string booleans to actual booleans
+    
     const hasDiscount = has_discount === 'true' || has_discount === true;
     
-    // Parse original_price to number if it exists
+    
     const parsedDummyPrice =dummy_price ? parseFloat(dummy_price) : null;
 
-    // Validate original price if discount is enabled
+    
     if (hasDiscount && parsedDummyPrice) {
       const product = await ProductModel.getProductById(productId);
       if (parsedDummyPrice <= (product?.price || 0)) {
@@ -77,7 +76,7 @@ export const updateProduct = async (req: Request, res: Response) => {
   }
 };
 
-// ✅ Get All Active Products (with search & pagination)
+
 export const getAllActiveProducts = async (req: Request, res: Response) => {
   try {
     const { page = 1, limit = 10, search = '', category = '' } = req.query;
@@ -95,7 +94,7 @@ export const getAllActiveProducts = async (req: Request, res: Response) => {
   }
 };
 
-// Add these to your existing productController.ts
+
 export const getActiveProducts = async (req: Request, res: Response) => {
   try {
     const { page = 1, limit = 10, search = '', category = '' } = req.query;

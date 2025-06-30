@@ -33,8 +33,8 @@ interface Product {
   price: number;
   category: string;
   image_url: string;
-  quantity: number; // Available inventory
-  has_discount?: boolean | null; // Make it explicitly nullable
+  quantity: number; 
+  has_discount?: boolean | null; 
   dummy_price?: number | null; 
 }
 
@@ -66,7 +66,7 @@ const ProductDetailPage = () => {
 
         const data = await response.json();
         setProduct(data);
-        setQuantity(1); // Reset quantity when product changes
+        setQuantity(1); 
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load product');
       } finally {
@@ -81,7 +81,6 @@ const handleAddToCart = async () => {
   if (!product) return;
 
   try {
-    // First fetch the current cart items for this product
     const response = await fetch('/api/cart', {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('authToken')}`
@@ -93,8 +92,7 @@ const handleAddToCart = async () => {
     }
 
     const cartData = await response.json();
-    
-    // Handle different possible response formats
+  
     let cartItems = [];
     if (Array.isArray(cartData)) {
       cartItems = cartData;
@@ -117,7 +115,6 @@ const handleAddToCart = async () => {
       return;
     }
 
-    // If validation passes, add to cart
     await addToCart(product.id, quantity);
     setSnackbar({
       open: true,
@@ -136,8 +133,6 @@ const handleAddToCart = async () => {
 
   const handleQuantityChange = (newQuantity: number) => {
     if (!product) return;
-    
-    // Ensure quantity is within 1 and available inventory
     const validatedQuantity = Math.max(1, Math.min(newQuantity, product.quantity));
     setQuantity(validatedQuantity);
   };
@@ -325,7 +320,7 @@ const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
                 >
                   {product.quantity === 0 ? 'Out of Stock' : `Add to Cart (${quantity})`}
                 </Button>
-                {/* Add this right after the Add to Cart button */}
+               
 
               </CardContent>
             </Box>

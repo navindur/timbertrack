@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import * as orderService from '../services/ownerorderService';
 
-// Update the getAllOrders function
+
 export const getAllOrders = async (req: Request, res: Response) => {
     try {
       const { page = 1, limit = 10, status, search } = req.query;

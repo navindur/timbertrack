@@ -70,7 +70,7 @@ const CustomerList: React.FC = () => {
       overflow: 'hidden',
       bgcolor: '#efdecd'
     }}>
-      {/* Navbar - Fixed width */}
+      
       <Box sx={{ 
         width: 240, 
         flexShrink: 0,
@@ -80,7 +80,6 @@ const CustomerList: React.FC = () => {
         <Navbar />
       </Box>
   
-      {/* Main Content */}
       <Box sx={{ 
         flexGrow: 1,
         p: 3,
@@ -91,7 +90,6 @@ const CustomerList: React.FC = () => {
           Customer Directory
         </Typography>
 
-        {/* Search Control */}
         <Box sx={{ mb: 3 }}>
           <TextField
             placeholder="Search by name, email, or phone"
@@ -100,7 +98,7 @@ const CustomerList: React.FC = () => {
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
-              setPage(1); // Reset to first page when search changes
+              setPage(1); 
             }}
             InputProps={{
               startAdornment: (
@@ -113,7 +111,6 @@ const CustomerList: React.FC = () => {
           />
         </Box>
 
-        {/* Customers Table */}
         {isLoading ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
             <CircularProgress />
@@ -163,7 +160,6 @@ const CustomerList: React.FC = () => {
               </Table>
             </TableContainer>
 
-            {/* Pagination */}
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
               <Pagination
                 count={Math.ceil(totalCustomers / limit)}

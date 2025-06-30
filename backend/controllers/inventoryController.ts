@@ -1,10 +1,9 @@
 import { Request, Response } from 'express';
 import { RowDataPacket } from 'mysql2/promise';
-
 import db from '../db';
 import { getAllInventory, addInventory, updateInventory, softDeleteInventory } from '../services/inventoryService';
 
-// Controller to fetch all inventory items
+//to fetch all inventory items
 export const getAllInventoryController = async (req: Request, res: Response) => {
   try {
     const inventory = await getAllInventory();
@@ -15,7 +14,7 @@ export const getAllInventoryController = async (req: Request, res: Response) => 
   }
 };
 
-// Controller to fetch a single inventory item by ID
+//to fetch a single inventory item by ID
 export const getInventoryByIdController = async (req: Request, res: Response) => {
   const inventory_id = parseInt(req.params.id, 10);
   try {
@@ -37,7 +36,7 @@ export const getInventoryByIdController = async (req: Request, res: Response) =>
   }
 };
 
-// Controller to add a new inventory item
+//to add a new inventory item
 export const addInventoryController = async (req: Request, res: Response) => {
   const { name, type, price, quantity, reorder_level, supplier_id, is_active } = req.body;
   try {
@@ -49,12 +48,12 @@ export const addInventoryController = async (req: Request, res: Response) => {
   }
 };
 
-// Controller to update an inventory item
+//to update an inventory item
 export const updateInventoryController = async (req: Request, res: Response) => {
   const inventory_id = parseInt(req.params.id, 10);
   const { name, type, price, quantity, reorder_level, supplier_id, is_active } = req.body;
   try {
-    // Directly fetch the inventory item here
+    
     const [rows] = await db.query<RowDataPacket[]>(
         'SELECT * FROM inventory WHERE inventory_id = ? AND is_active = TRUE',
         [inventory_id]
@@ -74,11 +73,11 @@ export const updateInventoryController = async (req: Request, res: Response) => 
   }
 };
 
-// Controller to soft delete an inventory item
+
 export const softDeleteInventoryController = async (req: Request, res: Response) => {
   const inventory_id = parseInt(req.params.id, 10);
   try {
-    // Directly fetch the inventory item here
+    
     const [rows] = await db.query<RowDataPacket[]>(
         'SELECT * FROM inventory WHERE inventory_id = ? AND is_active = TRUE',
         [inventory_id]

@@ -31,16 +31,14 @@ const SignIn: React.FC = () => {
     try {
       const response = await axiosInstance.post("/auth/login", { email, password });
       
-      // Store authentication data
       localStorage.setItem("authToken", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));
       
-      // Redirect based on role
       const userRole = response.data.user.role;
       if (userRole === 'shopowner') {
-        navigate('/dashboard');  // Shop owners go to dashboard
+        navigate('/dashboard');  
       } else {
-        navigate('/');          // Customers go to home page
+        navigate('/');         
       }
       
     } catch (err: any) {
@@ -104,9 +102,9 @@ const SignIn: React.FC = () => {
                       required
                       size="small"
                       value={email}
-                      onChange={(e) => setEmail(e.target.value.toLowerCase())} // Convert to lowercase
+                      onChange={(e) => setEmail(e.target.value.toLowerCase())} 
   inputProps={{
-    style: { textTransform: 'lowercase' } // Visual hint
+    style: { textTransform: 'lowercase' } 
   }}
                     />
                   </Grid>

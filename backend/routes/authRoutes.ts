@@ -1,4 +1,3 @@
-// routes/authRoutes.ts
 import express from 'express';
 import { signup, login } from '../controllers/authController';
 import { changePassword } from '../controllers/authController';
@@ -7,12 +6,10 @@ import db from '../db';
 
 const router = express.Router();
 
-router.post('/auth/signup', signup);
-router.post('/auth/login', login);
-router.put('/auth/change-password',authenticate, changePassword);
-
-
-//new
+router.post('/auth/signup', signup); //handle user signup
+router.post('/auth/login', login); //handles user login
+router.put('/auth/change-password',authenticate, changePassword); //handle chnage passowrd
+ //hnadle user info fetch
 router.get('/auth/me', authenticate, async (req, res) => {
     const user = (req as any).user;
   

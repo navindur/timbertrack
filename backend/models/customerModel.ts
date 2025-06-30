@@ -1,5 +1,6 @@
 import db from '../db';
 
+//define customer object
 interface Customer {
   customer_id?: number;
   user_id: number;
@@ -12,6 +13,7 @@ interface Customer {
   postal_code?: string;
 }
 
+//handle db operations related to customers
 export const CustomerModel = {
   async createCustomer(customer: Customer): Promise<void> {
     const { user_id, first_name, last_name, phone_num, address_line1, address_line2, city, postal_code } = customer;
@@ -37,9 +39,6 @@ export const CustomerModel = {
     return (rows as any[])[0] || null;
   },
 
-
-  
-
   async getCustomerByUserId(userId: number): Promise<Customer | null> {
     const [rows] = await db.execute(
       'SELECT * FROM customers WHERE user_id = ?',
@@ -49,10 +48,10 @@ export const CustomerModel = {
   },
 
   async updateCustomer(userId: number, updates: Partial<Customer>): Promise<void> {
-    const fieldsToUpdate = [];
+    const fieldsToUpdate = []; //Only fields provided in the update object will be updated
     const values = [];
 
-    // Build dynamic update query
+    
     for (const [key, value] of Object.entries(updates)) {
       if (value !== undefined) {
         fieldsToUpdate.push(`${key} = ?`);
@@ -60,11 +59,11 @@ export const CustomerModel = {
       }
     }
 
-    if (fieldsToUpdate.length === 0) {
-      return; // Nothing to update
+    if (fieldsToUpdate.length === 0) { // Nothing to update
+      return; 
     }
 
-    values.push(userId); // For WHERE clause
+    values.push(userId); 
 
     await db.execute(
       `UPDATE customers 

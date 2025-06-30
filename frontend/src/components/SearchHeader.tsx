@@ -37,23 +37,23 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
       position: 'relative',
       ...sx
     }}>
-      {/* Main Content */}
+     
       <Box sx={{
         display: 'flex',
-        justifyContent: 'flex-end', // Changed from 'space-between'
+        justifyContent: 'flex-end', 
         alignItems: 'center',
         width: '100%',
         gap: 3,
         pb: 2
       }}>
-        {/* Search Field - now takes full available space */}
+      
         <TextField
           fullWidth
           variant="outlined"
           placeholder={searchPlaceholder}
           size="small"
           sx={{
-            maxWidth: '800px', // Increased max width
+            maxWidth: '800px', 
             '& .MuiOutlinedInput-root': {
               borderRadius: '50px',
               backgroundColor: 'background.paper',
@@ -72,7 +72,6 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
           }
         />
 
-        {/* Action Icons */}
         <Box sx={{ 
           display: 'flex', 
           alignItems: 'center', 
@@ -96,7 +95,6 @@ const SearchHeader: React.FC<SearchHeaderProps> = ({
         </Box>
       </Box>
 
-      {/* Divider */}
       <Divider sx={{
         borderColor: '#3E2723',
         borderBottomWidth: 1

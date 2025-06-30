@@ -1,4 +1,3 @@
-// src/services/supplierService.ts
 import axios from 'axios';
 import { Supplier } from '../types/supplier';
 

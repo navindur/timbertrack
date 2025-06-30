@@ -3,7 +3,7 @@ import { CustomOrderModel } from "../models/CustomOrder";
 import { uploadCustomOrderImageToFirebase } from '../utils/firebase';
 
 export const CustomOrderController = {
-  // Create a new custom order
+ 
   createOrder: async (req: Request, res: Response) => {
     try {
       const { customer_id, details } = req.body;
@@ -33,7 +33,7 @@ export const CustomOrderController = {
     }
   },
 
-  // Get all custom orders (for shop owner)
+  
   getAllOrders: async (req: Request, res: Response) => {
     try {
       const orders = await CustomOrderModel.findAll();
@@ -50,13 +50,13 @@ export const CustomOrderController = {
     }
   },
 
-  // Get orders for a specific customer
+  
   getMyOrders: async (req: Request, res: Response) => {
     try {
       const customerId = parseInt(req.params.customerId);
-      const requestingCustomerId = (req as any).user.customerId; // From auth middleware
+      const requestingCustomerId = (req as any).user.customerId; 
   
-      // Verify the requesting user matches the customerId
+     
       if (customerId !== requestingCustomerId) {
         return res.status(403).json({ 
           success: false, 
@@ -78,7 +78,7 @@ export const CustomOrderController = {
     }
   },
 
-  // Accept a custom order
+  
   acceptOrder: async (req: Request, res: Response) => {
     try {
       const orderId = parseInt(req.params.id);
@@ -105,7 +105,7 @@ export const CustomOrderController = {
     }
   },
 
-  // Reject a custom order
+  
   rejectOrder: async (req: Request, res: Response) => {
     try {
       const orderId = parseInt(req.params.id);
@@ -130,7 +130,7 @@ export const CustomOrderController = {
     }
   },
 
-  // Mark order as paid
+  
   markAsPaid: async (req: Request, res: Response) => {
     try {
       const orderId = parseInt(req.params.id);
@@ -155,7 +155,7 @@ export const CustomOrderController = {
     }
   },
 
-  // Update production status
+ 
   updateProductionStatus: async (req: Request, res: Response) => {
     try {
       const orderId = parseInt(req.params.id);
@@ -185,7 +185,7 @@ export const CustomOrderController = {
 getOrderReceipt: async (req: Request, res: Response) => {
   try {
     const orderId = parseInt(req.params.id);
-    const userId = (req as any).user.id; // From auth middleware
+    const userId = (req as any).user.id; 
     
     if (isNaN(orderId)) {
       return res.status(400).json({
@@ -194,7 +194,7 @@ getOrderReceipt: async (req: Request, res: Response) => {
       });
     }
 
-    // Get the order with customer details
+    
     const order = await CustomOrderModel.findById(orderId);
     
     if (!order) {
@@ -204,7 +204,7 @@ getOrderReceipt: async (req: Request, res: Response) => {
       });
     }
 
-    // Verify the requesting user owns the order or is admin/shopowner
+    
     const isOwner = order.customer_id === (req as any).user.customerId;
     const isAdmin = (req as any).user.role === 'shopowner' || (req as any).user.role === 'admin';
     
@@ -215,7 +215,7 @@ getOrderReceipt: async (req: Request, res: Response) => {
       });
     }
 
-    // Format the response
+    
     const responseData = {
       success: true,
       data: {
@@ -250,7 +250,7 @@ getOrderReceipt: async (req: Request, res: Response) => {
 },
 
 
-// Add this to your CustomOrderController
+
 getOrderById: async (req: Request, res: Response) => {
   try {
     const orderId = parseInt(req.params.id);
@@ -274,13 +274,13 @@ getOrderById: async (req: Request, res: Response) => {
 
     
 
-    // Ensure the response includes all required fields
+   
     const responseData = {
       custom_order_id: order.custom_order_id,
       customer_id: order.customer_id,
       request_date: order.request_date,
       details: order.details,
-      estimated_price: order.estimated_price, // This is critical
+      estimated_price: order.estimated_price, 
       status: order.status,
       image_url: order.image_url,
       payment_status: order.payment_status,

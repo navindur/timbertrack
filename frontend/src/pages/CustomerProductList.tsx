@@ -1,4 +1,3 @@
-// src/pages/CustomerProductList.tsx
 import React, { useState, useEffect } from 'react';
 import {
   Box,
@@ -32,8 +31,8 @@ import { getCustomerProducts, getCustomerProductById } from '../services/custome
 import { Product } from '../types/product';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
-import { useNavigate } from 'react-router-dom'; //new
-import { addToCart } from '../services/cartService'; // new
+import { useNavigate } from 'react-router-dom';
+import { addToCart } from '../services/cartService';
 
 const CustomerProductList: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -42,7 +41,7 @@ const CustomerProductList: React.FC = () => {
   const [categoryFilter, setCategoryFilter] = useState('');
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState<string[]>([]);
-  const navigate = useNavigate(); //new
+  const navigate = useNavigate();
   const [snackbar, setSnackbar] = useState({
       open: false,
       message: '',
@@ -64,8 +63,7 @@ const CustomerProductList: React.FC = () => {
       });
       
       setProducts(data);
-      
-      // Apply all filters including out-of-stock
+    
       let filtered = [...data];
       if (hideOutOfStock) {
   filtered = filtered.filter(product => 
@@ -84,8 +82,7 @@ const CustomerProductList: React.FC = () => {
       }
       
       setFilteredProducts(filtered);
-      
-      // Extract unique categories
+    
       const uniqueCategories = Array.from(
         new Set(data.map(product => product.category))
       ).filter(Boolean) as string[];
@@ -98,7 +95,7 @@ const CustomerProductList: React.FC = () => {
   };
 
   fetchProducts();
-}, [searchTerm, categoryFilter, hideOutOfStock]); // Add hideOutOfStock to dependencies
+}, [searchTerm, categoryFilter, hideOutOfStock]); 
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -110,14 +107,13 @@ const CustomerProductList: React.FC = () => {
 
 const handleAddToCart = async (productId: number) => {
   try {
-    // Find the product in our local state
+   
     const product = products.find(p => p.id === productId);
     
     if (!product) {
       throw new Error('Product not found');
     }
 
-    // Check if product is out of stock
     if (product.quantity === undefined) {
   throw new Error('Product quantity not available');
 }
@@ -131,8 +127,6 @@ if (product.quantity <= 0) {
   return;
 }
 
-
-    // Fetch current cart items
     const cartResponse = await fetch('/api/cart', {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('authToken')}`
@@ -144,8 +138,7 @@ if (product.quantity <= 0) {
     }
 
     const cartData = await cartResponse.json();
-    
-    // Handle different possible cart response formats
+  
     let cartItems = [];
     if (Array.isArray(cartData)) {
       cartItems = cartData;
@@ -155,23 +148,20 @@ if (product.quantity <= 0) {
       cartItems = cartData.items;
     }
 
-    // Find existing item in cart
     const existingCartItem = cartItems.find((item: any) => 
       item.product_id === productId || item.id === productId
     );
 
-    // Calculate total quantity that would be in cart after adding
     const currentQty = existingCartItem?.quantity || 0;
-    const requestedQty = 1; // We're adding 1 item
+    const requestedQty = 1; 
     const totalQty = currentQty + requestedQty;
 
-    // Validate against available inventory
+    
     if (totalQty > product.quantity) {
       alert(`Cannot add to cart. You already have ${currentQty} in your cart, and only ${product.quantity} available.`);
       return;
     }
 
-    // If validation passes, add to cart
     await addToCart(productId, requestedQty);
     setSnackbar({
       open: true,
@@ -206,7 +196,6 @@ if (product.quantity <= 0) {
     
     <Navbar />
 
-      {/* Main Content */}
       <Box sx={{ 
         flexGrow: 1,
         p: 3,
@@ -214,16 +203,16 @@ if (product.quantity <= 0) {
         margin: '0 auto',
         width: '100%'
       }}>
-        {/* Header */}
+       
         <Box sx={{ 
           display: 'flex', 
-          flexDirection: 'column',  // Changed from row to column
-  alignItems: 'center',    // Center align items
-  mb: 4,
-  gap: 2 
+          flexDirection: 'column',  
+          alignItems: 'center',    
+          mb: 4,
+          gap: 2 
         }}>
        
-          {/* Search and Filter */}
+          
           <Box sx={{ display: 'flex', gap: 2,  width: '100%',  justifyContent: 'flex-start' }}>
             <TextField
               placeholder="Search products"
@@ -266,7 +255,6 @@ if (product.quantity <= 0) {
           </Box>
         </Box>
 
-        {/* Product Grid */}
         {loading ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
             <CircularProgress />
@@ -279,7 +267,7 @@ if (product.quantity <= 0) {
         onClick={() => navigate(`/productsview/${product.id}`)} 
         sx={{ 
           cursor: 'pointer',
-          height: '100%' // Ensure the Box takes full height
+          height: '100%' 
         }}
       >
         <Card sx={{ 
@@ -382,7 +370,6 @@ if (product.quantity <= 0) {
           </Grid>
         )}
 
-        {/* Empty State */}
        {!loading && filteredProducts.length === 0 && (
   <Box sx={{ 
     display: 'flex', 

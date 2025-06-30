@@ -6,10 +6,10 @@ export const OrderModel = {
     const connection = await db.getConnection();
     
     try {
-      // Start transaction using connection.query
+     
       await connection.query('START TRANSACTION');
 
-      // 1. Get cart items with product and inventory details
+      
       const [cartItems] = await connection.query(
         `SELECT 
            ci.id as cart_item_id,
@@ -29,20 +29,20 @@ export const OrderModel = {
         throw new Error('Cart is empty');
       }
 
-      // 2. Check inventory levels
+      
       for (const item of cartItems as any[]) {
         if (item.quantity > item.inventory_quantity) {
           throw new Error(`Not enough stock for product ID ${item.product_id}`);
         }
       }
 
-      // 3. Calculate total price
+      
       const totalPrice = (cartItems as any[]).reduce(
         (sum, item) => sum + (item.price * item.quantity), 
         0
       );
 
-      // 4. Create the order
+      
       const [orderResult] = await connection.query(
         `INSERT INTO orders 
          (customer_id, status, total_price, payment_method) 
@@ -51,10 +51,8 @@ export const OrderModel = {
       );
 
       const orderId = (orderResult as any).insertId;
-
-      // 5. Create order items and update inventory
       for (const item of cartItems as any[]) {
-        // Insert order item
+        
         await connection.query(
           `INSERT INTO order_items 
            (order_id, product_id, quantity, price) 
@@ -62,7 +60,6 @@ export const OrderModel = {
           [orderId, item.product_id, item.quantity, item.price]
         );
 
-        // Update inventory
         await connection.query(
           `UPDATE inventory 
            SET quantity = quantity - ? 
@@ -71,13 +68,11 @@ export const OrderModel = {
         );
       }
 
-      // 6. Clear the cart
       await connection.query(
         'DELETE FROM cart_items WHERE customer_id = ?',
         [customerId]
       );
 
-      // Commit transaction
       await connection.query('COMMIT');
       connection.release();
 
@@ -88,7 +83,7 @@ export const OrderModel = {
       };
 
     } catch (error) {
-      // Rollback transaction on error
+     
       await connection.query('ROLLBACK');
       connection.release();
       throw error;

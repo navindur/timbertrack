@@ -59,7 +59,7 @@ const OrderList: React.FC = () => {
 
   const handleStatusFilterChange = (e: any) => {
     setStatusFilter(e.target.value);
-    setPage(1); // Reset to first page when filter changes
+    setPage(1); 
   };
 
   const getStatusColor = (status: string) => {
@@ -87,7 +87,7 @@ const OrderList: React.FC = () => {
       overflow: 'hidden',
       bgcolor: '#efdecd'
     }}>
-      {/* Navbar - Fixed width */}
+      
       <Box sx={{ 
         width: 240, 
         flexShrink: 0,
@@ -97,7 +97,7 @@ const OrderList: React.FC = () => {
         <Navbar />
       </Box>
   
-      {/* Main Content */}
+     
       <Box sx={{ 
         flexGrow: 1,
         p: 3,
@@ -118,7 +118,6 @@ const OrderList: React.FC = () => {
 </Box>
 
 
-        {/* Filter Controls */}
         <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
   <TextField
     placeholder="Search by ID, name, or date (YYYY-MM-DD)"
@@ -154,7 +153,6 @@ const OrderList: React.FC = () => {
   </FormControl>
 </Box>
 
-        {/* Orders Table */}
         {isLoading ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
             <CircularProgress />
@@ -186,11 +184,10 @@ const OrderList: React.FC = () => {
                       </TableCell>
                       <TableCell>
                        {order.payment_method === 'cash'
-  ? 'Cash (walk-in)'
-  : order.payment_method === 'cash_on_delivery'
-  ? 'Cash on Delivery'
-  : 'Card Payment'}
-
+                              ? 'Cash (walk-in)'
+                              : order.payment_method === 'cash_on_delivery'
+                              ? 'Cash on Delivery'
+                              : 'Card Payment'}
                       </TableCell>
                       <TableCell>
                         <Chip 
@@ -213,7 +210,7 @@ const OrderList: React.FC = () => {
               </Table>
             </TableContainer>
 
-            {/* Pagination */}
+           
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
               <Pagination
                 count={Math.ceil(totalOrders / limit)}

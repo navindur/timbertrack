@@ -1,9 +1,5 @@
-// src/utils/pdfGenerator.ts
 import PDFDocument from 'pdfkit';
 import { Response } from 'express';
-
-
-
 
 export const generateSalesSummaryPDF = (
   data: {
@@ -24,20 +20,17 @@ export const generateSalesSummaryPDF = (
   const doc = new PDFDocument({ 
     margin: 50,
     size: 'A4',
-    bufferPages: true // For page numbering
+    bufferPages: true 
   });
 
-  // Set response headers
   res.setHeader('Content-Type', 'application/pdf');
   res.setHeader('Content-Disposition', 'attachment; filename=sales_summary.pdf');
   doc.pipe(res);
 
-  // Colors
   const headerColor = '#2c3e50';
   const evenRowColor = '#f8f9fa';
   const oddRowColor = '#ffffff';
 
-  // Add professional header
   doc.rect(0, 0, doc.page.width, 80)
      .fill(headerColor);
 
@@ -49,21 +42,17 @@ export const generateSalesSummaryPDF = (
      .fontSize(10)
      .text(`Generated on: ${new Date().toLocaleDateString()} by TimberTrack`, { align: 'right' });
 
-  // Reset styles for body content
   doc.fillColor('#000000').font('Helvetica');
 
-  // Report period
   doc.fontSize(12)
      .text(`Period: ${data.start_date} to ${data.end_date}`, 50, 100)
      .moveDown(1.5);
 
-  // Summary Metrics Section
   doc.fontSize(16)
      .fillColor(headerColor)
      .text('Key Metrics', 50, doc.y)
      .moveDown(0.5);
 
-  // Summary metrics table
   const summaryTable = {
     headers: ['Metric', 'Value'],
     rows: [
@@ -79,14 +68,12 @@ export const generateSalesSummaryPDF = (
     oddRowColor
   });
 
-  // Sales Breakdown Section
   doc.moveDown(1.5)
      .fontSize(16)
      .fillColor(headerColor)
      .text('Sales Breakdown', 50, doc.y)
      .moveDown(0.5);
 
-  // Breakdown table
   const breakdownTable = {
     headers: ['Type', 'Orders', 'Revenue (Rs.)', 'Percentage'],
     rows: [
@@ -101,7 +88,6 @@ export const generateSalesSummaryPDF = (
     oddRowColor
   });
 
-  // Add visual highlights
   doc.moveDown(1.5)
      .fillColor('#100c08')
      .fontSize(12)
@@ -119,13 +105,11 @@ export const generateSalesSummaryPDF = (
     doc.moveDown(0.5);
   });
 
-  // Add footer with page number
   addmainFooter(doc, '© Jayarani Furniture');
 
   doc.end();
 };
 
-// Enhanced table drawing function
 const drawEnhancedTable = (
   doc: PDFKit.PDFDocument,
   table: { headers: string[]; rows: any[][] },
@@ -142,10 +126,8 @@ const drawEnhancedTable = (
   const headerHeight = 25;
   const rowHeight = 25;
 
-  // Calculate total table width
   const tableWidth = columnWidths.reduce((sum, width) => sum + width, 0);
 
-  // Draw table header
   doc.save();
   doc.rect(x, y, tableWidth, headerHeight)
      .fill(headerColor);
@@ -153,8 +135,7 @@ const drawEnhancedTable = (
 
   doc.font('Helvetica-Bold')
      .fillColor('#ffffff');
-  
-  // Draw header text
+
   let currentX = x;
   table.headers.forEach((header, i) => {
     doc.text(header, currentX + 5, y + (headerHeight - doc.currentLineHeight()) / 2, {
@@ -164,7 +145,6 @@ const drawEnhancedTable = (
     currentX += columnWidths[i];
   });
 
-  // Draw rows
   doc.font('Helvetica')
      .fillColor('#333333');
   
@@ -172,13 +152,11 @@ const drawEnhancedTable = (
     const rowY = y + headerHeight + (rowIndex * rowHeight);
     const rowColor = rowIndex % 2 === 0 ? evenRowColor : oddRowColor;
 
-    // Row background
     doc.save();
     doc.rect(x, rowY, tableWidth, rowHeight)
        .fill(rowColor);
     doc.restore();
 
-    // Cell content
     currentX = x;
     row.forEach((cell, cellIndex) => {
       const align = typeof cell === 'number' || cell.includes('Rs.') ? 'right' : 'left';
@@ -195,15 +173,12 @@ const drawEnhancedTable = (
     });
   });
 
-  // Draw table border
   doc.rect(x, y, tableWidth, headerHeight + (table.rows.length * rowHeight))
      .stroke('#dddddd');
 
-  // Update document position
   doc.y = y + headerHeight + (table.rows.length * rowHeight) + 15;
 };
 
-// Footer function
 const addmainFooter = (doc: PDFKit.PDFDocument, text: string) => {
   const pageCount = doc.bufferedPageRange().count;
 
@@ -222,15 +197,6 @@ const addmainFooter = (doc: PDFKit.PDFDocument, text: string) => {
        });
   }
 };
-
-
-
-
-
-
-
-
-
 
 interface ReportOptions {
   title: string;
@@ -255,30 +221,25 @@ export const generateGenericReportPDF = (
   const doc = new PDFDocument({ 
     margin: 50,
     size: 'A4',
-    bufferPages: true // For page numbering
+    bufferPages: true 
   });
 
-  // Set response headers
   res.setHeader('Content-Type', 'application/pdf');
   res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
   doc.pipe(res);
 
-  // Default colors
   const headerColor = options.headerColor || '#2c3e50';
   const evenRowColor = options.rowColors?.even || '#f8f9fa';
   const oddRowColor = options.rowColors?.odd || '#ffffff';
 
-  // Add header with logo and title
   addReportHeader(doc, options.title, options.subtitle, headerColor);
 
-  // Report metadata
   doc.fillColor('#333333')
      .fontSize(10)
      .text(`Report Period: ${options.period}`, 50, 120, { align: 'left' })
      .text(`Generated on: ${new Date().toLocaleDateString()} by TimberTrack`, { align: 'right' })
      .moveDown(2);
 
-  // Calculate column positions and widths
   const columnWidths = options.columnWidths || 
     Array(options.columns.length).fill((doc.page.width - 100) / options.columns.length);
   
@@ -287,17 +248,15 @@ export const generateGenericReportPDF = (
     return acc;
   }, [] as number[]);
 
-  // Table header
   drawTableHeader(doc, options.columns, columnPositions, columnWidths, headerColor);
 
-  // Table rows with alternating colors
   let isEvenRow = false;
   options.data.forEach((row, rowIndex) => {
-    // Check if we need a new page
+
     if (doc.y + 30 > doc.page.height - 50) {
       addNewPage(doc, options.title, headerColor);
       drawTableHeader(doc, options.columns, columnPositions, columnWidths, headerColor);
-      isEvenRow = false; // Reset row coloring on new page
+      isEvenRow = false; 
     }
 
     const rowColor = isEvenRow ? evenRowColor : oddRowColor;
@@ -305,31 +264,26 @@ export const generateGenericReportPDF = (
     isEvenRow = !isEvenRow;
   });
 
-  // Add footer with page numbers
   addFooter(doc, options.footerText);
 
   doc.end();
 };
 
-// Helper functions for report components
 function addReportHeader(doc: PDFKit.PDFDocument, title: string, subtitle?: string, headerColor?: string) {
-  // Header rectangle
+  
   doc.rect(0, 0, doc.page.width, 80)
      .fill(headerColor || '#2c3e50');
 
-  // Title
   doc.fillColor('#ffffff')
      .fontSize(18)
      .text(title, 50, 30, { align: 'left' });
 
-  // Subtitle
   if (subtitle) {
     doc.fillColor('#ffffff')
        .fontSize(12)
        .text(subtitle, 50, 55, { align: 'left' });
   }
 
-  // Reset for body content
   doc.fillColor('#000000').font('Helvetica');
 }
 
@@ -343,11 +297,9 @@ function drawTableHeader(
   const headerHeight = 20;
   const startY = doc.y;
   
-  // Header background
   doc.rect(positions[0], startY, positions[positions.length-1] + widths[widths.length-1] - positions[0], headerHeight)
      .fill(fillColor);
 
-  // Column headers
   doc.fillColor('#ffffff')
      .font('Helvetica-Bold');
   
@@ -373,11 +325,9 @@ function drawTableRow(
   const startY = doc.y;
   const rowHeight = calculateRowHeight(doc, row, widths) + 10;
 
-  // Row background
   doc.rect(positions[0], startY, positions[positions.length-1] + widths[widths.length-1] - positions[0], rowHeight)
      .fill(rowColor);
 
-  // Cell content
   row.forEach((cell, i) => {
     doc.fillColor('#333333')
        .text(cell.toString(), positions[i], startY + 5, {
@@ -399,7 +349,7 @@ function calculateRowHeight(doc: PDFKit.PDFDocument, row: any[], widths: number[
 function addNewPage(doc: PDFKit.PDFDocument, title: string, headerColor: string) {
   doc.addPage();
   addReportHeader(doc, title, undefined, headerColor);
-  doc.y = 130; // Position below header
+  doc.y = 130; 
 }
 
 function addFooter(doc: PDFKit.PDFDocument, customText?: string) {
@@ -409,7 +359,6 @@ function addFooter(doc: PDFKit.PDFDocument, customText?: string) {
   for (let i = 0; i < pageCount; i++) {
     doc.switchToPage(i);
     
-    // Footer text
     doc.fillColor('#666666')
        .fontSize(10)
        .text(footerText, 50, doc.page.height - 80, {
@@ -417,7 +366,6 @@ function addFooter(doc: PDFKit.PDFDocument, customText?: string) {
          width: doc.page.width - 100
        });
     
-    // Page number
     doc.text(`Page ${i + 1} of ${pageCount}`, {
       align: 'right',
       width: doc.page.width - 100

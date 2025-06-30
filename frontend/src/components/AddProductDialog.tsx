@@ -1,5 +1,3 @@
-// src/components/AddProductDialog.tsx
-
 import React, { useState } from 'react';
 import {
   Dialog,

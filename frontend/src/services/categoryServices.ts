@@ -1,4 +1,3 @@
-// services/categoryServices.ts
 import { CategoryResponse, Category } from '../types/product';
 
 const API_BASE = '/api/categories';

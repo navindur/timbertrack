@@ -14,8 +14,8 @@ const ShopOwnerCustomOrders: React.FC = () => {
   const [estimatedPrice, setEstimatedPrice] = useState("");
   const [statusUpdateDialogOpen, setStatusUpdateDialogOpen] = useState(false);
   const [newStatus, setNewStatus] = useState("");
-  const [imageModalOpen, setImageModalOpen] = useState(false); //new
-  const [selectedImage, setSelectedImage] = useState(''); //new
+  const [imageModalOpen, setImageModalOpen] = useState(false); 
+  const [selectedImage, setSelectedImage] = useState(''); 
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
 const [statusFilter, setStatusFilter] = useState("all");
@@ -100,22 +100,19 @@ const [actionFilter, setActionFilter] = useState("all");
   };
 
 const filteredOrders = orders.filter(order => {
-  // Search term matching
+  
   const matchesSearch = 
     order.custom_order_id.toString().includes(searchTerm.toLowerCase()) ||
     `${order.first_name} ${order.last_name}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
     format(new Date(order.request_date), "MMM dd, yyyy").toLowerCase().includes(searchTerm.toLowerCase());
   
-  // Status filter
+  
   const matchesStatus = statusFilter === "all" || order.status.toLowerCase() === statusFilter;
   
-  // Payment filter
   const matchesPayment = paymentFilter === "all" || order.payment_status.toLowerCase() === paymentFilter;
   
-  // Production filter
   const matchesProduction = productionFilter === "all" || order.production_status.toLowerCase() === productionFilter;
   
-  // Action availability filter
   const matchesAction = 
     actionFilter === "all" ||
     (actionFilter === "needs_action" && order.status === "Pending") ||
@@ -134,7 +131,7 @@ const filteredOrders = orders.filter(order => {
       overflow: 'hidden',
       bgcolor: '#efdecd'
     }}>
-      {/* Navbar - Fixed width */}
+     
       <Box sx={{ 
         width: 240, 
         flexShrink: 0,
@@ -163,7 +160,7 @@ const filteredOrders = orders.filter(order => {
       </Box>
 
 <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap' }}>
-  {/* Search Bar */}
+  
 <TextField
   label="Search Orders"
   variant="outlined"
@@ -175,7 +172,7 @@ const filteredOrders = orders.filter(order => {
 
 />
 
-  {/* Status Filter */}
+  
   <FormControl size="small" sx={{ minWidth: 150 }}>
     <InputLabel>Status</InputLabel>
     <Select
@@ -190,7 +187,7 @@ const filteredOrders = orders.filter(order => {
     </Select>
   </FormControl>
 
-  {/* Payment Filter */}
+  
   <FormControl size="small" sx={{ minWidth: 150 }}>
     <InputLabel>Payment</InputLabel>
     <Select
@@ -204,7 +201,7 @@ const filteredOrders = orders.filter(order => {
     </Select>
   </FormControl>
 
-  {/* Production Filter */}
+ 
   <FormControl size="small" sx={{ minWidth: 150 }}>
     <InputLabel>Production</InputLabel>
     <Select
@@ -221,7 +218,6 @@ const filteredOrders = orders.filter(order => {
     </Select>
   </FormControl>
 
-  {/* Action Filter */}
   <FormControl size="small" sx={{ minWidth: 180 }}>
     <InputLabel>Action Needed</InputLabel>
     <Select
@@ -347,14 +343,14 @@ const filteredOrders = orders.filter(order => {
                     )}
                   </TableCell>
                   <TableCell>
-                                          <Button
-                                            variant="outlined"
-                                            size="small"
-                                            onClick={() => navigate(`/custom-orders/${order.custom_order_id}/receipt`)}
-                                          >
-                                            View
-                                          </Button>
-                                        </TableCell>
+                  <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={() => navigate(`/custom-orders/${order.custom_order_id}/receipt`)}
+                    >
+                    View
+                  </Button>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -385,8 +381,6 @@ const filteredOrders = orders.filter(order => {
         </DialogActions>
       </Dialog>
 
-
-      {/* Price Dialog */}
      <Dialog open={priceDialogOpen} onClose={() => setPriceDialogOpen(false)}>
   <DialogTitle>Accept Custom Order</DialogTitle>
   <DialogContent>
@@ -400,7 +394,6 @@ const filteredOrders = orders.filter(order => {
   value={estimatedPrice}
   onChange={(e) => {
     const val = e.target.value;
-    // Allow only positive numbers with up to 2 decimal places
     if (/^\d+(\.\d{0,2})?$/.test(val) || val === '') {
       setEstimatedPrice(val);
     }
@@ -427,8 +420,6 @@ const filteredOrders = orders.filter(order => {
   </DialogActions>
 </Dialog>
 
-
-      {/* Status Update Dialog */}
       <Dialog open={statusUpdateDialogOpen} onClose={() => setStatusUpdateDialogOpen(false)}>
         <DialogTitle>Update Production Status</DialogTitle>
         <DialogContent>

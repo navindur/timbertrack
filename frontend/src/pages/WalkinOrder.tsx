@@ -38,8 +38,8 @@ interface Product {
   image_url?: string;
 }
 interface Product extends BaseProduct {
-    inventory_quantity: number;  // Add the required field
-    price: number;              // Make sure price is required
+    inventory_quantity: number;  
+    price: number;             
   }
 
 interface CartItem extends Product {
@@ -118,21 +118,18 @@ const validateCustomer = () => {
 
   const { first_name, last_name, phone_num, address_line1, city, postal_code } = customer;
 
-  // First Name
   if (!first_name.trim()) {
     newErrors.first_name = 'First name is required';
   } else if (!/^[A-Za-z]{2,30}$/.test(first_name)) {
     newErrors.first_name = 'Must be 2–30 letters only';
   }
 
-  // Last Name
   if (!last_name.trim()) {
     newErrors.last_name = 'Last name is required';
   } else if (!/^[A-Za-z]{2,30}$/.test(last_name)) {
     newErrors.last_name = 'Must be 2–30 letters only';
   }
 
-  // First and Last name cannot be the same
   if (
     first_name.trim().toLowerCase() === last_name.trim().toLowerCase() &&
     first_name.trim() !== '' &&
@@ -141,28 +138,24 @@ const validateCustomer = () => {
     newErrors.last_name = 'Last name cannot be the same as first name';
   }
 
-  // Phone Number
   if (!phone_num.trim()) {
     newErrors.phone_num = 'Phone number is required';
   } else if (!/^0\d{9}$/.test(phone_num)) {
     newErrors.phone_num = 'Must start with 0 and be 10 digits';
   }
 
-  // Address Line 1
   if (!address_line1.trim()) {
     newErrors.address_line1 = 'Address is required';
   } else if (!/^[A-Za-z0-9\s,.'-]{5,100}$/.test(address_line1)) {
     newErrors.address_line1 = 'Must be 5–100 valid characters';
   }
 
-  // City
   if (!city.trim()) {
     newErrors.city = 'City is required';
   } else if (!/^[A-Za-z\s]{2,50}$/.test(city)) {
     newErrors.city = 'Must be 2–50 letters and spaces';
   }
 
-  // Postal Code
   if (!postal_code.trim()) {
     newErrors.postal_code = 'Postal code is required';
   } else if (!/^\d{5}$/.test(postal_code)) {
@@ -172,8 +165,6 @@ const validateCustomer = () => {
   setErrors(newErrors);
   return Object.keys(newErrors).length === 0;
 };
-
-
 
 
   const calculateTotal = () => {
@@ -234,7 +225,7 @@ const validateCustomer = () => {
       overflow: 'hidden',
       bgcolor: '#efdecd'
     }}>
-      {/* Sidebar Navbar */}
+      
       <Box sx={{ 
         width: 240, 
         flexShrink: 0,
@@ -244,7 +235,6 @@ const validateCustomer = () => {
         <Navbar />
       </Box>
     
-      {/* Main Content */}
       <Box sx={{ 
         flexGrow: 1, 
         p: 3, 
@@ -256,7 +246,7 @@ const validateCustomer = () => {
       </Typography>
 
       <Grid container spacing={3}>
-        {/* Product List */}
+
         <Grid item xs={12} md={6}>
           <Paper sx={{ p: 2 }}>
             <Typography variant="h6" gutterBottom>
@@ -284,9 +274,9 @@ const validateCustomer = () => {
                           variant="outlined"
                           onClick={() => addToCart(product)}
                           disabled={
-    product.inventory_quantity === 0 ||
-    cart.find(item => item.id === product.id)?.cartQuantity === product.inventory_quantity
-  }
+                              product.inventory_quantity === 0 ||
+                              cart.find(item => item.id === product.id)?.cartQuantity === product.inventory_quantity
+                                }
                         >
                           Add
                         </Button>
@@ -299,7 +289,6 @@ const validateCustomer = () => {
           </Paper>
         </Grid>
 
-        {/* Order Cart */}
         <Grid item xs={12} md={6}>
           <Paper sx={{ p: 2 }}>
             <Typography variant="h6" gutterBottom>
@@ -380,7 +369,7 @@ const validateCustomer = () => {
           </Paper>
         </Grid>
 
-        {/* Customer Information */}
+       
         <Grid item xs={12}>
           <Paper sx={{ p: 2 }}>
             <Typography variant="h6" gutterBottom>
@@ -476,7 +465,6 @@ const validateCustomer = () => {
         </Button>
       </Box>
 
-      {/* Success Dialog */}
       <Dialog open={openSuccessDialog} onClose={() => setOpenSuccessDialog(false)}>
         <DialogTitle>Order Created Successfully</DialogTitle>
         <DialogContent>
