@@ -1,3 +1,4 @@
+//show all availbel products to customer
 import React, { useState, useEffect } from 'react';
 import {
   Box,
@@ -28,7 +29,7 @@ import {
 } from '@mui/material';
 import { Search, ShoppingCart } from '@mui/icons-material';
 import { getCustomerProducts, getCustomerProductById } from '../services/customerproductService';
-import { Product } from '../types/product';
+import { Product } from '../types/Product';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 import { useNavigate } from 'react-router-dom';
@@ -63,7 +64,7 @@ const CustomerProductList: React.FC = () => {
       });
       
       setProducts(data);
-    
+   //filter products based on stock search and category 
       let filtered = [...data];
       if (hideOutOfStock) {
   filtered = filtered.filter(product => 
@@ -147,7 +148,7 @@ if (product.quantity <= 0) {
     } else if (cartData?.items) {
       cartItems = cartData.items;
     }
-
+//prevent exceeding available stock in cart
     const existingCartItem = cartItems.find((item: any) => 
       item.product_id === productId || item.id === productId
     );

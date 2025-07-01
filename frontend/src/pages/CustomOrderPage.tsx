@@ -1,8 +1,9 @@
+//custom order odering page
 import React, { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { createCustomOrder } from "../services/customOrderService";
 import { Button, TextField, Box, Typography, Paper, CircularProgress } from "@mui/material";
-import FileUpload from "../components/FileUpload";
+import FileUpload from "../components/FileUpload"; //created component
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
@@ -27,6 +28,7 @@ const CustomOrderPage: React.FC = () => {
     setSuccessMessage("");
 
     try {
+     //call service to create custom order 
       await createCustomOrder(customer.customer_id, details, imageFile || undefined);
       setSuccessMessage("Your custom order has been submitted successfully!");
       setDetails("");

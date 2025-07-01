@@ -1,3 +1,4 @@
+//order confirmation page for customer
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -92,7 +93,7 @@ const OrderConfirmation = () => {
 
     fetchOrder();
   }, [order_id, navigate]);
-
+//print styles
   useEffect(() => {
     const style = document.createElement('style');
     style.innerHTML = `
@@ -140,7 +141,7 @@ const OrderConfirmation = () => {
       </Box>
     );
   }
-
+//no order
   if (!order) {
     return (
       <Box sx={{ textAlign: 'center', mt: 4 }}>
@@ -151,7 +152,7 @@ const OrderConfirmation = () => {
       </Box>
     );
   }
-
+//helper to format payment method string
   const formatPaymentMethod = (method: string) => {
     if (!method) return 'Unknown';
     return method.replace(/_/g, ' ');

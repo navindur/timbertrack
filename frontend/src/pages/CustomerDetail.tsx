@@ -1,3 +1,4 @@
+//show specific customer details to owner by id
 import React, { useState, useEffect } from 'react';
 import {
   Box,
@@ -19,6 +20,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Navbar from '../components/Adminnavbar';
 import { getCustomer } from '../services/customerinfoService';
 
+///interface for customer details
 interface CustomerDetail {
   customer_id: number;
   first_name: string;
@@ -67,7 +69,7 @@ const CustomerDetail: React.FC = () => {
     };
     loadCustomer();
   }, [id]);
-
+//helper to get color for order status chips
 const getStatusColor = (status: string) => {
   switch (status.toLowerCase()) {
     case 'pending': return 'warning';
@@ -132,6 +134,7 @@ const getStatusColor = (status: string) => {
         </Typography>
 
         <Grid container spacing={3}>
+          {/* Customer info card */}
           <Grid item xs={12} md={6}>
             <Paper sx={{ p: 3, mb: 3 }}>
               <Typography variant="h6" gutterBottom>

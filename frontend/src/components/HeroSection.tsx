@@ -3,8 +3,8 @@ import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 //hero section on top of homepage
-const HeroSection: React.FC = () => {
-  const navigate = useNavigate();
+const HeroSection: React.FC = () => { 
+  const navigate = useNavigate(); 
   return (
     <div
       className="bg-cover bg-center h-[500px] flex items-center justify-center text-black"

@@ -1,4 +1,4 @@
-// src/pages/ProductList.tsx
+//product management page for shop owner
 import React, { useState, useEffect } from 'react';
 import {
   Table,
@@ -38,7 +38,7 @@ import {
     getInventoryOptions,
     updateProduct
 } from '../services/productService';
-import { Product, InventoryOption } from '../types/product';
+import { Product, InventoryOption } from '../types/Product';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
@@ -161,7 +161,7 @@ const ProductList: React.FC = () => {
       setImageFile(e.target.files[0]);
     }
   };
-
+//handle add/edit product submit
   const handleSubmit = async () => {
   if (!currentProduct) return;
   
@@ -229,7 +229,7 @@ const ProductList: React.FC = () => {
         message: 'Product soft-deleted successfully',
         severity: 'success'
       });
-      
+      //refresh product list after delete
       const productsData = await getAllProducts({ page, limit, search: searchTerm, category: categoryFilter });
       setProducts(productsData);
       setFilteredProducts(productsData);
@@ -244,7 +244,7 @@ const ProductList: React.FC = () => {
       });
     }
   };
-
+//get inventory options that are not already used by another product
   const getAvailableInventoryOptions = () => {
   const usedInventoryIds = products.map(p => p.inventory_id);
   return inventoryOptions.filter(

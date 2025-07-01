@@ -7,7 +7,7 @@ const AboutUsPage = () => {
   return (
     <>
       <Navbar />
-      <Container maxWidth="lg" sx={{ mt: 4 }}>
+      <Container maxWidth="lg" sx={{ mt: 4 }}> 
         <Box sx={{ textAlign: 'center', mb: 4 }}>
           <Typography variant="h3" gutterBottom>
             About Us

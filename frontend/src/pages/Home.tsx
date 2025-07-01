@@ -1,3 +1,4 @@
+//main home page of the site
 import React from 'react';
 import HeroSection from '../components/HeroSection';
 import BrowseTheRange from '../components/BrowseTheRange';

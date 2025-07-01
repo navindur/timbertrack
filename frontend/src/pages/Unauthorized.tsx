@@ -1,3 +1,4 @@
+//unauthorized access page for users without permission
 import { Typography, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 

@@ -1,3 +1,4 @@
+//password reset page for users
 import React, { useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Box, Button, TextField, Typography, Alert } from '@mui/material';
@@ -14,7 +15,7 @@ const ResetPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
-
+//validate password strength
   const validatePassword = (pwd: string) => {
     const lengthValid = pwd.length >= 8;
     const upperValid = /[A-Z]/.test(pwd);
@@ -40,7 +41,7 @@ const ResetPassword = () => {
       );
       return;
     }
-
+//send reset request to backend
     try {
       const res = await axios.post('/api/auth/reset-password', { token, password });
       setSuccessMsg(res.data.message);

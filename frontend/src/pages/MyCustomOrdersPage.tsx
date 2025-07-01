@@ -1,3 +1,4 @@
+//show custom order details to customer
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { getMyCustomOrders } from "../services/customOrderService";
@@ -7,12 +8,14 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
+// Status color mappings for chip
 const statusColors: Record<'Pending' | 'Accepted' | 'Rejected', "default" | "info" | "error"> = {
     Pending: "default",
     Accepted: "info",
     Rejected: "error",
   };
 
+  // Production status color mappings for chips
   const productionStatusColors: Record<'not_started' | 'in_progress' | 'finished' | 'shipped' | 'delivered', 
   "default" | "warning" | "info" | "primary" | "success"> = {
   not_started: "default",

@@ -21,7 +21,6 @@ export const useInventory = () => {
   };
 
   const addInventory = async (item: Omit<InventoryItem, 'inventory_id'>) => {
-   
   };
 
   return {

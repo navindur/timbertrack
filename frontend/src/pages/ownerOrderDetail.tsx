@@ -1,3 +1,4 @@
+//owner side order details view
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
@@ -51,6 +52,7 @@ const OrderDetail: React.FC = () => {
     loadOrder();
   }, [id]);
 
+  //order status change update
   const handleStatusChange = async () => {
     if (!id || !status) return;
     
@@ -65,7 +67,7 @@ const OrderDetail: React.FC = () => {
       setIsUpdating(false);
     }
   };
-
+//get colur for status chip
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending':
@@ -227,7 +229,7 @@ const OrderDetail: React.FC = () => {
           </TableContainer>
         </Paper>
 
-        
+        {/* Status update form */}
         <Paper sx={{ p: 3 }}>
           <Typography variant="h6" gutterBottom>
             Update Order Status

@@ -18,6 +18,7 @@ export const fetchCustomers = async (
   return response.data;
 };
 
+//fetch a single customer by ID
 export const getCustomer = async (id: number): Promise<any> => {
   const response = await axios.get(`/api/customerinfo/${id}`);
   return response.data;

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = '/api/reports'; 
+const API_BASE_URL = '/api/reports'; //API base URL for all report endpoints
 
 export const fetchSalesSummary = async (startDate: string, endDate: string) => {
   const response = await axios.get(`${API_BASE_URL}/sales-summary`, {

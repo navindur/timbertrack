@@ -25,4 +25,5 @@ export const updateOrderStatus = async (
   status: string
 ): Promise<void> => {
   await axios.put(`${API_BASE_URL}/${orderId}/status`, { status });
+  
 };

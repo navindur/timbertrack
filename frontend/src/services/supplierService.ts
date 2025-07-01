@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Supplier } from '../types/supplier';
 
-const BASE_URL = 'http://localhost:5000/api/suppliers';
+const BASE_URL = 'http://localhost:5000/api/suppliers'; //API base URL for supplier endpoints
 
 export const getSuppliers = async (): Promise<Supplier[]> => {
   const response = await axios.get(BASE_URL);

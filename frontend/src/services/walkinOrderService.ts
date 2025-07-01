@@ -2,6 +2,7 @@ import axios from 'axios';
 
 const API_BASE_URL = 'http://localhost:5000/api/walkin-orders';
 
+//type definition for a walk in order request
 export interface WalkinOrderRequest {
     customer: {
       first_name: string;

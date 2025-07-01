@@ -1,3 +1,4 @@
+//checkout page for normal orders
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -56,6 +57,7 @@ interface CreditCardDetails {
   cvv: string;
 }
 
+//stepper steps
 const steps = ['Customer Details', 'Payment Method', 'Review Order'];
 
 const CheckoutPage = () => {
@@ -86,6 +88,7 @@ const CheckoutPage = () => {
   const validateCustomerDetails = () => {
     const errors: { [key: string]: string } = {};
 
+    //validations
 if (!customerDetails.first_name.trim()) {
   errors.first_name = 'First name is required';
 } else if (customerDetails.first_name.length < 2 || customerDetails.first_name.length > 30) {
@@ -196,7 +199,7 @@ if (
 
   let formattedValue = value;
 
-  if (name === 'expiryDate') {
+  if (name === 'expiryDate') { //format expiry date as MM/YY
     formattedValue = value.replace(/[^\d]/g, '');
 
     if (formattedValue.length > 2) {
@@ -291,7 +294,7 @@ if (
   const handleCustomerDetailsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     let formattedValue = value;
-  if (name === 'first_name' || name === 'last_name') {
+  if (name === 'first_name' || name === 'last_name') { //capitalize first letter for names
     formattedValue =
       value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
   }
@@ -368,7 +371,7 @@ if (
     }
   };
 
-  const calculateTotal = () => {
+  const calculateTotal = () => { //calculate total price of cart
     if (!Array.isArray(cartItems)) return 0;
     return cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   };
@@ -617,7 +620,7 @@ if (
       </Box>
     );
   }
-
+//main checkout page layout
   return (
     <>
       <Navbar />

@@ -1,3 +1,4 @@
+//all customer details to owner
 import React, { useState, useEffect } from 'react';
 import {
   Table,
@@ -58,6 +59,7 @@ const CustomerList: React.FC = () => {
     loadCustomers();
   }, [page, limit, searchTerm]);
 
+  //handle pagination change
   const handlePageChange = (event: React.ChangeEvent<unknown>, newPage: number) => {
     setPage(newPage);
   };
@@ -98,7 +100,7 @@ const CustomerList: React.FC = () => {
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
-              setPage(1); 
+              setPage(1); //reset to first page on mew search
             }}
             InputProps={{
               startAdornment: (

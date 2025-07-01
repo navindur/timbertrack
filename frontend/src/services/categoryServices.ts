@@ -1,4 +1,4 @@
-import { CategoryResponse, Category } from '../types/product';
+import { CategoryResponse, Category } from '../types/Product';
 
 const API_BASE = '/api/categories';
 
@@ -7,7 +7,7 @@ export const fetchCategories = async (): Promise<Category[]> => {
   if (!res.ok) throw new Error('Failed to fetch categories');
   return await res.json();
 };
-
+//fetch products for a specific category with pagination
 export const fetchCategoryProducts = async (
   category: string,
   page: number = 1,
@@ -18,7 +18,7 @@ export const fetchCategoryProducts = async (
   return await res.json();
 };
 
-// Convenience functions
+//convenience functions for fetching products by main categories
 export const fetchDiningProducts = (page?: number, limit?: number) => 
   fetchCategoryProducts('dining', page, limit);
 export const fetchLivingProducts = (page?: number, limit?: number) => 

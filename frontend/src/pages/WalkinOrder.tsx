@@ -1,3 +1,4 @@
+//walin order management by owner
 import React, { useState, useEffect } from 'react';
 import {
   Box,
@@ -26,7 +27,7 @@ import { Add, Remove, Print, Save } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { createWalkinOrder } from '../services/walkinOrderService';
 import { getAvailableProducts } from '../services/productService';
-import { Product as BaseProduct } from '../types/product';
+import { Product as BaseProduct } from '../types/Product';
 import { WalkinProduct } from '../services/productService';
 import Navbar from '../components/Adminnavbar';
 
@@ -117,7 +118,7 @@ const validateCustomer = () => {
   const newErrors: Record<string, string> = {};
 
   const { first_name, last_name, phone_num, address_line1, city, postal_code } = customer;
-
+//customer input fields validation
   if (!first_name.trim()) {
     newErrors.first_name = 'First name is required';
   } else if (!/^[A-Za-z]{2,30}$/.test(first_name)) {

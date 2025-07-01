@@ -11,6 +11,7 @@ import {
   Legend,
 } from 'chart.js';
 
+//necessary compeonets for chart
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -21,6 +22,7 @@ ChartJS.register(
   Legend
 );
 
+//propos for sales chart componet 
 interface SalesChartProps {
   data: {
     period: string;
@@ -30,6 +32,7 @@ interface SalesChartProps {
   currency?: string;
 }
 
+//sales chart component to display sales data
 const SalesChart: React.FC<SalesChartProps> = ({ data, currency = 'LKR' }) => {
   const chartData = {
     labels: data.map(item => item.period),

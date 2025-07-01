@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+// This file sets up an Axios instance with a base URL and interceptors for handling authentication tokens
+// It is used to make API requests throughout the application
 const axiosInstance = axios.create({
   baseURL: 'http://localhost:5000/api', 
   headers: {

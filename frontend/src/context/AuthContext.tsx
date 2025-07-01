@@ -1,12 +1,14 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import axios from 'axios';
 
+//AuthContext for managing user authentication state in a React application
 interface User {
   id: number;
   email: string;
-  role: 'customer' | 'shopowner';
+  role: 'customer' | 'shopowner'; // can be either customer or shopowner
 }
 
+// Customer type definition
 interface Customer {
   customer_id: number;
   user_id: number;
@@ -20,6 +22,7 @@ interface Customer {
   postal_code: string;
 }
 
+// AuthContext type definition
 interface AuthContextType {
   user: User | null;
   customer: Customer | null;
@@ -29,9 +32,10 @@ interface AuthContextType {
   isAuthenticated: boolean;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType | undefined>(undefined); // Create the context
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+//state for user customer and loading status
   const [user, setUser] = useState<User | null>(null);
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [loading, setLoading] = useState(true);
@@ -101,6 +105,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   );
 };
 
+//custom hook to use AuthContext
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {

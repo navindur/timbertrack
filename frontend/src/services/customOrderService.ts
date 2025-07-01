@@ -2,13 +2,14 @@ import axios from "axios";
 
 const API_URL = "/api/custom-orders";
 
+//helper to get auth headers from localStorage
 const getAuthHeaders = () => {
   const token = localStorage.getItem("authToken");
   return {
     Authorization: `Bearer ${token}`,
   };
 };
-
+//create a new custom order
 export const createCustomOrder = async (
   customerId: number,
   details: string,
@@ -29,14 +30,14 @@ export const createCustomOrder = async (
   });
   return response.data;
 };
-
+//for shop owner
 export const getAllCustomOrders = async () => {
   const response = await axios.get(API_URL, {
     headers: getAuthHeaders(),
   });
   return response.data;
 };
-
+//for specific customer
 export const getMyCustomOrders = async (customerId: number) => {
   const response = await axios.get(`${API_URL}/my/${customerId}`, {
     headers: getAuthHeaders(),

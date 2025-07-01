@@ -1,3 +1,4 @@
+//order details view for shop owner
 import React, { useState, useEffect } from 'react';
 import {
   Table,
@@ -62,7 +63,7 @@ const OrderList: React.FC = () => {
     setPage(1); 
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: string) => {//get color for order status chip
     switch (status) {
       case 'pending':
         return 'default';

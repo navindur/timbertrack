@@ -1,3 +1,4 @@
+//shopowner supplier details management
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -24,6 +25,7 @@ import {
 import { Edit, Delete, Add, Search } from '@mui/icons-material';
 import Navbar from '../components/Adminnavbar';
 
+//supplier type definition
 interface Supplier {
   id?: number;
   name: string;
@@ -197,7 +199,7 @@ const SupplierList: React.FC = () => {
 
   const validateForm = () => {
   const newErrors: SupplierErrors = {};
-
+//validations for supplier details 
   if (!currentSupplier?.name?.trim()) {
     newErrors.name = 'Supplier Name is required';
   } else if (!/^[A-Za-z0-9 ]{2,60}$/.test(currentSupplier.name)) {

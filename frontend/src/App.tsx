@@ -39,10 +39,13 @@ const App: React.FC = () => {
 
   return (
     <Router>
-      <AuthProvider>         
+      {/* Provide authentication context to the app */}
+      <AuthProvider>   
+        {/* Handles redirects based on auth state */}      
          <RedirectHandler /> 
       
       <Routes>
+        {/* Public routes */}
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/unauthorized" element={<Unauthorized />} />
@@ -51,6 +54,7 @@ const App: React.FC = () => {
       <Route path="/about-us" element={<AboutUsPage />} />
       <Route path="/order-confirmation/:order_id" element={<OrderConfirmation />} />
 
+{/* Shop owner protected routes */}
       <Route element={<ProtectedRoute allowedRoles={['shopowner']} />}>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/supplierlist" element={<SupplierList />} />
@@ -66,7 +70,7 @@ const App: React.FC = () => {
         <Route path="/ownercustom-ordersview" element={<ShopOwnerCustomOrders />} /> 
       </Route>
 
-
+                {/* Customer protected routes */}
       <Route element={<ProtectedRoute allowedRoles={['customer']} />}>
         <Route path="/cart" element={<CartPage />} />
         <Route path="/checkout" element={<CheckoutPage />} />  
@@ -75,7 +79,7 @@ const App: React.FC = () => {
         <Route path="/my-custom-orders" element={<MyCustomOrdersPage />} />  
         <Route path="/custom-order-checkout/:orderId" element={<CustomOrderCheckout />} /> 
       </Route>
-
+{/* Public routes */}
         <Route path="/" element={<Home />} />
         <Route path="/customerprofile" element={<CustomerProfile />} />
         <Route path="/products" element={<CustomerProductList />} />

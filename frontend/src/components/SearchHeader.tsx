@@ -15,6 +15,7 @@ import {
   Settings as SettingsIcon
 } from '@mui/icons-material';
 
+//searchheader component props interface
 interface SearchHeaderProps {
   searchPlaceholder?: string;
   onSearchChange?: (value: string) => void;
@@ -22,6 +23,7 @@ interface SearchHeaderProps {
   sx?: SxProps<Theme>;
 }
 
+// Searchheader component
 const SearchHeader: React.FC<SearchHeaderProps> = ({ 
   searchPlaceholder = "What are you looking for?", 
   onSearchChange,

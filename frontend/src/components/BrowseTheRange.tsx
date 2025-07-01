@@ -37,7 +37,7 @@ const BrowseTheRange: React.FC = () => {
               textTransform: 'none', 
               '&:hover': {
                 backgroundColor: 'transparent', 
-                color: '#C24507', // Highlight on hover
+                color: '#C24507', //Highlight on hover
               },
             }}
           >

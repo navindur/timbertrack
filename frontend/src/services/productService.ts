@@ -3,6 +3,7 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:5000/api/products';
 
+//type for walk in order product
 export interface WalkinProduct {
   id: number;
   name: string;
@@ -27,7 +28,7 @@ export const getAllProducts = async (filters: ProductFilters): Promise<Product[]
   }
   
   const data = await response.json();
-  
+  //handle different possible API response formats
   if (Array.isArray(data)) {
     return data;
   } else if (data?.data && Array.isArray(data.data)) {
@@ -44,7 +45,7 @@ export const getAvailableProducts = async (): Promise<WalkinProduct[]> => {
     const response = await axios.get(`${API_URL}/`);
     
     let productsData = response.data;
-    
+   
     if (response.data && response.data.data) {
       productsData = response.data.data;
     }

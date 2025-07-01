@@ -8,7 +8,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
  
-  // check if user is logged in by checking authToken in localStorage
+  //  check if user is logged in by checking authToken in localStorage
   const isLoggedIn = Boolean(localStorage.getItem('authToken')); 
 
   //handle profile icon click navigate to profile if logged in else to signin
@@ -101,4 +101,4 @@ const Navbar: React.FC = () => {
   );
 };
 
-export default Navbar;
+export default Navbar; 

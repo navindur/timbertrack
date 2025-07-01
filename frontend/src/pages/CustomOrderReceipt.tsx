@@ -1,3 +1,4 @@
+//receipt for custom orders
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
@@ -67,7 +68,7 @@ const CustomOrderReceipt: React.FC = () => {
       setShowPrintDialog(false);
     }, 100);
   };
-
+//print styles for receipt
   const printStyles = `
     @media print {
       body * {

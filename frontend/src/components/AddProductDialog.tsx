@@ -9,12 +9,14 @@ import {
   Stack
 } from '@mui/material';
 
+//this component provides a dialog for adding a new product with fields for name, description, price, category, and stock quantity
 interface AddProductDialogProps {
   open: boolean;
   onClose: () => void;
   onAddProduct: (product: any) => void;
 }
 
+//this component renders a dialog for adding a new product
 const AddProductDialog: React.FC<AddProductDialogProps> = ({ 
   open, 
   onClose, 
@@ -28,12 +30,12 @@ const AddProductDialog: React.FC<AddProductDialogProps> = ({
     stock_quantity: ''
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => { //handle input changes
     const { name, value } = e.target;
     setProductData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = () => { //handle form submission
     onAddProduct({
       ...productData,
       price: parseFloat(productData.price),

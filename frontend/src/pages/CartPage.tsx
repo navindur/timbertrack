@@ -4,6 +4,7 @@ import axios from 'axios';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 
+//type definition for cart item
 interface CartItem {
   id: number;
   name: string;
@@ -30,7 +31,7 @@ const CartPage = () => {
   
     const fetchCart = async () => {
         try {
-          const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/cart`, {
+          const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/cart`, {//fetch cart items from backend
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -66,6 +67,7 @@ const CartPage = () => {
     
     if (!item) return;
   
+    //prevent exceeding available inventory
     if (newQuantity > item.inventory_quantity) {
       alert(`Only ${item.inventory_quantity} items available in stock`);
       return;
@@ -88,6 +90,7 @@ const CartPage = () => {
       console.error("Error updating quantity:", error);
     }
   };
+
   const handleDeleteAll = async () => {
     const token = localStorage.getItem('authToken');
     try {
@@ -107,6 +110,8 @@ const CartPage = () => {
   const handleCheckout = () => {
     navigate('/checkout');
   };
+
+  //show loading indicator while fetching data
   if (loading) return <div className="text-center mt-10">Loading...</div>;
 
   return (
@@ -115,7 +120,7 @@ const CartPage = () => {
     <div className="max-w-4xl mx-auto p-4">
       <h1 className="text-2xl font-bold mb-6">Your Cart</h1>
   
-      {cartItems.length === 0 ? (
+      {cartItems.length === 0 ? (//empty cart
         <div className="text-gray-500 text-center">Your cart is empty.</div>
       ) : (
         <>

@@ -1,3 +1,4 @@
+//dashboard for shop owner to view reports
 import React, { useState, useEffect } from 'react';
 import {
   Box,
@@ -37,6 +38,7 @@ import {
   fetchCustomOrdersByStatus
 } from '../services/reportServices';
 
+//generic type for report data
 interface ReportData {
   [key: string]: any;
 }
@@ -55,6 +57,7 @@ const ReportsDashboard: React.FC = () => {
   const [categoryFilter, setCategoryFilter] = useState('');
 
   useEffect(() => {
+    //for most tabs require date range
     if (activeTab !== 'low-stock' && activeTab !== 'inventory-valuation' && (!startDate || !endDate)) {
       return;
     }
@@ -175,7 +178,7 @@ const ReportsDashboard: React.FC = () => {
 
     window.open(url, '_blank');
   };
-
+//render report content based on active tab
   const renderReportContent = () => {
     if (isLoading) {
       return (
@@ -594,7 +597,7 @@ const ReportsDashboard: React.FC = () => {
           </Paper>
         )}
 
-       
+       {/* Render the selected report */}
         {renderReportContent()}
 
         

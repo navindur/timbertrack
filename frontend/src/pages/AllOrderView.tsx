@@ -1,3 +1,4 @@
+//shows all orders to customer
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -36,14 +37,14 @@ export const AllOrderView = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const token = localStorage.getItem('authToken');
+        const token = localStorage.getItem('authToken'); 
         if (!token) {
-          navigate('/login');
+          navigate('/login'); //hv to login before view
           return;
         }
 
         const { data } = await axios.get<{ success: boolean; orders?: Order[] }>(
-          `${import.meta.env.VITE_API_BASE_URL}/allorderview`,
+          `${import.meta.env.VITE_API_BASE_URL}/allorderview`, //API endpoint to get all orders
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
@@ -64,7 +65,7 @@ export const AllOrderView = () => {
     fetchOrders();
   }, [navigate]);
 
-  const formatCurrency = (amount: number) => {
+  const formatCurrency = (amount: number) => { //function to format currency
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'LKR',
@@ -117,12 +118,12 @@ export const AllOrderView = () => {
                     {order.status}
                   </TableCell>
                   <TableCell sx={{ textTransform: 'capitalize' }}>
-                    {order.paymentMethod.replace('_', ' ')}
+                    {order.paymentMethod.replace('_', ' ')} 
                   </TableCell>
                   <TableCell>
                     <Button 
                       size="small" 
-                      onClick={() => navigate(`/order-confirmation/${order.id}`)}
+                      onClick={() => navigate(`/order-confirmation/${order.id}`)} //navigate to order confirmation page
                     >
                       View
                     </Button>

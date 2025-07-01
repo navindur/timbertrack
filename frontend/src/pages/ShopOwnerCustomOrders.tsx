@@ -1,3 +1,4 @@
+//shop owner custom orders management page
 import React, { useEffect, useState } from "react";
 import { getAllCustomOrders, acceptCustomOrder, rejectCustomOrder, updateProductionStatus } from "../services/customOrderService";
 import { Box, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, CircularProgress, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Select, MenuItem, FormControl, InputLabel, Chip } from "@mui/material";
@@ -56,7 +57,7 @@ const [actionFilter, setActionFilter] = useState("all");
       console.error("Failed to reject order:", err);
     }
   };
-
+//submit accept order with estimated price
   const submitAccept = async () => {
     if (!selectedOrder || !estimatedPrice) return;
     
@@ -270,6 +271,7 @@ const filteredOrders = orders.filter(order => {
                     {order.details}
                   </TableCell>
                   <TableCell>
+                    {/* Show image thumbnail and open modal on click */}
                     {order.image_url && (
                       <img 
                         src={order.image_url} 

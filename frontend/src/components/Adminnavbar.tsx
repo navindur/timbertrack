@@ -24,13 +24,14 @@ import { Storefront as WalkInIcon } from '@mui/icons-material';
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
 
-  const handleLogout = () => {
+  const handleLogout = () => { //function to handle user logout
     localStorage.removeItem('authToken');
     localStorage.removeItem('user');
     navigate('/signin');
     window.location.reload();
   };
 
+  //define the menu items with their respective icons and paths
   const menuItems = [
     { name: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
     { name: 'Walk-In Orders', icon: <WalkInIcon />, path: '/walkin-order' },

@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
+//handles redirectiomn based on user role at the start
 const RedirectHandler: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();

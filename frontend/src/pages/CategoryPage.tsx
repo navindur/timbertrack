@@ -1,3 +1,4 @@
+//show category wise divided products to customer
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import {
@@ -19,7 +20,7 @@ import {
 } from '@mui/material';
 import { ShoppingCart, Search } from '@mui/icons-material';
 import { fetchCategoryProducts } from '../services/categoryServices';
-import { Product } from '../types/product';
+import { Product } from '../types/Product';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 import { useNavigate } from 'react-router-dom'; 
@@ -35,6 +36,7 @@ const CategoryPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const limit = 12;
   const navigate = useNavigate(); 
+   //snackbar state for feedback messages
    const [snackbar, setSnackbar] = useState({
         open: false,
         message: '',
@@ -119,7 +121,7 @@ if (product.quantity <= 0) {
     } else if (cartData?.items) {
       cartItems = cartData.items;
     }
-
+//check if product is already in cart and prevent exceeding stock
     const existingCartItem = cartItems.find((item: any) => 
       item.product_id === productId || item.id === productId
     );

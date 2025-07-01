@@ -1,3 +1,4 @@
+//walk in order receipt page for printing and viewing
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
@@ -59,7 +60,7 @@ const WalkinReceipt: React.FC = () => {
       >
         Back to Orders
       </Button>
-
+{/* Receipt content for printing */}
       <Paper sx={{ p: 3 }} id="receipt-content">
         <Box sx={{ textAlign: 'center', mb: 3 }}>
           <Typography variant="h5">Jayarani Furniture</Typography>
@@ -155,7 +156,7 @@ const WalkinReceipt: React.FC = () => {
           Print Receipt
         </Button>
       </Box>
-
+{/* Print styles */}
       <style>{`
         @media print {
           body * {

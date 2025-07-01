@@ -1,3 +1,4 @@
+//sign up page for new users
 import React, { useState } from 'react';
 import { Box, Container, Typography, TextField, Button, Grid, Link, Alert } from '@mui/material';
 import { Google as GoogleIcon } from '@mui/icons-material';
@@ -22,7 +23,7 @@ const SignUp: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-
+//handle input changes and format names/emails
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value;
   
@@ -39,7 +40,7 @@ const SignUp: React.FC = () => {
   
     setFormData({ ...formData, [e.target.name]: value });
   };
-
+//validations
   const validateForm = () => {
     if (!formData.first_name || !formData.last_name || !formData.email || !formData.password) {
       return 'All fields are required.';

@@ -1,3 +1,4 @@
+//inventory details for shop owner
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -71,6 +72,7 @@ const InventoryFormDialog: React.FC<InventoryFormDialogProps> = React.memo(({
   suppliers,
   errors
 }) => {
+  // Focus management for dialog fields
   const [isMounted, setIsMounted] = useState(false);
   const activeElementRef = useRef<HTMLElement | null>(null);
   const selectRef = useRef<HTMLDivElement>(null);
@@ -252,7 +254,7 @@ const InventoryFormDialog: React.FC<InventoryFormDialogProps> = React.memo(({
     </Dialog>
   );
 });
-
+// main inventory page component
 const InventoryPage: React.FC = () => {
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
   const [filteredInventory, setFilteredInventory] = useState<InventoryItem[]>([]);
@@ -459,7 +461,7 @@ const handleSelectChange = (e: any) => {
     setSnackbar({ ...snackbar, open: false });
   };
 
-
+//validate form fields before submit
   const validateForm = () => {
   const newErrors: InventoryErrors = {};
 

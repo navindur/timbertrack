@@ -1,3 +1,4 @@
+//profile of customer
 import React, { useState, useEffect } from 'react';
 import { 
   Box, 
@@ -59,6 +60,7 @@ const CustomerProfile = () => {
   });
   const [originalData, setOriginalData] = useState<CustomerData | null>(null);
   
+  //validations
   const validateName = (name: string, fieldName: string): string | null => {
     if (!name) return `${fieldName} is required`;
     if (name.length < 2 || name.length > 30) {
@@ -133,7 +135,7 @@ const CustomerProfile = () => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     let processedValue = value;
-
+//capitaize names
     if (name === 'first_name' || name === 'last_name') {
       if (value.length === 1) {
         processedValue = value.toUpperCase();
@@ -141,7 +143,7 @@ const CustomerProfile = () => {
         processedValue = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
       }
     }
-   
+  //lowercase email
     else if (name === 'email') {
       processedValue = value.toLowerCase();
     }
@@ -211,7 +213,7 @@ const CustomerProfile = () => {
 
   const handleCancel = () => {
     if (originalData) {
-      setCustomerData(originalData); 
+      setCustomerData(originalData); // Reset to original data
     }
     setIsEditing(false);
     setError('');

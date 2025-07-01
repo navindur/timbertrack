@@ -1,3 +1,4 @@
+//signin page for all users
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../api/axiosInstance";
@@ -30,7 +31,7 @@ const SignIn: React.FC = () => {
   
     try {
       const response = await axiosInstance.post("/auth/login", { email, password });
-      
+      //store auth token and user info in localStorage
       localStorage.setItem("authToken", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));
       

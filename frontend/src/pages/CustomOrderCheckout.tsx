@@ -1,3 +1,4 @@
+//checkout for custom orders
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
@@ -47,7 +48,7 @@ interface UserData {
   id: number;
   customerId?: number;
 }
-
+//stepper steps
 const steps = ['Customer Details', 'Payment', 'Confirmation'];
 
 const CustomOrderCheckout: React.FC = () => {
@@ -140,7 +141,7 @@ const CustomOrderCheckout: React.FC = () => {
        setHasCustomerDetails(true);
     }
   }, [customer]);
-
+//validate customer details form
   const validateCustomerDetails = () => {
     const errors: { [key: string]: string } = {};
 
@@ -288,7 +289,7 @@ const CustomOrderCheckout: React.FC = () => {
     if (activeStep === 1  && !validateCreditCardDetails()) {
       return;
     }
-
+//on payment step, mark order as paid
     if (activeStep === 1) {
       try {
         setLoading(true);
@@ -353,7 +354,7 @@ const CustomOrderCheckout: React.FC = () => {
       setShowPrintDialog(false);
     }, 100);
   };
-
+//print styles for receipt
   const printStyles = `
     @media print {
       body * {

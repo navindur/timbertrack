@@ -13,7 +13,7 @@ const Footer: React.FC = () => {
         marginTop: '4rem',
       }}
     >
-      <Container maxWidth="lg">
+      <Container maxWidth="lg"> 
         <Grid container spacing={4}>
           
           <Grid item xs={12} sm={6} md={3}>

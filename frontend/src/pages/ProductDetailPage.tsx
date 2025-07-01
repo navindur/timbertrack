@@ -1,3 +1,4 @@
+//all product details for customers
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
@@ -77,6 +78,7 @@ const ProductDetailPage = () => {
     fetchProduct();
   }, [id]);
 
+  //handle add to cart logic including quantity validation
 const handleAddToCart = async () => {
   if (!product) return;
 
@@ -161,6 +163,7 @@ const handleAddToCart = async () => {
       </Box>
     );
   }
+  //warranty and care info strings
 const WARRANTY_INFO = `
 All locally manufactured solid wood products will have a warranty of 2 years against poor quality of timber and manufacturing defects.
 
@@ -185,7 +188,7 @@ Wood is porous. It responds to extremely dry air by losing moisture and shrinkin
 During humid weather, wood drawer fronts may swell and become difficult to open and close. These natural changes do not affect the furniture’s overall quality or durability. 
 `;
 
-const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {//handle tab change for warranty info
   setActiveTab(newValue);
 };
 
@@ -328,6 +331,7 @@ const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
           
         )}
       </Container>
+      {/* Warranty and care info tabs */}
       <Box sx={{ mt: 4, maxWidth: "lg", mx: 'auto',backgroundColor: 'background.paper' }}>
   <Tabs 
     value={activeTab} 

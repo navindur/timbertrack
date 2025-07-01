@@ -1,5 +1,6 @@
 import { Button, Card, CardContent, Typography } from '@mui/material';
 
+// Define the props for the ProductCard component
 type ProductProps = {
   product: any;
   onDelete?: (id: number) => void;
@@ -7,6 +8,7 @@ type ProductProps = {
   showActions?: boolean; 
 };
 
+//productCard component to display product details
 export default function ProductCard({
   product,
   onDelete,

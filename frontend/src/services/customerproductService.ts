@@ -1,4 +1,4 @@
-import { Product, ProductFilters } from '../types/product';
+import { Product, ProductFilters } from '../types/Product';
 
 const API_URL = 'http://localhost:5000/api/customer/products';
 
@@ -20,7 +20,7 @@ export const getCustomerProducts = async (
   return await response.json();
 };
 
-
+//fetch a single product by its ID for customer view
 export const getCustomerProductById = async (id: number): Promise<Product> => {
   const response = await fetch(`${API_URL}/${id}`);
   if (!response.ok) {

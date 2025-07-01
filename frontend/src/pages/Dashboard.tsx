@@ -1,3 +1,4 @@
+//shop owner dashbaord
 import React, { useState, useEffect } from 'react';
 import { 
   Box, 
@@ -44,7 +45,7 @@ interface PasswordData {
   confirmPassword: string;
 }
 
-
+//stat card component for dashboard metrics
 
 const StatCard: React.FC<StatCardProps> = ({ title, value, icon }) => (
   <Card sx={{ height: '100%' }}>
@@ -139,14 +140,14 @@ const DashboardPage = () => {
 
     fetchData();
   }, [timeRange]);
-
+//format currency for display
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-LK', {
       style: 'currency',
       currency: 'LKR'
     }).format(value);
   };
-
+//pass change validation 
 const validatePassword = (password: string): string | null => {
     if (password.length < 8) return 'Must be at least 8 characters';
     if (!/[A-Z]/.test(password)) return 'Must contain uppercase letter';
